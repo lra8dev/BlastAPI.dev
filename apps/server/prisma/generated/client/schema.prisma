@@ -1,0 +1,93 @@
+generator client {
+  provider = "prisma-client-js"
+  output   = "./generated/client"
+}
+
+datasource db {
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
+}
+
+model User {
+  id        String    @id @default(uuid()) @db.Uuid
+  email     String    @unique
+  password  String
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  testRuns  TestRun[]
+}
+
+model TestRun {
+  id              String   @id @default(uuid()) @db.Uuid
+  userId          String   @db.Uuid
+  testName        String
+  url             String
+  method          String
+  status          String
+  requestCount    Int
+  duration        Float
+  errorRate       Float
+  avgResponseTime Float
+  maxResponseTime Float
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  user          User          @relation(fields: [userId], references: [id])
+  metrics       Metric[]
+  testConfig    TestConfig?
+  testResult    TestResult?
+  testHistories TestHistory[]
+}
+
+model Metric {
+  id         String   @id @default(uuid()) @db.Uuid
+  testRunId  String   @db.Uuid
+  timestamp  DateTime @default(now())
+  latency    Float
+  throughput Float
+  statusCode Int
+
+  testRun TestRun @relation(fields: [testRunId], references: [id])
+}
+
+model TestConfig {
+  id               String @id @default(uuid()) @db.Uuid
+  testRunId        String @unique @db.Uuid
+  testDuration     Int
+  requestRate      Int
+  concurrencyLevel Int
+  headers          Json
+  body             Json?
+
+  testRun TestRun @relation(fields: [testRunId], references: [id])
+}
+
+model TestResult {
+  id            String   @id @default(uuid()) @db.Uuid
+  testRunId     String   @unique @db.Uuid
+  avgLatency    Float
+  avgThroughput Float
+  totalRequests Int
+  successRate   Float
+  errorRate     Float
+  createdAt     DateTime @default(now())
+
+  testRun TestRun @relation(fields: [testRunId], references: [id])
+}
+
+model TestHistory {
+  id              String   @id @default(uuid()) @db.Uuid
+  testRunId       String   @db.Uuid
+  testName        String
+  url             String
+  method          String
+  requestCount    Int
+  duration        Float
+  errorRate       Float
+  avgResponseTime Float
+  maxResponseTime Float
+  createdAt       DateTime @default(now())
+
+  testRun TestRun @relation(fields: [testRunId], references: [id])
+}

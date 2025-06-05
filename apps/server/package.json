@@ -1,0 +1,46 @@
+{
+  "name": "server",
+  "version": "1.0.0",
+  "description": "",
+  "main": "./src/app.js",
+  "scripts": {
+    "build": "tsc",
+    "dev": "ts-node-dev --respawn --transpile-only src/app.ts",
+    "start": "node dist/app.js",
+    "start:dev": "nodemon --watch 'src/**/*.ts' --exec ts-node src/app.ts",
+    "test:unit": "jest --config jest.config.js --runInBand",
+    "test:unit:watch": "jest --config jest.config.js --watch",
+    "test:unit:coverage": "jest --config jest.config.js --coverage",
+    "test:unit:coverage:watch": "jest --config jest.config.js --coverage --watch",
+    "test:integration": "jest --config jest.integration.config.js --runInBand",
+    "test:integration:watch": "jest --config jest.integration.config.js --watch"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "packageManager": "pnpm@10.9.0",
+  "dependencies": {
+    "@prisma/client": "^6.9.0",
+    "axios": "^1.9.0",
+    "bullmq": "^5.53.2",
+    "dotenv": "^16.5.0",
+    "express": "^5.1.0",
+    "ioredis": "^5.6.1",
+    "nodemon": "^3.1.10",
+    "redis": "^5.5.5",
+    "socket.io": "^4.8.1",
+    "uuid": "^11.1.0",
+    "zod": "^3.25.51"
+  },
+  "devDependencies": {
+    "@types/express": "^5.0.2",
+    "@types/jest": "^29.5.14",
+    "@types/node": "^22.15.29",
+    "jest": "^29.7.0",
+    "prisma": "^6.9.0",
+    "ts-jest": "^29.3.4",
+    "ts-node": "^10.9.2",
+    "ts-node-dev": "^2.0.0",
+    "typescript": "^5.8.3"
+  }
+}
