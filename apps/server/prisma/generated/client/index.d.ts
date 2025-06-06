@@ -1325,10 +1325,12 @@ export namespace Prisma {
 
   export type UserCountOutputType = {
     testRuns: number
+    testHistories: number
   }
 
   export type UserCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     testRuns?: boolean | UserCountOutputTypeCountTestRunsArgs
+    testHistories?: boolean | UserCountOutputTypeCountTestHistoriesArgs
   }
 
   // Custom InputTypes
@@ -1347,6 +1349,13 @@ export namespace Prisma {
    */
   export type UserCountOutputTypeCountTestRunsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     where?: TestRunWhereInput
+  }
+
+  /**
+   * UserCountOutputType without action
+   */
+  export type UserCountOutputTypeCountTestHistoriesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: TestHistoryWhereInput
   }
 
 
@@ -1559,6 +1568,7 @@ export namespace Prisma {
     createdAt?: boolean
     updatedAt?: boolean
     testRuns?: boolean | User$testRunsArgs<ExtArgs>
+    testHistories?: boolean | User$testHistoriesArgs<ExtArgs>
     _count?: boolean | UserCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["user"]>
 
@@ -1589,6 +1599,7 @@ export namespace Prisma {
   export type UserOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "email" | "password" | "createdAt" | "updatedAt", ExtArgs["result"]["user"]>
   export type UserInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     testRuns?: boolean | User$testRunsArgs<ExtArgs>
+    testHistories?: boolean | User$testHistoriesArgs<ExtArgs>
     _count?: boolean | UserCountOutputTypeDefaultArgs<ExtArgs>
   }
   export type UserIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {}
@@ -1598,6 +1609,7 @@ export namespace Prisma {
     name: "User"
     objects: {
       testRuns: Prisma.$TestRunPayload<ExtArgs>[]
+      testHistories: Prisma.$TestHistoryPayload<ExtArgs>[]
     }
     scalars: $Extensions.GetPayloadResult<{
       id: string
@@ -2000,6 +2012,7 @@ export namespace Prisma {
   export interface Prisma__UserClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
     readonly [Symbol.toStringTag]: "PrismaPromise"
     testRuns<T extends User$testRunsArgs<ExtArgs> = {}>(args?: Subset<T, User$testRunsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$TestRunPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    testHistories<T extends User$testHistoriesArgs<ExtArgs> = {}>(args?: Subset<T, User$testHistoriesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$TestHistoryPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -2443,6 +2456,30 @@ export namespace Prisma {
     take?: number
     skip?: number
     distinct?: TestRunScalarFieldEnum | TestRunScalarFieldEnum[]
+  }
+
+  /**
+   * User.testHistories
+   */
+  export type User$testHistoriesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the TestHistory
+     */
+    select?: TestHistorySelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the TestHistory
+     */
+    omit?: TestHistoryOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: TestHistoryInclude<ExtArgs> | null
+    where?: TestHistoryWhereInput
+    orderBy?: TestHistoryOrderByWithRelationInput | TestHistoryOrderByWithRelationInput[]
+    cursor?: TestHistoryWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: TestHistoryScalarFieldEnum | TestHistoryScalarFieldEnum[]
   }
 
   /**
@@ -7189,6 +7226,7 @@ export namespace Prisma {
   export type TestHistoryMinAggregateOutputType = {
     id: string | null
     testRunId: string | null
+    userId: string | null
     testName: string | null
     url: string | null
     method: string | null
@@ -7203,6 +7241,7 @@ export namespace Prisma {
   export type TestHistoryMaxAggregateOutputType = {
     id: string | null
     testRunId: string | null
+    userId: string | null
     testName: string | null
     url: string | null
     method: string | null
@@ -7217,6 +7256,7 @@ export namespace Prisma {
   export type TestHistoryCountAggregateOutputType = {
     id: number
     testRunId: number
+    userId: number
     testName: number
     url: number
     method: number
@@ -7249,6 +7289,7 @@ export namespace Prisma {
   export type TestHistoryMinAggregateInputType = {
     id?: true
     testRunId?: true
+    userId?: true
     testName?: true
     url?: true
     method?: true
@@ -7263,6 +7304,7 @@ export namespace Prisma {
   export type TestHistoryMaxAggregateInputType = {
     id?: true
     testRunId?: true
+    userId?: true
     testName?: true
     url?: true
     method?: true
@@ -7277,6 +7319,7 @@ export namespace Prisma {
   export type TestHistoryCountAggregateInputType = {
     id?: true
     testRunId?: true
+    userId?: true
     testName?: true
     url?: true
     method?: true
@@ -7378,6 +7421,7 @@ export namespace Prisma {
   export type TestHistoryGroupByOutputType = {
     id: string
     testRunId: string
+    userId: string
     testName: string
     url: string
     method: string
@@ -7411,6 +7455,7 @@ export namespace Prisma {
   export type TestHistorySelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
     testRunId?: boolean
+    userId?: boolean
     testName?: boolean
     url?: boolean
     method?: boolean
@@ -7420,12 +7465,14 @@ export namespace Prisma {
     avgResponseTime?: boolean
     maxResponseTime?: boolean
     createdAt?: boolean
+    user?: boolean | UserDefaultArgs<ExtArgs>
     testRun?: boolean | TestRunDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["testHistory"]>
 
   export type TestHistorySelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
     testRunId?: boolean
+    userId?: boolean
     testName?: boolean
     url?: boolean
     method?: boolean
@@ -7435,12 +7482,14 @@ export namespace Prisma {
     avgResponseTime?: boolean
     maxResponseTime?: boolean
     createdAt?: boolean
+    user?: boolean | UserDefaultArgs<ExtArgs>
     testRun?: boolean | TestRunDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["testHistory"]>
 
   export type TestHistorySelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
     testRunId?: boolean
+    userId?: boolean
     testName?: boolean
     url?: boolean
     method?: boolean
@@ -7450,12 +7499,14 @@ export namespace Prisma {
     avgResponseTime?: boolean
     maxResponseTime?: boolean
     createdAt?: boolean
+    user?: boolean | UserDefaultArgs<ExtArgs>
     testRun?: boolean | TestRunDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["testHistory"]>
 
   export type TestHistorySelectScalar = {
     id?: boolean
     testRunId?: boolean
+    userId?: boolean
     testName?: boolean
     url?: boolean
     method?: boolean
@@ -7467,25 +7518,30 @@ export namespace Prisma {
     createdAt?: boolean
   }
 
-  export type TestHistoryOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "testRunId" | "testName" | "url" | "method" | "requestCount" | "duration" | "errorRate" | "avgResponseTime" | "maxResponseTime" | "createdAt", ExtArgs["result"]["testHistory"]>
+  export type TestHistoryOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "testRunId" | "userId" | "testName" | "url" | "method" | "requestCount" | "duration" | "errorRate" | "avgResponseTime" | "maxResponseTime" | "createdAt", ExtArgs["result"]["testHistory"]>
   export type TestHistoryInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    user?: boolean | UserDefaultArgs<ExtArgs>
     testRun?: boolean | TestRunDefaultArgs<ExtArgs>
   }
   export type TestHistoryIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    user?: boolean | UserDefaultArgs<ExtArgs>
     testRun?: boolean | TestRunDefaultArgs<ExtArgs>
   }
   export type TestHistoryIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    user?: boolean | UserDefaultArgs<ExtArgs>
     testRun?: boolean | TestRunDefaultArgs<ExtArgs>
   }
 
   export type $TestHistoryPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     name: "TestHistory"
     objects: {
+      user: Prisma.$UserPayload<ExtArgs>
       testRun: Prisma.$TestRunPayload<ExtArgs>
     }
     scalars: $Extensions.GetPayloadResult<{
       id: string
       testRunId: string
+      userId: string
       testName: string
       url: string
       method: string
@@ -7889,6 +7945,7 @@ export namespace Prisma {
    */
   export interface Prisma__TestHistoryClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
     readonly [Symbol.toStringTag]: "PrismaPromise"
+    user<T extends UserDefaultArgs<ExtArgs> = {}>(args?: Subset<T, UserDefaultArgs<ExtArgs>>): Prisma__UserClient<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
     testRun<T extends TestRunDefaultArgs<ExtArgs> = {}>(args?: Subset<T, TestRunDefaultArgs<ExtArgs>>): Prisma__TestRunClient<$Result.GetResult<Prisma.$TestRunPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
@@ -7921,6 +7978,7 @@ export namespace Prisma {
   interface TestHistoryFieldRefs {
     readonly id: FieldRef<"TestHistory", 'String'>
     readonly testRunId: FieldRef<"TestHistory", 'String'>
+    readonly userId: FieldRef<"TestHistory", 'String'>
     readonly testName: FieldRef<"TestHistory", 'String'>
     readonly url: FieldRef<"TestHistory", 'String'>
     readonly method: FieldRef<"TestHistory", 'String'>
@@ -8430,6 +8488,7 @@ export namespace Prisma {
   export const TestHistoryScalarFieldEnum: {
     id: 'id',
     testRunId: 'testRunId',
+    userId: 'userId',
     testName: 'testName',
     url: 'url',
     method: 'method',
@@ -8580,6 +8639,7 @@ export namespace Prisma {
     createdAt?: DateTimeFilter<"User"> | Date | string
     updatedAt?: DateTimeFilter<"User"> | Date | string
     testRuns?: TestRunListRelationFilter
+    testHistories?: TestHistoryListRelationFilter
   }
 
   export type UserOrderByWithRelationInput = {
@@ -8589,6 +8649,7 @@ export namespace Prisma {
     createdAt?: SortOrder
     updatedAt?: SortOrder
     testRuns?: TestRunOrderByRelationAggregateInput
+    testHistories?: TestHistoryOrderByRelationAggregateInput
   }
 
   export type UserWhereUniqueInput = Prisma.AtLeast<{
@@ -8601,6 +8662,7 @@ export namespace Prisma {
     createdAt?: DateTimeFilter<"User"> | Date | string
     updatedAt?: DateTimeFilter<"User"> | Date | string
     testRuns?: TestRunListRelationFilter
+    testHistories?: TestHistoryListRelationFilter
   }, "id" | "email">
 
   export type UserOrderByWithAggregationInput = {
@@ -8941,6 +9003,7 @@ export namespace Prisma {
     NOT?: TestHistoryWhereInput | TestHistoryWhereInput[]
     id?: UuidFilter<"TestHistory"> | string
     testRunId?: UuidFilter<"TestHistory"> | string
+    userId?: UuidFilter<"TestHistory"> | string
     testName?: StringFilter<"TestHistory"> | string
     url?: StringFilter<"TestHistory"> | string
     method?: StringFilter<"TestHistory"> | string
@@ -8950,12 +9013,14 @@ export namespace Prisma {
     avgResponseTime?: FloatFilter<"TestHistory"> | number
     maxResponseTime?: FloatFilter<"TestHistory"> | number
     createdAt?: DateTimeFilter<"TestHistory"> | Date | string
+    user?: XOR<UserScalarRelationFilter, UserWhereInput>
     testRun?: XOR<TestRunScalarRelationFilter, TestRunWhereInput>
   }
 
   export type TestHistoryOrderByWithRelationInput = {
     id?: SortOrder
     testRunId?: SortOrder
+    userId?: SortOrder
     testName?: SortOrder
     url?: SortOrder
     method?: SortOrder
@@ -8965,6 +9030,7 @@ export namespace Prisma {
     avgResponseTime?: SortOrder
     maxResponseTime?: SortOrder
     createdAt?: SortOrder
+    user?: UserOrderByWithRelationInput
     testRun?: TestRunOrderByWithRelationInput
   }
 
@@ -8974,6 +9040,7 @@ export namespace Prisma {
     OR?: TestHistoryWhereInput[]
     NOT?: TestHistoryWhereInput | TestHistoryWhereInput[]
     testRunId?: UuidFilter<"TestHistory"> | string
+    userId?: UuidFilter<"TestHistory"> | string
     testName?: StringFilter<"TestHistory"> | string
     url?: StringFilter<"TestHistory"> | string
     method?: StringFilter<"TestHistory"> | string
@@ -8983,12 +9050,14 @@ export namespace Prisma {
     avgResponseTime?: FloatFilter<"TestHistory"> | number
     maxResponseTime?: FloatFilter<"TestHistory"> | number
     createdAt?: DateTimeFilter<"TestHistory"> | Date | string
+    user?: XOR<UserScalarRelationFilter, UserWhereInput>
     testRun?: XOR<TestRunScalarRelationFilter, TestRunWhereInput>
   }, "id">
 
   export type TestHistoryOrderByWithAggregationInput = {
     id?: SortOrder
     testRunId?: SortOrder
+    userId?: SortOrder
     testName?: SortOrder
     url?: SortOrder
     method?: SortOrder
@@ -9011,6 +9080,7 @@ export namespace Prisma {
     NOT?: TestHistoryScalarWhereWithAggregatesInput | TestHistoryScalarWhereWithAggregatesInput[]
     id?: UuidWithAggregatesFilter<"TestHistory"> | string
     testRunId?: UuidWithAggregatesFilter<"TestHistory"> | string
+    userId?: UuidWithAggregatesFilter<"TestHistory"> | string
     testName?: StringWithAggregatesFilter<"TestHistory"> | string
     url?: StringWithAggregatesFilter<"TestHistory"> | string
     method?: StringWithAggregatesFilter<"TestHistory"> | string
@@ -9029,6 +9099,7 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     testRuns?: TestRunCreateNestedManyWithoutUserInput
+    testHistories?: TestHistoryCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateInput = {
@@ -9038,6 +9109,7 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     testRuns?: TestRunUncheckedCreateNestedManyWithoutUserInput
+    testHistories?: TestHistoryUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserUpdateInput = {
@@ -9047,6 +9119,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     testRuns?: TestRunUpdateManyWithoutUserNestedInput
+    testHistories?: TestHistoryUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateInput = {
@@ -9056,6 +9129,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     testRuns?: TestRunUncheckedUpdateManyWithoutUserNestedInput
+    testHistories?: TestHistoryUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type UserCreateManyInput = {
@@ -9427,12 +9501,14 @@ export namespace Prisma {
     avgResponseTime: number
     maxResponseTime: number
     createdAt?: Date | string
+    user: UserCreateNestedOneWithoutTestHistoriesInput
     testRun: TestRunCreateNestedOneWithoutTestHistoriesInput
   }
 
   export type TestHistoryUncheckedCreateInput = {
     id?: string
     testRunId: string
+    userId: string
     testName: string
     url: string
     method: string
@@ -9455,12 +9531,14 @@ export namespace Prisma {
     avgResponseTime?: FloatFieldUpdateOperationsInput | number
     maxResponseTime?: FloatFieldUpdateOperationsInput | number
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    user?: UserUpdateOneRequiredWithoutTestHistoriesNestedInput
     testRun?: TestRunUpdateOneRequiredWithoutTestHistoriesNestedInput
   }
 
   export type TestHistoryUncheckedUpdateInput = {
     id?: StringFieldUpdateOperationsInput | string
     testRunId?: StringFieldUpdateOperationsInput | string
+    userId?: StringFieldUpdateOperationsInput | string
     testName?: StringFieldUpdateOperationsInput | string
     url?: StringFieldUpdateOperationsInput | string
     method?: StringFieldUpdateOperationsInput | string
@@ -9475,6 +9553,7 @@ export namespace Prisma {
   export type TestHistoryCreateManyInput = {
     id?: string
     testRunId: string
+    userId: string
     testName: string
     url: string
     method: string
@@ -9502,6 +9581,7 @@ export namespace Prisma {
   export type TestHistoryUncheckedUpdateManyInput = {
     id?: StringFieldUpdateOperationsInput | string
     testRunId?: StringFieldUpdateOperationsInput | string
+    userId?: StringFieldUpdateOperationsInput | string
     testName?: StringFieldUpdateOperationsInput | string
     url?: StringFieldUpdateOperationsInput | string
     method?: StringFieldUpdateOperationsInput | string
@@ -9557,7 +9637,17 @@ export namespace Prisma {
     none?: TestRunWhereInput
   }
 
+  export type TestHistoryListRelationFilter = {
+    every?: TestHistoryWhereInput
+    some?: TestHistoryWhereInput
+    none?: TestHistoryWhereInput
+  }
+
   export type TestRunOrderByRelationAggregateInput = {
+    _count?: SortOrder
+  }
+
+  export type TestHistoryOrderByRelationAggregateInput = {
     _count?: SortOrder
   }
 
@@ -9675,17 +9765,7 @@ export namespace Prisma {
     isNot?: TestResultWhereInput | null
   }
 
-  export type TestHistoryListRelationFilter = {
-    every?: TestHistoryWhereInput
-    some?: TestHistoryWhereInput
-    none?: TestHistoryWhereInput
-  }
-
   export type MetricOrderByRelationAggregateInput = {
-    _count?: SortOrder
-  }
-
-  export type TestHistoryOrderByRelationAggregateInput = {
     _count?: SortOrder
   }
 
@@ -10022,6 +10102,7 @@ export namespace Prisma {
   export type TestHistoryCountOrderByAggregateInput = {
     id?: SortOrder
     testRunId?: SortOrder
+    userId?: SortOrder
     testName?: SortOrder
     url?: SortOrder
     method?: SortOrder
@@ -10044,6 +10125,7 @@ export namespace Prisma {
   export type TestHistoryMaxOrderByAggregateInput = {
     id?: SortOrder
     testRunId?: SortOrder
+    userId?: SortOrder
     testName?: SortOrder
     url?: SortOrder
     method?: SortOrder
@@ -10058,6 +10140,7 @@ export namespace Prisma {
   export type TestHistoryMinOrderByAggregateInput = {
     id?: SortOrder
     testRunId?: SortOrder
+    userId?: SortOrder
     testName?: SortOrder
     url?: SortOrder
     method?: SortOrder
@@ -10084,11 +10167,25 @@ export namespace Prisma {
     connect?: TestRunWhereUniqueInput | TestRunWhereUniqueInput[]
   }
 
+  export type TestHistoryCreateNestedManyWithoutUserInput = {
+    create?: XOR<TestHistoryCreateWithoutUserInput, TestHistoryUncheckedCreateWithoutUserInput> | TestHistoryCreateWithoutUserInput[] | TestHistoryUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: TestHistoryCreateOrConnectWithoutUserInput | TestHistoryCreateOrConnectWithoutUserInput[]
+    createMany?: TestHistoryCreateManyUserInputEnvelope
+    connect?: TestHistoryWhereUniqueInput | TestHistoryWhereUniqueInput[]
+  }
+
   export type TestRunUncheckedCreateNestedManyWithoutUserInput = {
     create?: XOR<TestRunCreateWithoutUserInput, TestRunUncheckedCreateWithoutUserInput> | TestRunCreateWithoutUserInput[] | TestRunUncheckedCreateWithoutUserInput[]
     connectOrCreate?: TestRunCreateOrConnectWithoutUserInput | TestRunCreateOrConnectWithoutUserInput[]
     createMany?: TestRunCreateManyUserInputEnvelope
     connect?: TestRunWhereUniqueInput | TestRunWhereUniqueInput[]
+  }
+
+  export type TestHistoryUncheckedCreateNestedManyWithoutUserInput = {
+    create?: XOR<TestHistoryCreateWithoutUserInput, TestHistoryUncheckedCreateWithoutUserInput> | TestHistoryCreateWithoutUserInput[] | TestHistoryUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: TestHistoryCreateOrConnectWithoutUserInput | TestHistoryCreateOrConnectWithoutUserInput[]
+    createMany?: TestHistoryCreateManyUserInputEnvelope
+    connect?: TestHistoryWhereUniqueInput | TestHistoryWhereUniqueInput[]
   }
 
   export type StringFieldUpdateOperationsInput = {
@@ -10113,6 +10210,20 @@ export namespace Prisma {
     deleteMany?: TestRunScalarWhereInput | TestRunScalarWhereInput[]
   }
 
+  export type TestHistoryUpdateManyWithoutUserNestedInput = {
+    create?: XOR<TestHistoryCreateWithoutUserInput, TestHistoryUncheckedCreateWithoutUserInput> | TestHistoryCreateWithoutUserInput[] | TestHistoryUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: TestHistoryCreateOrConnectWithoutUserInput | TestHistoryCreateOrConnectWithoutUserInput[]
+    upsert?: TestHistoryUpsertWithWhereUniqueWithoutUserInput | TestHistoryUpsertWithWhereUniqueWithoutUserInput[]
+    createMany?: TestHistoryCreateManyUserInputEnvelope
+    set?: TestHistoryWhereUniqueInput | TestHistoryWhereUniqueInput[]
+    disconnect?: TestHistoryWhereUniqueInput | TestHistoryWhereUniqueInput[]
+    delete?: TestHistoryWhereUniqueInput | TestHistoryWhereUniqueInput[]
+    connect?: TestHistoryWhereUniqueInput | TestHistoryWhereUniqueInput[]
+    update?: TestHistoryUpdateWithWhereUniqueWithoutUserInput | TestHistoryUpdateWithWhereUniqueWithoutUserInput[]
+    updateMany?: TestHistoryUpdateManyWithWhereWithoutUserInput | TestHistoryUpdateManyWithWhereWithoutUserInput[]
+    deleteMany?: TestHistoryScalarWhereInput | TestHistoryScalarWhereInput[]
+  }
+
   export type TestRunUncheckedUpdateManyWithoutUserNestedInput = {
     create?: XOR<TestRunCreateWithoutUserInput, TestRunUncheckedCreateWithoutUserInput> | TestRunCreateWithoutUserInput[] | TestRunUncheckedCreateWithoutUserInput[]
     connectOrCreate?: TestRunCreateOrConnectWithoutUserInput | TestRunCreateOrConnectWithoutUserInput[]
@@ -10125,6 +10236,20 @@ export namespace Prisma {
     update?: TestRunUpdateWithWhereUniqueWithoutUserInput | TestRunUpdateWithWhereUniqueWithoutUserInput[]
     updateMany?: TestRunUpdateManyWithWhereWithoutUserInput | TestRunUpdateManyWithWhereWithoutUserInput[]
     deleteMany?: TestRunScalarWhereInput | TestRunScalarWhereInput[]
+  }
+
+  export type TestHistoryUncheckedUpdateManyWithoutUserNestedInput = {
+    create?: XOR<TestHistoryCreateWithoutUserInput, TestHistoryUncheckedCreateWithoutUserInput> | TestHistoryCreateWithoutUserInput[] | TestHistoryUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: TestHistoryCreateOrConnectWithoutUserInput | TestHistoryCreateOrConnectWithoutUserInput[]
+    upsert?: TestHistoryUpsertWithWhereUniqueWithoutUserInput | TestHistoryUpsertWithWhereUniqueWithoutUserInput[]
+    createMany?: TestHistoryCreateManyUserInputEnvelope
+    set?: TestHistoryWhereUniqueInput | TestHistoryWhereUniqueInput[]
+    disconnect?: TestHistoryWhereUniqueInput | TestHistoryWhereUniqueInput[]
+    delete?: TestHistoryWhereUniqueInput | TestHistoryWhereUniqueInput[]
+    connect?: TestHistoryWhereUniqueInput | TestHistoryWhereUniqueInput[]
+    update?: TestHistoryUpdateWithWhereUniqueWithoutUserInput | TestHistoryUpdateWithWhereUniqueWithoutUserInput[]
+    updateMany?: TestHistoryUpdateManyWithWhereWithoutUserInput | TestHistoryUpdateManyWithWhereWithoutUserInput[]
+    deleteMany?: TestHistoryScalarWhereInput | TestHistoryScalarWhereInput[]
   }
 
   export type UserCreateNestedOneWithoutTestRunsInput = {
@@ -10347,10 +10472,24 @@ export namespace Prisma {
     update?: XOR<XOR<TestRunUpdateToOneWithWhereWithoutTestResultInput, TestRunUpdateWithoutTestResultInput>, TestRunUncheckedUpdateWithoutTestResultInput>
   }
 
+  export type UserCreateNestedOneWithoutTestHistoriesInput = {
+    create?: XOR<UserCreateWithoutTestHistoriesInput, UserUncheckedCreateWithoutTestHistoriesInput>
+    connectOrCreate?: UserCreateOrConnectWithoutTestHistoriesInput
+    connect?: UserWhereUniqueInput
+  }
+
   export type TestRunCreateNestedOneWithoutTestHistoriesInput = {
     create?: XOR<TestRunCreateWithoutTestHistoriesInput, TestRunUncheckedCreateWithoutTestHistoriesInput>
     connectOrCreate?: TestRunCreateOrConnectWithoutTestHistoriesInput
     connect?: TestRunWhereUniqueInput
+  }
+
+  export type UserUpdateOneRequiredWithoutTestHistoriesNestedInput = {
+    create?: XOR<UserCreateWithoutTestHistoriesInput, UserUncheckedCreateWithoutTestHistoriesInput>
+    connectOrCreate?: UserCreateOrConnectWithoutTestHistoriesInput
+    upsert?: UserUpsertWithoutTestHistoriesInput
+    connect?: UserWhereUniqueInput
+    update?: XOR<XOR<UserUpdateToOneWithWhereWithoutTestHistoriesInput, UserUpdateWithoutTestHistoriesInput>, UserUncheckedUpdateWithoutTestHistoriesInput>
   }
 
   export type TestRunUpdateOneRequiredWithoutTestHistoriesNestedInput = {
@@ -10601,6 +10740,44 @@ export namespace Prisma {
     skipDuplicates?: boolean
   }
 
+  export type TestHistoryCreateWithoutUserInput = {
+    id?: string
+    testName: string
+    url: string
+    method: string
+    requestCount: number
+    duration: number
+    errorRate: number
+    avgResponseTime: number
+    maxResponseTime: number
+    createdAt?: Date | string
+    testRun: TestRunCreateNestedOneWithoutTestHistoriesInput
+  }
+
+  export type TestHistoryUncheckedCreateWithoutUserInput = {
+    id?: string
+    testRunId: string
+    testName: string
+    url: string
+    method: string
+    requestCount: number
+    duration: number
+    errorRate: number
+    avgResponseTime: number
+    maxResponseTime: number
+    createdAt?: Date | string
+  }
+
+  export type TestHistoryCreateOrConnectWithoutUserInput = {
+    where: TestHistoryWhereUniqueInput
+    create: XOR<TestHistoryCreateWithoutUserInput, TestHistoryUncheckedCreateWithoutUserInput>
+  }
+
+  export type TestHistoryCreateManyUserInputEnvelope = {
+    data: TestHistoryCreateManyUserInput | TestHistoryCreateManyUserInput[]
+    skipDuplicates?: boolean
+  }
+
   export type TestRunUpsertWithWhereUniqueWithoutUserInput = {
     where: TestRunWhereUniqueInput
     update: XOR<TestRunUpdateWithoutUserInput, TestRunUncheckedUpdateWithoutUserInput>
@@ -10636,12 +10813,47 @@ export namespace Prisma {
     updatedAt?: DateTimeFilter<"TestRun"> | Date | string
   }
 
+  export type TestHistoryUpsertWithWhereUniqueWithoutUserInput = {
+    where: TestHistoryWhereUniqueInput
+    update: XOR<TestHistoryUpdateWithoutUserInput, TestHistoryUncheckedUpdateWithoutUserInput>
+    create: XOR<TestHistoryCreateWithoutUserInput, TestHistoryUncheckedCreateWithoutUserInput>
+  }
+
+  export type TestHistoryUpdateWithWhereUniqueWithoutUserInput = {
+    where: TestHistoryWhereUniqueInput
+    data: XOR<TestHistoryUpdateWithoutUserInput, TestHistoryUncheckedUpdateWithoutUserInput>
+  }
+
+  export type TestHistoryUpdateManyWithWhereWithoutUserInput = {
+    where: TestHistoryScalarWhereInput
+    data: XOR<TestHistoryUpdateManyMutationInput, TestHistoryUncheckedUpdateManyWithoutUserInput>
+  }
+
+  export type TestHistoryScalarWhereInput = {
+    AND?: TestHistoryScalarWhereInput | TestHistoryScalarWhereInput[]
+    OR?: TestHistoryScalarWhereInput[]
+    NOT?: TestHistoryScalarWhereInput | TestHistoryScalarWhereInput[]
+    id?: UuidFilter<"TestHistory"> | string
+    testRunId?: UuidFilter<"TestHistory"> | string
+    userId?: UuidFilter<"TestHistory"> | string
+    testName?: StringFilter<"TestHistory"> | string
+    url?: StringFilter<"TestHistory"> | string
+    method?: StringFilter<"TestHistory"> | string
+    requestCount?: IntFilter<"TestHistory"> | number
+    duration?: FloatFilter<"TestHistory"> | number
+    errorRate?: FloatFilter<"TestHistory"> | number
+    avgResponseTime?: FloatFilter<"TestHistory"> | number
+    maxResponseTime?: FloatFilter<"TestHistory"> | number
+    createdAt?: DateTimeFilter<"TestHistory"> | Date | string
+  }
+
   export type UserCreateWithoutTestRunsInput = {
     id?: string
     email: string
     password: string
     createdAt?: Date | string
     updatedAt?: Date | string
+    testHistories?: TestHistoryCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutTestRunsInput = {
@@ -10650,6 +10862,7 @@ export namespace Prisma {
     password: string
     createdAt?: Date | string
     updatedAt?: Date | string
+    testHistories?: TestHistoryUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserCreateOrConnectWithoutTestRunsInput = {
@@ -10742,10 +10955,12 @@ export namespace Prisma {
     avgResponseTime: number
     maxResponseTime: number
     createdAt?: Date | string
+    user: UserCreateNestedOneWithoutTestHistoriesInput
   }
 
   export type TestHistoryUncheckedCreateWithoutTestRunInput = {
     id?: string
+    userId: string
     testName: string
     url: string
     method: string
@@ -10784,6 +10999,7 @@ export namespace Prisma {
     password?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    testHistories?: TestHistoryUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutTestRunsInput = {
@@ -10792,6 +11008,7 @@ export namespace Prisma {
     password?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    testHistories?: TestHistoryUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type MetricUpsertWithWhereUniqueWithoutTestRunInput = {
@@ -10896,23 +11113,6 @@ export namespace Prisma {
   export type TestHistoryUpdateManyWithWhereWithoutTestRunInput = {
     where: TestHistoryScalarWhereInput
     data: XOR<TestHistoryUpdateManyMutationInput, TestHistoryUncheckedUpdateManyWithoutTestRunInput>
-  }
-
-  export type TestHistoryScalarWhereInput = {
-    AND?: TestHistoryScalarWhereInput | TestHistoryScalarWhereInput[]
-    OR?: TestHistoryScalarWhereInput[]
-    NOT?: TestHistoryScalarWhereInput | TestHistoryScalarWhereInput[]
-    id?: UuidFilter<"TestHistory"> | string
-    testRunId?: UuidFilter<"TestHistory"> | string
-    testName?: StringFilter<"TestHistory"> | string
-    url?: StringFilter<"TestHistory"> | string
-    method?: StringFilter<"TestHistory"> | string
-    requestCount?: IntFilter<"TestHistory"> | number
-    duration?: FloatFilter<"TestHistory"> | number
-    errorRate?: FloatFilter<"TestHistory"> | number
-    avgResponseTime?: FloatFilter<"TestHistory"> | number
-    maxResponseTime?: FloatFilter<"TestHistory"> | number
-    createdAt?: DateTimeFilter<"TestHistory"> | Date | string
   }
 
   export type TestRunCreateWithoutMetricsInput = {
@@ -11191,6 +11391,29 @@ export namespace Prisma {
     testHistories?: TestHistoryUncheckedUpdateManyWithoutTestRunNestedInput
   }
 
+  export type UserCreateWithoutTestHistoriesInput = {
+    id?: string
+    email: string
+    password: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    testRuns?: TestRunCreateNestedManyWithoutUserInput
+  }
+
+  export type UserUncheckedCreateWithoutTestHistoriesInput = {
+    id?: string
+    email: string
+    password: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    testRuns?: TestRunUncheckedCreateNestedManyWithoutUserInput
+  }
+
+  export type UserCreateOrConnectWithoutTestHistoriesInput = {
+    where: UserWhereUniqueInput
+    create: XOR<UserCreateWithoutTestHistoriesInput, UserUncheckedCreateWithoutTestHistoriesInput>
+  }
+
   export type TestRunCreateWithoutTestHistoriesInput = {
     id?: string
     testName: string
@@ -11232,6 +11455,35 @@ export namespace Prisma {
   export type TestRunCreateOrConnectWithoutTestHistoriesInput = {
     where: TestRunWhereUniqueInput
     create: XOR<TestRunCreateWithoutTestHistoriesInput, TestRunUncheckedCreateWithoutTestHistoriesInput>
+  }
+
+  export type UserUpsertWithoutTestHistoriesInput = {
+    update: XOR<UserUpdateWithoutTestHistoriesInput, UserUncheckedUpdateWithoutTestHistoriesInput>
+    create: XOR<UserCreateWithoutTestHistoriesInput, UserUncheckedCreateWithoutTestHistoriesInput>
+    where?: UserWhereInput
+  }
+
+  export type UserUpdateToOneWithWhereWithoutTestHistoriesInput = {
+    where?: UserWhereInput
+    data: XOR<UserUpdateWithoutTestHistoriesInput, UserUncheckedUpdateWithoutTestHistoriesInput>
+  }
+
+  export type UserUpdateWithoutTestHistoriesInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    password?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    testRuns?: TestRunUpdateManyWithoutUserNestedInput
+  }
+
+  export type UserUncheckedUpdateWithoutTestHistoriesInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    password?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    testRuns?: TestRunUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type TestRunUpsertWithoutTestHistoriesInput = {
@@ -11298,6 +11550,20 @@ export namespace Prisma {
     updatedAt?: Date | string
   }
 
+  export type TestHistoryCreateManyUserInput = {
+    id?: string
+    testRunId: string
+    testName: string
+    url: string
+    method: string
+    requestCount: number
+    duration: number
+    errorRate: number
+    avgResponseTime: number
+    maxResponseTime: number
+    createdAt?: Date | string
+  }
+
   export type TestRunUpdateWithoutUserInput = {
     id?: StringFieldUpdateOperationsInput | string
     testName?: StringFieldUpdateOperationsInput | string
@@ -11351,6 +11617,48 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
+  export type TestHistoryUpdateWithoutUserInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    testName?: StringFieldUpdateOperationsInput | string
+    url?: StringFieldUpdateOperationsInput | string
+    method?: StringFieldUpdateOperationsInput | string
+    requestCount?: IntFieldUpdateOperationsInput | number
+    duration?: FloatFieldUpdateOperationsInput | number
+    errorRate?: FloatFieldUpdateOperationsInput | number
+    avgResponseTime?: FloatFieldUpdateOperationsInput | number
+    maxResponseTime?: FloatFieldUpdateOperationsInput | number
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    testRun?: TestRunUpdateOneRequiredWithoutTestHistoriesNestedInput
+  }
+
+  export type TestHistoryUncheckedUpdateWithoutUserInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    testRunId?: StringFieldUpdateOperationsInput | string
+    testName?: StringFieldUpdateOperationsInput | string
+    url?: StringFieldUpdateOperationsInput | string
+    method?: StringFieldUpdateOperationsInput | string
+    requestCount?: IntFieldUpdateOperationsInput | number
+    duration?: FloatFieldUpdateOperationsInput | number
+    errorRate?: FloatFieldUpdateOperationsInput | number
+    avgResponseTime?: FloatFieldUpdateOperationsInput | number
+    maxResponseTime?: FloatFieldUpdateOperationsInput | number
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type TestHistoryUncheckedUpdateManyWithoutUserInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    testRunId?: StringFieldUpdateOperationsInput | string
+    testName?: StringFieldUpdateOperationsInput | string
+    url?: StringFieldUpdateOperationsInput | string
+    method?: StringFieldUpdateOperationsInput | string
+    requestCount?: IntFieldUpdateOperationsInput | number
+    duration?: FloatFieldUpdateOperationsInput | number
+    errorRate?: FloatFieldUpdateOperationsInput | number
+    avgResponseTime?: FloatFieldUpdateOperationsInput | number
+    maxResponseTime?: FloatFieldUpdateOperationsInput | number
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
   export type MetricCreateManyTestRunInput = {
     id?: string
     timestamp?: Date | string
@@ -11361,6 +11669,7 @@ export namespace Prisma {
 
   export type TestHistoryCreateManyTestRunInput = {
     id?: string
+    userId: string
     testName: string
     url: string
     method: string
@@ -11407,10 +11716,12 @@ export namespace Prisma {
     avgResponseTime?: FloatFieldUpdateOperationsInput | number
     maxResponseTime?: FloatFieldUpdateOperationsInput | number
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    user?: UserUpdateOneRequiredWithoutTestHistoriesNestedInput
   }
 
   export type TestHistoryUncheckedUpdateWithoutTestRunInput = {
     id?: StringFieldUpdateOperationsInput | string
+    userId?: StringFieldUpdateOperationsInput | string
     testName?: StringFieldUpdateOperationsInput | string
     url?: StringFieldUpdateOperationsInput | string
     method?: StringFieldUpdateOperationsInput | string
@@ -11424,6 +11735,7 @@ export namespace Prisma {
 
   export type TestHistoryUncheckedUpdateManyWithoutTestRunInput = {
     id?: StringFieldUpdateOperationsInput | string
+    userId?: StringFieldUpdateOperationsInput | string
     testName?: StringFieldUpdateOperationsInput | string
     url?: StringFieldUpdateOperationsInput | string
     method?: StringFieldUpdateOperationsInput | string

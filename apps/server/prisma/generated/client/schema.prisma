@@ -10,12 +10,13 @@ datasource db {
 }
 
 model User {
-  id        String    @id @default(uuid()) @db.Uuid
-  email     String    @unique
-  password  String
-  createdAt DateTime  @default(now())
-  updatedAt DateTime  @updatedAt
-  testRuns  TestRun[]
+  id            String        @id @default(uuid()) @db.Uuid
+  email         String        @unique
+  password      String
+  createdAt     DateTime      @default(now())
+  updatedAt     DateTime      @updatedAt
+  testRuns      TestRun[]
+  testHistories TestHistory[]
 }
 
 model TestRun {
@@ -79,6 +80,7 @@ model TestResult {
 model TestHistory {
   id              String   @id @default(uuid()) @db.Uuid
   testRunId       String   @db.Uuid
+  userId          String   @db.Uuid
   testName        String
   url             String
   method          String
@@ -89,5 +91,6 @@ model TestHistory {
   maxResponseTime Float
   createdAt       DateTime @default(now())
 
+  user    User    @relation(fields: [userId], references: [id])
   testRun TestRun @relation(fields: [testRunId], references: [id])
 }

@@ -177,6 +177,7 @@ exports.Prisma.TestResultScalarFieldEnum = {
 exports.Prisma.TestHistoryScalarFieldEnum = {
   id: 'id',
   testRunId: 'testRunId',
+  userId: 'userId',
   testName: 'testName',
   url: 'url',
   method: 'method',
