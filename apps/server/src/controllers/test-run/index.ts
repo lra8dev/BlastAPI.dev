@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
-import { enqueueTestJob } from "../jobs/produceTestJob";
-import prisma from "../config/db";
+import { enqueueTestJob } from "@/jobs/produce-test-job";
+import prisma from "@/config/db";
 
 export const createTestRun = async (req: Request, res: Response) => {
   const { testRunId, testConfig } = req.body;

@@ -3,6 +3,10 @@ export interface TestConfig {
   method: "GET" | "POST" | "PUT" | "DELETE";
   totalRequests: number;
   concurrency?: number;
+  duration?: number;
+  requestRate?: number;
+  headers?: Record<string, string>;
+  body?: any;
 }
 
 export interface TestResult {
@@ -13,6 +17,15 @@ export interface TestResult {
   duration: number; // in seconds
   avgResponseTime: number;
   maxResponseTime: number;
+  errorRate: number;
+}
+
+export interface CreateTestResult {
+  testRunId: string;
+  avgLatency: number;
+  avgThroughput: number;
+  totalRequests: number;
+  successRate: number;
   errorRate: number;
 }
 

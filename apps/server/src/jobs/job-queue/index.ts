@@ -1,6 +1,6 @@
 import { Worker, QueueEvents, Job } from "bullmq";
-import { redis } from "../config/redis";
-import { executeLoadTest } from "../services/testServices";
+import { redis } from "@/config/redis";
+import { executeLoadTest } from "@/services/execute-load-test";
 
 const TEST_QUEUE_NAME = "loadTestQueue";
 

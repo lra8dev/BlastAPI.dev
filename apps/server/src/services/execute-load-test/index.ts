@@ -1,9 +1,10 @@
 import axios from "axios";
-import prisma from "../config/db";
-import { getIO } from "../lib/socket";
-import { TestConfig, TestResult } from "../types";
 import pLimit from "p-limit";
-import { retry } from "../utils/retry";
+import { getIO } from "@/lib/socket";
+import { retry } from "@/utils/retry";
+import { TestConfig, TestResult } from "@/types";
+import prisma from "@/config/db";
+import { saveTestResult } from "../save-test-result";
 
 export const executeLoadTest = async (
   testRunId: string,
@@ -12,6 +13,17 @@ export const executeLoadTest = async (
   const io = getIO();
   const { url, method, totalRequests } = config;
   const concurrency = config.concurrency || 5;
+
+  await prisma.testConfig.create({
+    data: {
+      testRunId,
+      testDuration: config.duration || 10, // seconds
+      requestRate: config.requestRate || 10, // requests/sec
+      concurrencyLevel: config.concurrency || 5,
+      headers: config.headers || {},
+      body: config.body || {},
+    },
+  });
 
   io.emit(`test:${testRunId}:start`, { message: "Test started" });
 
@@ -26,14 +38,30 @@ export const executeLoadTest = async (
     Array.from({ length: totalRequests }, () =>
       limitConcurrency(async () => {
         const requestStart = performance.now();
+        let statusCode = 0;
+
         try {
-          await axios({
+          const response = await axios({
             url,
             method: method.toLowerCase() as any,
             timeout: 10000,
           });
+          const latency = performance.now() - requestStart;
+          statusCode = response.status;
 
-          responseTimes.push(performance.now() - requestStart);
+          responseTimes.push(latency);
+
+          retry(() =>
+            prisma.metric.create({
+              data: {
+                testRunId,
+                latency,
+                statusCode,
+                throughput: 1 / (latency / 1000), // throughput in req/sec
+                timestamp: new Date(),
+              },
+            })
+          );
         } catch (err) {
           failed++;
           io.emit(`test:${testRunId}:error`, { error: (err as any).message });
@@ -65,9 +93,18 @@ export const executeLoadTest = async (
     maxResponseTime,
     errorRate,
   };
+
   io.emit(`test:${testRunId}:complete`, result);
 
-  // Fetch metadata from testRun for saving history
+  await saveTestResult({
+    testRunId,
+    avgLatency: avgResponseTime,
+    avgThroughput: completed / duration, // req/sec
+    totalRequests,
+    successRate: ((completed - failed) / totalRequests) * 100,
+    errorRate,
+  });
+
   const testRun = await prisma.testRun.findUnique({
     where: { id: testRunId },
     select: {
