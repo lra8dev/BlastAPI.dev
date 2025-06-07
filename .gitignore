@@ -1,14 +1,34 @@
-# Node
-node_modules
-dist
+# Node & pnpm
+node_modules/
+pnpm-lock.yaml
 
-# Environment
-.env
-.env.local
+# Logs
 *.log
-
-# VS Code
-.vscode
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
 
 # OS
 .DS_Store
+Thumbs.db
+
+# Build / Cache
+dist/
+.vscode/
+.env
+.env.local
+.env.*.local
+.husky/_
+
+# Testing
+coverage/
+.nyc_output/
+*.tsbuildinfo
+
+# IDE/Editor
+.idea/
+*.swp
+*.swo
+
+# Others
+turbo/
