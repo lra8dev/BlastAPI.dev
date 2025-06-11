@@ -1,9 +1,24 @@
-# Node 
-node_modules
+# Node
+node_modules/
 
-# Environment
-.env*
+# Build
+dist/
+build/
+
+# Env
+.env
+.env.local
+.env.*.local
+
+# Logs
+*.log
+
+# Editor / OS
+.DS_Store
+*.swp
+*.swo
 
 # Prisma
 prisma/dev.db
-/src/generated/prisma
+prisma/generated/
+prisma/migrations/

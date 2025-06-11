@@ -9,7 +9,11 @@
     "skipLibCheck": true,
     "resolveJsonModule": true,
     "allowJs": true,
-    "baseUrl": "."
+    "paths": {
+      "@/*": ["./*"]
+    },
+    "baseUrl": ".",
+    "typeRoots": ["./types", "./node_modules/@types"]
   },
   "exclude": ["node_modules", "dist"]
 }
