@@ -13,11 +13,6 @@ build/
 # Logs
 *.log
 
-# Editor / OS
-.DS_Store
-*.swp
-*.swo
-
 # Prisma
 prisma/dev.db
 prisma/generated/

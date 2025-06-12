@@ -18,8 +18,3 @@ next-env.d.ts
 
 # Build artifacts
 dist/
-
-# Editor / OS
-.DS_Store
-*.swp
-*.swo

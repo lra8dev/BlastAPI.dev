@@ -14,7 +14,6 @@ Thumbs.db
 
 # Build / Cache
 dist/
-.vscode/
 .env
 .env.local
 .env.*.local
@@ -29,6 +28,14 @@ coverage/
 .idea/
 *.swp
 *.swo
+
+# IDE - VSCode
+.vs/*
+.vscode/*
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json
 
 # Others
 turbo/
