@@ -1,16 +1,11 @@
-import { saveTestResult } from "@/services/save-test-result";
 import { Request, Response } from "express";
+
+import { saveTestResult } from "@/services/save-test-result";
 
 export const createTestResult = async (req: Request, res: Response) => {
   try {
-    const {
-      testRunId,
-      avgLatency,
-      avgThroughput,
-      totalRequests,
-      successRate,
-      errorRate,
-    } = req.body;
+    const { testRunId, avgLatency, avgThroughput, totalRequests, successRate, errorRate } =
+      req.body;
 
     if (!testRunId || !totalRequests) {
       res.status(400).json({ error: "Missing required fields." });

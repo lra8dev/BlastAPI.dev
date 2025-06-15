@@ -1,15 +1,17 @@
 import { Router } from "express";
-import { getTestHistory } from "../controllers/test-history";
-import { createTestRun } from "../controllers/test-run";
-import { createTestResult } from "../controllers/create-test-result";
-import { getTestResult } from "@/controllers/test-result";
+
 import { deleteTestRun } from "@/controllers/delete-test-run";
 import { getMetricsResult } from "@/controllers/metrics-result";
 import { getTestConfig } from "@/controllers/test-config";
+import { getTestResult } from "@/controllers/test-result";
+
+import { createTestResult } from "../controllers/create-test-result";
+import { getTestHistory } from "../controllers/test-history";
+import { createTestRun } from "../controllers/test-run";
 
 const router = Router();
 
-router.post("/create", createTestRun);
+router.post("/create-test", createTestRun);
 router.delete("/test/:id", deleteTestRun);
 router.get("/history/:usersid", getTestHistory);
 

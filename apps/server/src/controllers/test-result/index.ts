@@ -1,11 +1,12 @@
 import { Request, Response } from "express";
+
 import prisma from "@/config/db";
 import { getCachedTestResult } from "@/lib/cache.redis";
 
 export const getTestResult = async (req: Request, res: Response) => {
   try {
     const { testRunId } = req.params;
-    const cached = await getCachedTestResult(testRunId);
+    const cached = await getCachedTestResult(testRunId); // FIXME: testRunId is string | undefined
     if (cached) {
       res.status(200).json(cached);
       return;

@@ -1,10 +1,8 @@
 import { Request, Response } from "express";
+
 import prisma from "@/config/db";
 
-export const getTestHistory = async (
-  req: Request,
-  res: Response
-): Promise<void> => {
+export const getTestHistory = async (req: Request, res: Response): Promise<void> => {
   const userId = req.params.usersid;
   const { page = 1, limit = 10 } = req.query;
 

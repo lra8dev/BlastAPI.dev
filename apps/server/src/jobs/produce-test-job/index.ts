@@ -1,7 +1,8 @@
-import { loadTestQueue } from "@/config/bullmq";
-import { EnqueueTestJobInput } from "@/types";
+import { JobPayload } from "@api-overload/types";
 
-export const enqueueTestJob = async (input: EnqueueTestJobInput) => {
+import { loadTestQueue } from "@/config/bullmq";
+
+export const enqueueTestJob = async (input: JobPayload) => {
   // TODO: job name is different here, should be consistent
 
   const job = await loadTestQueue.add("run-api-test", input, {

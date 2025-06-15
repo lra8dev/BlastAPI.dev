@@ -11,7 +11,7 @@ redis.on("connect", () => {
   console.log("Connected to Redis Cloud! ✅");
 });
 
-redis.on("error", (err) => {
+redis.on("error", err => {
   console.error("❌ Redis error:", err);
 });
 

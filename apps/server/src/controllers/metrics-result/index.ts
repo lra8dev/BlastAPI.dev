@@ -1,5 +1,6 @@
-import prisma from "@/config/db";
 import { Request, Response } from "express";
+
+import prisma from "@/config/db";
 
 export const getMetricsResult = async (req: Request, res: Response) => {
   try {

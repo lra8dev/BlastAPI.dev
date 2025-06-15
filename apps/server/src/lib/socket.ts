@@ -1,5 +1,5 @@
-import { Server } from "socket.io";
 import http from "http";
+import { Server } from "socket.io";
 
 let io: Server;
 
@@ -10,7 +10,7 @@ export const initSocket = (server: http.Server) => {
     },
   });
 
-  io.on("connection", (socket) => {
+  io.on("connection", socket => {
     console.log(`🚀 Client connected: ${socket.id}`);
 
     socket.on("disconnect", () => {

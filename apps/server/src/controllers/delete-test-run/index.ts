@@ -1,5 +1,6 @@
-import { deleteTest } from "@/services/delete-test";
 import { Request, Response } from "express";
+
+import { deleteTest } from "@/services/delete-test";
 
 export const deleteTestRun = async (req: Request, res: Response) => {
   const { id } = req.params;
@@ -11,7 +12,7 @@ export const deleteTestRun = async (req: Request, res: Response) => {
   try {
     const result = await deleteTest(id);
     res.json(result);
-  } catch (err) {
+  } catch (err: any) {
     res.status(500).json({ message: "Deletion failed", error: err.message });
   }
 };

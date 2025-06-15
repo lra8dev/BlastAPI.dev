@@ -1,14 +1,16 @@
+import { TestConfig, TestResult } from "@api-overload/types";
 import axios from "axios";
 import pLimit from "p-limit";
+
+import prisma from "@/config/db";
 import { getIO } from "@/lib/socket";
 import { retry } from "@/utils/retry";
-import { TestConfig, TestResult } from "@/types";
-import prisma from "@/config/db";
+
 import { saveTestResult } from "../save-test-result";
 
 export const executeLoadTest = async (
   testRunId: string,
-  config: TestConfig
+  config: TestConfig,
 ): Promise<TestResult> => {
   const io = getIO();
   const { url, method, totalRequests } = config;
@@ -60,7 +62,7 @@ export const executeLoadTest = async (
                 throughput: 1 / (latency / 1000), // throughput in req/sec
                 timestamp: new Date(),
               },
-            })
+            }),
           );
         } catch (err) {
           failed++;
@@ -72,13 +74,12 @@ export const executeLoadTest = async (
             total: totalRequests,
           });
         }
-      })
-    )
+      }),
+    ),
   );
 
   const duration = (Date.now() - startTime) / 1000;
-  const avgResponseTime =
-    responseTimes.reduce((a, b) => a + b, 0) / responseTimes.length || 0;
+  const avgResponseTime = responseTimes.reduce((a, b) => a + b, 0) / responseTimes.length || 0;
   const maxResponseTime = Math.max(...responseTimes, 0);
   const errorRate = (failed / totalRequests) * 100;
 
@@ -127,7 +128,7 @@ export const executeLoadTest = async (
         errorRate,
         updatedAt: new Date(),
       },
-    })
+    }),
   );
 
   if (testRun) {
@@ -146,7 +147,7 @@ export const executeLoadTest = async (
             errorRate,
             userId: testRun.userId,
           },
-        })
+        }),
       );
     } catch (error) {
       console.error("❌ Failed to save test history:", error);

@@ -1,4 +1,5 @@
-import { Worker, QueueEvents, Job } from "bullmq";
+import { Job, QueueEvents, Worker } from "bullmq";
+
 import { redis } from "@/config/redis";
 import { executeLoadTest } from "@/services/execute-load-test";
 
@@ -21,7 +22,7 @@ export const testWorker = new Worker(
   },
   {
     connection: redis,
-  }
+  },
 );
 
 // Queue events for logging
