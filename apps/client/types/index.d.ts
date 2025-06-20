@@ -7,31 +7,20 @@ declare interface ChildrenProps {
   className?: string;
 }
 
-declare interface FormProps {
-  type: "TEST_API";
+declare interface ButtonProps {
+  children: React.ReactElement;
+  title: string;
   className?: string;
-}
-
-declare interface FieldItems {
-  id: string;
-  name: string;
-  type: "textarea" | "select" | "text" | "email" | "password" | string;
-  placeholder?: string;
-}
-
-declare type RegisterFn = (name: string) => {
-  onChange: (e: ChangeEvent<any>) => void;
-  onBlur: (e: FocusEvent<any>) => void;
-  ref: (instance: HTMLElement | null) => void;
-};
-
-declare interface GenerateFormProps {
-  items: {
-    id: string;
-    label: string;
-    name: string;
-    type: string;
-    placeholder: string;
-  };
-  form: UseFormReturn<any, any>;
+  variant?:
+    | "primary"
+    | "default"
+    | "link"
+    | "destructive"
+    | "outline"
+    | "secondary"
+    | "ghost"
+    | null
+    | undefined;
+  size?: "default" | "sm" | "lg" | "icon" | null | undefined;
+  type?: "button" | "submit" | "reset" | undefined;
 }

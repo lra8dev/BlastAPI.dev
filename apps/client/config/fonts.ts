@@ -1,4 +1,4 @@
-import { Orbitron, Inter, JetBrains_Mono } from "next/font/google";
+import { Inter, JetBrains_Mono, Orbitron } from "next/font/google";
 
 // For Headings and Titles
 export const orbitron = Orbitron({

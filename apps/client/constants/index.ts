@@ -1,66 +1,68 @@
 import { v4 } from "uuid";
 
+import { loadConfigProps } from "@/utils/load-config-props";
+
 export const NAV_ITEMS = [
   { id: v4(), title: "Home", href: "/" },
   { id: v4(), title: "Start Test", href: "/create-test" },
-  { id: v4(), title: "About", href: "/about" },
-  { id: v4(), title: "Contact", href: "/contact" },
+  { id: v4(), title: "About", href: "#" },
+  { id: v4(), title: "Contact", href: "#" },
 ];
 
-export const API_FORM_ITEMS = [
-  {
-    id: v4(),
-    label: "API URL",
-    name: "apiUrl",
-    type: "text",
-    placeholder: "https://api.example.com",
-  },
-  {
-    id: v4(),
-    name: "methods",
-    label: "HTTP Method",
-    type: "select",
-    placeholder: "GET",
-  },
+export const LOAD_CONFIG = ["totalRequests", "duration", "concurrency", "requestRate"].map(name =>
+  loadConfigProps(name),
+);
 
+export const REQUEST_METHODS = [
   {
     id: v4(),
-    label: "Headers",
-    name: "headers",
-    type: "textarea",
-    placeholder: `{
-  "Content-Type": "application/json"
-}`,
+    method: "GET",
   },
   {
     id: v4(),
-    name: "concurrency",
-    label: "Concurrency",
-    type: "text",
-    placeholder: "10",
+    method: "POST",
+  },
+  {
+    id: v4(),
+    method: "DELETE",
+  },
+  {
+    id: v4(),
+    method: "PUT",
+  },
+];
+
+export const REQ_CONFIG_TABS = [
+  {
+    id: v4(),
+    name: "Headers",
+  },
+  {
+    id: v4(),
+    name: "Body",
   },
 ];
 
 export const FOOTER_ITEMS = [
-  { id: v4(), title: "Product", href: "/product" },
-  { id: v4(), title: "Documentation", href: "/documentation" },
-  { id: v4(), title: "Integrations", href: "/integrations" },
-  { id: v4(), title: "Changelog", href: "/changelog" },
-  { id: v4(), title: "Status ↗", href: "/status" },
-  { id: v4(), title: "Playground ↗", href: "/playground" },
-  { id: v4(), title: "Company", href: "/company" },
-  { id: v4(), title: "Blog", href: "/blog" },
-  { id: v4(), title: "Careers", href: "/careers" },
-  { id: v4(), title: "Contact us", href: "/contact" },
-  { id: v4(), title: "Legal & Compliance", href: "/legal" },
-  { id: v4(), title: "Cookie Policy", href: "/cookie" },
-  { id: v4(), title: "Privacy Policy", href: "/privacy" },
-  { id: v4(), title: "Security Policy", href: "/security" },
-  { id: v4(), title: "SOC 2 Type I ↗", href: "/soc" },
-  { id: v4(), title: "Community", href: "/community" },
+  { id: v4(), title: "Product", href: "#" },
+  { id: v4(), title: "Documentation", href: "#" },
+  { id: v4(), title: "Integrations", href: "#" },
+  { id: v4(), title: "Changelog", href: "#" },
+  { id: v4(), title: "Status ↗", href: "#" },
+  { id: v4(), title: "Playground ↗", href: "#" },
+  { id: v4(), title: "Company", href: "#" },
+  { id: v4(), title: "Blog", href: "#" },
+  { id: v4(), title: "Careers", href: "#" },
+  { id: v4(), title: "Contact us", href: "#" },
+  { id: v4(), title: "Legal & Compliance", href: "#" },
+  { id: v4(), title: "Cookie Policy", href: "#" },
+  { id: v4(), title: "Privacy Policy", href: "#" },
+  { id: v4(), title: "Security Policy", href: "#" },
+  { id: v4(), title: "SOC 2 Type I ↗", href: "#" },
+  { id: v4(), title: "Community", href: "#" },
   { id: v4(), title: "GitHub ↗", href: "https://github.com/laxmanrathod69" },
-  { id: v4(), title: "GitHub Discussions ↗", href: "/github-discussions" },
-  { id: v4(), title: "Twitter ↗", href: "https://x.com/luckyrathod__" },
+  { id: v4(), title: "GitHub Discussions ↗", href: "#" },
+  { id: v4(), title: "Twitter ↗", href: "#" },
 ];
 
 export const ACCORDION = [
