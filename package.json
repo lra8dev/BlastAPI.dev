@@ -7,13 +7,14 @@
   "description": "A monorepo for API Overload, containing client and server applications.",
   "scripts": {
     "dev": "pnpm --filter ./apps/* run dev",
-    "build": "pnpm -r run build",
+    "build": "pnpm --filter ./apps/* run build && pnpm --filter ./packages/* run build",
     "test": "vitest run",
     "test:ui": "vitest --ui",
     "test:watch": "vitest",
-    "lint": "eslint . --ext .js,.jsx,.ts,.tsx --fix",
+    "lint": "eslint \"apps/**/*.{ts,tsx,js,jsx}\" \"packages/**/*.{ts,tsx,js,jsx}\"",
+    "lint:fix": "pnpm lint --fix",
     "lint:css": "stylelint \"apps/**/*.{css,scss,postcss}\" --fix",
-    "format": "prettier --write .",
+    "format": "prettier \"apps/**/*.{ts,tsx,js,jsx,json,md}\" \"packages/**/*.{ts,tsx,js,jsx,json,md}\" --write",
     "prepare": "husky install"
   },
   "devDependencies": {
@@ -66,6 +67,9 @@
     "*.{ts,tsx,js,jsx,json,md}": [
       "prettier --write",
       "eslint --fix"
+    ],
+    "*.{css,scss,postcss}": [
+      "stylelint --fix"
     ]
   }
 }

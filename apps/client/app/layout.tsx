@@ -1,8 +1,10 @@
+import "./globals.css";
+
 import type { Metadata } from "next";
+
 import { inter, jetbrains, orbitron } from "@/config/fonts";
 import { QueryProvider } from "@/lib/react-query";
 import { SonnerProvider } from "@/lib/sonner";
-import "./globals.css";
 
 export const metadata: Metadata = {
   title: "API Overload — Because APIs need stress too!",

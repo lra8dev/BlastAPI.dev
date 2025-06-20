@@ -11,7 +11,6 @@ const serverConfig = config.map(entry => {
   if (typeof entry === "object" && entry.languageOptions?.parserOptions) {
     return {
       ...entry,
-      ignores: [...entry.ignores, "**/prisma/generated"],
       languageOptions: {
         ...entry.languageOptions,
         parserOptions: {

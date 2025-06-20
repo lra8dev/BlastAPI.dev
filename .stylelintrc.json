@@ -4,7 +4,8 @@
   "rules": {
     "at-rule-no-unknown": null,
     "at-rule-no-deprecated": null,
-    "no-empty-source": null
+    "no-empty-source": null,
+    "order/properties-alphabetical-order": true
   },
   "customSyntax": "postcss-scss",
   "ignoreFiles": [

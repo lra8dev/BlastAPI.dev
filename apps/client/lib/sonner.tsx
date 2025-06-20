@@ -1,7 +1,7 @@
 "use client";
 
-import { Toaster } from "sonner";
 import { ReactNode } from "react";
+import { Toaster } from "sonner";
 
 export const SonnerProvider = ({ children }: { children: ReactNode }) => {
   return (
