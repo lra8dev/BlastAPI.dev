@@ -1,52 +1,61 @@
 "use client";
 
-import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useCreateTest } from "@/hooks/test-api";
-import { TestFormValues, useTestFormSchema } from "./schema";
+import { useForm } from "react-hook-form";
+import { v4 } from "uuid";
+import { getFormattedDateTime } from "@/utils/formatted-date-time";
+import { testFormSchema, TestFormValues } from "./schema";
 
 export const useTestForm = () => {
   const form = useForm<TestFormValues>({
-    resolver: zodResolver(useTestFormSchema()),
+    resolver: zodResolver(testFormSchema),
     defaultValues: {
-      testRunId: "",
+      testRunId: v4(), // WIP: Get user-id as test-run-id
+      name: getFormattedDateTime(),
       url: "",
       method: "GET",
-      totalRequests: 5,
-      concurrency: 1,
-      duration: 1,
-      requestRate: 1,
-      headers: {},
-      body: null,
+      totalRequests: 20,
+      concurrency: 10,
+      duration: 16,
+      requestRate: 6,
+      headers: "",
+      body: "",
     },
   });
 
-  const { mutate, isPending } = useCreateTest();
+  // const { mutate, isPending } = useCreateTest();
 
-  // TODO: Check it later
   const onSubmit = async (payload: TestFormValues) => {
-    if (!isPending) {
-      mutate({
-        testRunId: payload.url,
-        testConfig: {
-          url: payload.url,
-          method: payload.method,
-          totalRequests: payload.totalRequests,
-          concurrency: payload.concurrency,
-          duration: payload.duration,
-          requestRate: payload.requestRate,
-          headers: payload?.headers,
-          body: payload?.body,
-        },
-      });
-    }
+    console.log("✅ Submitting payload:", payload);
+    // WIP: mutate the funciton
+    // if (!isPending) {
+    //   mutate({
+    //     testRunId: payload.url,
+    //     testConfig: {
+    //        name: payload.name,
+    //       url: payload.url,
+    //       method: payload.method,
+    //       totalRequests: payload.totalRequests,
+    //       concurrency: payload.concurrency,
+    //       duration: payload.duration,
+    //       requestRate: payload.requestRate,
+    //       headers: payload?.headers,
+    //       body: payload?.body,
+    //     },
+    //   });
+    // }
   };
 
-  const { handleSubmit } = form;
+  const { handleSubmit, control, getValues, setValue } = form;
 
   return {
     form,
+    getValues,
+    setValue,
+    control,
+    // WIP: pass isPending,
     handleSubmit,
     onSubmit,
+    errors: form.formState.errors,
   };
 };

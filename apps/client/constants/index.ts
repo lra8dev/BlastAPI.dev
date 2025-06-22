@@ -1,5 +1,5 @@
+import { Activity, Settings, TrendingUp } from "lucide-react";
 import { v4 } from "uuid";
-
 import { loadConfigProps } from "@/utils/load-config-props";
 
 export const NAV_ITEMS = [
@@ -9,28 +9,17 @@ export const NAV_ITEMS = [
   { id: v4(), title: "Contact", href: "#" },
 ];
 
-export const LOAD_CONFIG = ["totalRequests", "duration", "concurrency", "requestRate"].map(name =>
-  loadConfigProps(name),
-);
-
-export const REQUEST_METHODS = [
-  {
-    id: v4(),
-    method: "GET",
-  },
-  {
-    id: v4(),
-    method: "POST",
-  },
-  {
-    id: v4(),
-    method: "DELETE",
-  },
-  {
-    id: v4(),
-    method: "PUT",
-  },
+export const TEST_TYPES = [
+  { id: v4(), name: "Load Tests", icon: Activity },
+  { id: v4(), name: "Page Speed Test", icon: TrendingUp },
+  { id: v4(), name: "Settings", icon: Settings },
 ];
+
+const loadConfigs: SliderNames[] = ["totalRequests", "duration", "concurrency", "requestRate"];
+export const LOAD_CONFIG = loadConfigs.map(name => loadConfigProps(name));
+
+export const httpMethods: HttpMethods[] = ["GET", "POST", "PUT", "DELETE"];
+export const REQUEST_METHODS = httpMethods.map(method => ({ id: v4(), method }));
 
 export const REQ_CONFIG_TABS = [
   {

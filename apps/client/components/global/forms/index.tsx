@@ -4,17 +4,17 @@ import { useMemo } from "react";
 import { CreateTestForm } from "./createTest";
 // WIP:  import { AuthForm } from "./auth-form";
 
-export const FormContainer = ({ type, className }: FormProps) => {
+export const FormContainer = ({ type }: FormProps) => {
   const formComponent = useMemo(() => {
     switch (type) {
-      case "TEST_API":
+      case "TEST_CONFIG":
         return <CreateTestForm />;
-      // case "AUTH":
+      // case "AUTH_CONFIG":
       //   return <AuthForm />;
       default:
         return null;
     }
   }, [type]);
 
-  return <div className={className}>{formComponent}</div>;
+  return <div className="w-full font-inter">{formComponent}</div>;
 };

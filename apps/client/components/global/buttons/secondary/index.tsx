@@ -1,12 +1,13 @@
 import { Button } from "@/components/ui/button";
+import { cn } from "@/lib/utils";
 
-export const SecondaryBtn = ({ children, title, variant, type, size, className }: ButtonProps) => (
+export const SecondaryBtn = ({ children, title, variant, className, ...props }: ButtonProps) => (
   <Button
-    className={`flex items-center gap-2 ${className}`}
-    type={type}
+    aria-label={title}
+    {...props}
     variant={variant ? variant : "primary"}
-    size={size}
+    className={cn("flex items-center gap-2 rounded", className)}
   >
-    <h3> {title} </h3> <figure>{children}</figure>
+    <span>{title}</span> <span> {children}</span>
   </Button>
 );

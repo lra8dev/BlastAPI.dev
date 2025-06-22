@@ -1,7 +1,5 @@
 import "./globals.css";
-
 import type { Metadata } from "next";
-
 import { inter, jetbrains, orbitron } from "@/config/fonts";
 import { QueryProvider } from "@/lib/react-query";
 import { SonnerProvider } from "@/lib/sonner";

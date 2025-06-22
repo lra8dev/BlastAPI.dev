@@ -1,10 +1,10 @@
 "use client";
 
-import { onCreateTest } from "@/utils/testApi";
 import { JobPayload } from "@api-overload/types";
 import { useMutation } from "@tanstack/react-query";
-import { useRouter } from "next/router";
+import { useRouter } from "next/navigation";
 import { toast } from "sonner";
+import { onCreateTest } from "@/utils/testApi";
 
 export const useCreateTest = () => {
   const router = useRouter();
@@ -12,7 +12,7 @@ export const useCreateTest = () => {
   // WIP: This is a temporary solution to handle the test creation
   const { mutate, isPending, data } = useMutation({
     mutationFn: (payload: JobPayload) => onCreateTest(payload),
-    onSuccess: (jobId) => {
+    onSuccess: jobId => {
       console.log(`✅ Test started: ${jobId}`);
 
       if (jobId) {
@@ -20,7 +20,7 @@ export const useCreateTest = () => {
         router.push(`/test-completion?jobId=${jobId as string}`);
       }
     },
-    onError: (error) => {
+    onError: error => {
       toast.error(error.message || "Something went wrong");
       console.error(JSON.stringify(error, null, 2));
     },

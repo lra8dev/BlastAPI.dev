@@ -1,69 +1,68 @@
-import { Button } from "@/components/ui/button";
-import { NAV_ITEMS } from "@/constants";
+"use client";
+
+import clsx from "clsx";
+import { UserCircle2 } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
+import { useState } from "react";
+import { TEST_TYPES } from "@/constants";
+import { PrimaryBtn } from "../buttons/primary";
+
+const TestTypeNav = ({ test, setTest }: TestTypeNavProps) => (
+  <>
+    {TEST_TYPES.map(testType => (
+      <PrimaryBtn
+        key={testType.id}
+        title={testType.name}
+        className={clsx(
+          "font-medium text-xs text-gray-300/80 px-2 gap-1 md:gap-2 md:text-sm md:px-3",
+          {
+            "box-hover-2": test !== testType.id,
+            "bg-white/7 text-gray-300": test === testType.id,
+          },
+        )}
+        onClick={() => setTest(testType.id)}
+      >
+        <testType.icon className="size-3 md:size-3.5" />
+      </PrimaryBtn>
+    ))}
+  </>
+);
 
 export const Header = () => {
+  const [test, setTest] = useState<string>(TEST_TYPES[0].id);
+
   return (
-    <>
-      <header className="sticky top-0 right-0 left-0 z-50 hidden w-full items-center justify-between px-4 py-2 backdrop-blur-sm md:h-20 md:px-28 lg:flex">
-        <figure>
-          <Link href="/">
-            <Image src="/assets/brand-loogo.svg" alt="logo" width={150} height={150} />
-          </Link>
-        </figure>
-        <nav className="flex items-center md:gap-2 md:text-sm lg:gap-8 lg:text-base">
-          {NAV_ITEMS.map(({ id, title, href }) => (
-            <Link
-              key={id}
-              href={href}
-              className={`box-hover cursor-pointer rounded-sm px-3 py-2 text-sm font-normal text-gray-400 ${
-                href === "/" && "bg-dark-gray text-gray-300"
-              }`} // TODO: Fix this href condition
-            >
-              {title}
-            </Link>
-          ))}
-        </nav>
-        <div className="font-inter flex items-center gap-3">
-          <Button className="bg-dark-gray text-xs font-light max-md:px-3 md:text-sm">GitHub</Button>
-          <Button variant="outline" className="text-xs font-light max-md:px-3 md:text-sm">
-            Sign In
-          </Button>
-        </div>
-      </header>
-
-      <div className="fixed top-0 right-0 left-0 z-50 flex w-full flex-col backdrop-blur-sm lg:hidden">
-        <header className="flex w-full items-center justify-between px-4 py-2 md:h-20 md:px-28">
-          <figure>
+    <header className="w-full font-inter md:sticky top-0 z-50 bg-dark-gray-2 md:border-b border-neutral-800">
+      <nav className="flex items-center justify-between w-full px-2 md:px-4 py-2 drop-shadow-md">
+        <div className="flex items-center gap-5">
+          <div className="flex items-center gap-1">
             <Link href="/">
-              <Image src="/assets/brand-loogo.svg" alt="logo" width={150} height={150} />
+              <figure>
+                <Image
+                  src="/icons/API Overload Logo.svg"
+                  alt="API Overload Logo"
+                  width={60}
+                  height={60}
+                />
+              </figure>
             </Link>
-          </figure>
-
-          <div className="font-inter flex items-center gap-3">
-            <Button className="bg-dark-gray text-xs font-light max-md:px-3 md:text-sm">
-              GitHub
-            </Button>
-            <Button variant="outline" className="text-xs font-light max-md:px-3 md:text-sm">
-              Sign In
-            </Button>
+            {/* WIP: Implement user org component */}
+            <div>USER ORG</div>
           </div>
-        </header>
-        <nav className="flex w-full gap-4 px-4 md:px-28">
-          {NAV_ITEMS.map(({ id, title, href }) => (
-            <Link
-              key={id}
-              href={href}
-              className={`box-hover flex-grow cursor-pointer rounded-sm border border-gray-900 py-2 text-center text-xs font-normal text-gray-400 md:px-3 md:py-2 md:text-sm ${
-                title === "Home" && "bg-dark-gray text-gray-300"
-              }`}
-            >
-              {title}
-            </Link>
-          ))}
-        </nav>
-      </div>
-    </>
+
+          <div className="hidden md:flex items-center gap-4">
+            <TestTypeNav test={test} setTest={setTest} />
+          </div>
+        </div>
+        <figure>
+          <UserCircle2 />
+        </figure>
+      </nav>
+      {/* FIXME: Nav is not being sticky on mobile devices */}
+      <nav className="md:hidden sticky top-0 z-40 flex gap-2 sm:gap-3 border-neutral-800 border-t px-2 sm:px-4 py-3 drop-shadow-md">
+        <TestTypeNav test={test} setTest={setTest} />
+      </nav>
+    </header>
   );
 };
