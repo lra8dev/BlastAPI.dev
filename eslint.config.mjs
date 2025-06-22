@@ -58,9 +58,17 @@ export default defineConfig([
 
     rules: {
       "no-console": "warn",
-      "simple-import-sort/imports": "error",
-      "simple-import-sort/exports": "error",
       "unused-imports/no-unused-imports": "error",
+      "simple-import-sort/exports": "warn",
+      "simple-import-sort/imports": [
+        "warn",
+        {
+          groups: [
+            // Sort in alphabetical order
+            ["^\\u0000", "^@?\\w", "^", "^\\."],
+          ],
+        },
+      ],
 
       "@next/next/no-html-link-for-pages": "off", // Next.js specific rule
       "@typescript-eslint/no-explicit-any": "warn",

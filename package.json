@@ -11,8 +11,7 @@
     "test": "vitest run",
     "test:ui": "vitest --ui",
     "test:watch": "vitest",
-    "lint": "eslint \"apps/**/*.{ts,tsx,js,jsx}\" \"packages/**/*.{ts,tsx,js,jsx}\"",
-    "lint:fix": "pnpm lint --fix",
+    "lint": "eslint \"apps/**/*.{ts,tsx,js,jsx}\" \"packages/**/*.{ts,tsx,js,jsx}\" --fix",
     "lint:css": "stylelint \"apps/**/*.{css,scss,postcss}\" --fix",
     "format": "prettier \"apps/**/*.{ts,tsx,js,jsx,json,md}\" \"packages/**/*.{ts,tsx,js,jsx,json,md}\" --write",
     "prepare": "husky install"

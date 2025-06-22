@@ -6,5 +6,6 @@
     "source.fixAll.eslint": "explicit"
   },
   "css.validate": false,
+  "eslint.validate": ["typescript", "typescriptreact", "javascript", "javascriptreact"],
   "stylelint.validate": ["css", "scss", "postcss"]
 }

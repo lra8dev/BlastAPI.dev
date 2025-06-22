@@ -1,12 +1,13 @@
 export interface TestConfig {
+  name: string;
   url: string;
   method: "GET" | "POST" | "PUT" | "DELETE";
   totalRequests: number;
   concurrency: number;
   duration?: number;
   requestRate?: number;
-  headers?: Record<string, string>;
-  body?: any;
+  headers?: string;
+  body?: string;
 }
 
 export interface JobPayload {
@@ -15,7 +16,7 @@ export interface JobPayload {
 }
 
 export interface TestResult {
-  testRunId: string;
+  testRunId: string; // WIP: Add test name
   totalRequests: number;
   completed: number;
   failed: number;
