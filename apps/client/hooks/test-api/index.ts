@@ -4,7 +4,7 @@ import { JobPayload } from "@api-overload/types";
 import { useMutation } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
-import { onCreateTest } from "@/utils/testApi";
+import { onCreateTest } from "@/utils/api/create-test";
 
 export const useCreateTest = () => {
   const router = useRouter();

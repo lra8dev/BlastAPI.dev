@@ -1,4 +1,12 @@
-import { Activity, Settings, TrendingUp } from "lucide-react";
+import {
+  Activity,
+  LayoutDashboard,
+  Play,
+  ScanSearch,
+  Settings,
+  Share,
+  TrendingUp,
+} from "lucide-react";
 import { v4 } from "uuid";
 import { loadConfigProps } from "@/utils/load-config-props";
 
@@ -13,6 +21,18 @@ export const TEST_TYPES = [
   { id: v4(), name: "Load Tests", icon: Activity },
   { id: v4(), name: "Page Speed Test", icon: TrendingUp },
   { id: v4(), name: "Settings", icon: Settings },
+];
+
+export const TEST_SUMMARY_BTNS = [
+  { id: v4(), name: "Overview", icon: LayoutDashboard },
+
+  { id: v4(), name: "Metrics", icon: ScanSearch }, // TODO: add { id: v4(), name: "Metrics", icon: Area },
+  { id: v4(), name: "Traces", icon: ScanSearch },
+];
+
+export const TEST_SUMMARY_ACTIONS = [
+  { id: v4(), name: "Re-run", icon: Play },
+  { id: v4(), name: "Share", icon: Share },
 ];
 
 const loadConfigs: SliderNames[] = ["totalRequests", "duration", "concurrency", "requestRate"];

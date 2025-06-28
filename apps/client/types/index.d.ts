@@ -70,7 +70,7 @@ declare interface SetFormValueProp {
 declare type SliderNames = "totalRequests" | "concurrency" | "duration" | "requestRate";
 
 declare interface CardProps {
-  children: React.ReactElement;
+  children: React.ReactNode;
   className?: string;
 }
 
@@ -80,16 +80,54 @@ declare interface JsonRow {
   description?: string;
 }
 
-declare interface ChartAreaStepProps {
+declare interface LoadDataConfigChartProps {
   totalRequests: number;
   duration: number;
   requestRate: number;
   concurrency: number;
 }
 
-declare type LoadTestsParams = { params: Promise<{ id: string }> };
+declare interface LoadSummaryChartProps {
+  data: {
+    time: string;
+    http_request_rate: number;
+    vus_created: number;
+    // vus_active: number;
+    http_response_time_p95: number;
+    http_response_time_p99: number;
+  }[];
+}
+
+declare interface HttpPerformanceChartProps {
+  data: {
+    name: string;
+    value: number;
+  }[];
+}
+
+declare type TestSummaryParams = { params: Promise<{ id: string }> };
 
 declare interface TestTypeNavProps {
   test: string;
   setTest: (id: string) => void;
 }
+
+type itemProps = {
+  id: string;
+  children: React.ReactNode;
+  action: (itemId: string) => void;
+};
+
+declare interface CustDropdownMenuProps {
+  trigger: React.ReactNode;
+  items: itemProps[];
+  specialItems?: itemProps[];
+  triggerClassName?: string;
+  contentClassName?: string;
+  itemClassName?: string;
+  specialClassName?: string;
+}
+
+declare type TestRunId = {
+  testRunId: string;
+};

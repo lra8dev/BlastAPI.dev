@@ -2,7 +2,7 @@
 
 import { CircleChevronRight } from "lucide-react";
 import { useState } from "react";
-import { ChartAreaStep } from "@/components/charts/area-step-chart";
+import { LoadDataConfigChart } from "@/components/charts/load-data-config";
 import { JsonEditor } from "@/components/json-editor";
 import { JSONTable } from "@/components/json-table";
 import { Button } from "@/components/ui/button";
@@ -24,10 +24,11 @@ export const CreateTestForm = () => {
     <Form {...form}>
       <form
         onSubmit={handleSubmit(onSubmit)}
-        className="flex flex-col gap-2 md:gap-4 h-full pb-16 px-3 sm:px-4 md:px-8"
+        className="flex flex-col gap-3 md:gap-6 h-full pb-16 px-3 sm:px-4 md:px-8"
       >
-        <Card className="w-full lg:w-1/3 rounded-md flex flex-col gap-4">
+        <Card className="w-full lg:w-1/3 flex flex-col gap-4">
           <>
+            {/* WIP: add test location field */}
             <h3 className="font-medium text-sm text-muted-foreground uppercase md:font-semibold">
               Test Name
             </h3>
@@ -41,12 +42,12 @@ export const CreateTestForm = () => {
             />
           </>
         </Card>
-        <Card className="rounded-md w-full">
+        <Card className="w-full">
           <>
             <h3 className="font-medium text-sm text-muted-foreground uppercase md:font-semibold">
               Load Configuration
             </h3>
-            <section className="grid w-full gap-8 md:flex md:gap-0">
+            <section className="flex flex-col w-full gap-8 md:flex md:gap-0">
               <div className="flex flex-col gap-6 w-full">
                 {LOAD_CONFIG.map(({ label, props }) => (
                   <div key={label} className="flex flex-col w-full">
@@ -75,7 +76,7 @@ export const CreateTestForm = () => {
                   </div>
                 ))}
               </div>
-              <ChartAreaStep
+              <LoadDataConfigChart
                 totalRequests={getValues("totalRequests")}
                 duration={getValues("duration")}
                 concurrency={getValues("concurrency")}
@@ -84,12 +85,12 @@ export const CreateTestForm = () => {
             </section>
           </>
         </Card>
-        <Card className="rounded-md w-full gap-4 pb-7">
+        <Card className="w-full gap-4 pb-7">
           <>
             <h3 className="font-medium text-sm text-muted-foreground uppercase md:font-semibold">
               Request Configuration
             </h3>
-            <div className="w-full flex items-center border-neutral-700 rounded-md">
+            <div className="w-full flex items-center border-neutral-700/50 rounded-md">
               <GenerateForm
                 items={{
                   name: "method",
@@ -97,9 +98,9 @@ export const CreateTestForm = () => {
                   options: REQUEST_METHODS,
                 }}
                 formProps={{ control, errors }}
-                className="text-gray-300/90 min-w-28 font-medium text-sm py-5 border-neutral-700 border-r-0 rounded-r-none focus-visible:ring-0"
+                className="text-gray-300/90 min-w-28 font-medium text-sm py-5 border-r-0 rounded-r-none focus-visible:ring-0"
               />
-              <div className="w-fit bg-neutral-800 py-3 pl-1 border-neutral-700 border-t border-b h-full">
+              <div className="w-fit bg-dark-3 py-3 pl-1 border-neutral-700/50 border-t border-b h-full">
                 <div className="w-[1px] h-4 bg-gray-300/30" />
               </div>
               <GenerateForm
@@ -135,13 +136,13 @@ export const CreateTestForm = () => {
           </>
         </Card>
 
-        <div className="flex items-center gap-3 sm:gap-4 md:gap-5 mt-3">
+        <div className="flex items-center gap-3 sm:gap-4 md:gap-5">
           <SecondaryBtn
             onMouseEnter={() => setHover(true)}
             onMouseLeave={() => setHover(false)}
             type="submit"
             title="Execute Test"
-            className="font-medium text-gray-200 text-sm md:text-base p-3 md:p-5 lg:p-6 lg:text-lg bg-electric-blue hover:bg-electric-blue/75 text-shadow-xs text-shadow-black shadow-sm shadow-electric-blue hover:shadow-none"
+            className="font-medium text-gray-200/90 text-sm md:text-base p-3 md:p-5 lg:p-6 lg:text-lg bg-electric-blue/90 hover:bg-electric-blue/75 text-shadow-sm text-shadow-black shadow-sm shadow-electric-blue hover:shadow-none"
           >
             <CircleChevronRight
               className={cn("transition-all delay-75 ease-in", {
@@ -151,7 +152,7 @@ export const CreateTestForm = () => {
           </SecondaryBtn>
 
           <p className="font-medium text-gray-200 text-sm md:text-base">Or</p>
-          <Button className="text-sm font-light p-3 md:p-4 lg:p-5 text-background rounded border border-neutral-700 text-shadow-2xs text-shadow-black hover:bg-electric-blue cursor-pointer hover:border-none">
+          <Button className="text-sm font-light p-3 md:p-4 lg:p-5 text-background rounded border border-neutral-700/30 text-shadow-xs text-shadow-black hover:bg-electric-blue/90 cursor-pointer hover:border-none">
             Save Draft
           </Button>
         </div>

@@ -8,6 +8,6 @@ export const SecondaryBtn = ({ children, title, variant, className, ...props }: 
     variant={variant ? variant : "primary"}
     className={cn("flex items-center gap-2 rounded", className)}
   >
-    <span>{title}</span> <span> {children}</span>
+    {title} <span> {children}</span>
   </Button>
 );

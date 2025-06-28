@@ -1,23 +1,22 @@
 "use client";
 
-import { Activity } from "lucide-react";
 import { Area, AreaChart, CartesianGrid, XAxis, YAxis } from "recharts";
 import { ChartContainer, ChartTooltip, ChartTooltipContent } from "@/components/ui/chart";
 
+// WIP: improve later
 const chartConfig = {
-  desktop: {
+  totalRequests: {
     label: "Total Requests",
     color: "#007bff4d",
-    icon: Activity,
   },
 };
 
-export const ChartAreaStep = ({
+export const LoadDataConfigChart = ({
   totalRequests,
   duration,
   requestRate,
   concurrency,
-}: ChartAreaStepProps) => {
+}: LoadDataConfigChartProps) => {
   const data = Array.from({ length: duration + 1 }, (_, second) => {
     const total = Math.min(Math.round(second * requestRate), totalRequests);
     return {

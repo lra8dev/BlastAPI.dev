@@ -6,6 +6,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { useState } from "react";
 import { TEST_TYPES } from "@/constants";
+import { cn } from "@/lib/utils";
 import { PrimaryBtn } from "../buttons/primary";
 
 const TestTypeNav = ({ test, setTest }: TestTypeNavProps) => (
@@ -29,12 +30,12 @@ const TestTypeNav = ({ test, setTest }: TestTypeNavProps) => (
   </>
 );
 
-export const Header = () => {
+export const Header = ({ className }: { className?: string }) => {
   const [test, setTest] = useState<string>(TEST_TYPES[0].id);
 
   return (
-    <header className="w-full font-inter md:sticky top-0 z-50 bg-dark-gray-2 md:border-b border-neutral-800">
-      <nav className="flex items-center justify-between w-full px-2 md:px-4 py-2 drop-shadow-md">
+    <header className={cn("w-full font-inter bg-dark-5 border-b border-neutral-700/25", className)}>
+      <nav className="flex items-center justify-between w-full px-3 py-2 md:py-3 md:px-4 lg:px-6 drop-shadow-md">
         <div className="flex items-center gap-5">
           <div className="flex items-center gap-1">
             <Link href="/">
@@ -42,8 +43,8 @@ export const Header = () => {
                 <Image
                   src="/icons/API Overload Logo.svg"
                   alt="API Overload Logo"
-                  width={60}
-                  height={60}
+                  width={50}
+                  height={50}
                 />
               </figure>
             </Link>
@@ -56,11 +57,12 @@ export const Header = () => {
           </div>
         </div>
         <figure>
+          {/* WIP: add theme toggle button in user profile section */}
           <UserCircle2 />
         </figure>
       </nav>
       {/* FIXME: Nav is not being sticky on mobile devices */}
-      <nav className="md:hidden sticky top-0 z-40 flex gap-2 sm:gap-3 border-neutral-800 border-t px-2 sm:px-4 py-3 drop-shadow-md">
+      <nav className="md:hidden sticky top-0 z-40 flex gap-2 sm:gap-3 border-neutral-700/30 border-t px-3 py-2 md:py-3 md:px-4 lg:px-6 drop-shadow-md">
         <TestTypeNav test={test} setTest={setTest} />
       </nav>
     </header>

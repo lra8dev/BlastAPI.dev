@@ -4,8 +4,8 @@ import { FOOTER_ITEMS } from "@/constants";
 
 export const Footer = () => {
   return (
-    <footer className="flex flex-col border-t border-gray-900 bg-neutral-900 p-8 md:px-34 md:pt-10 md:pb-8">
-      <div className="grid grid-cols-1 justify-between gap-7 lg:flex lg:gap-0">
+    <footer className="flex flex-col border-t border-gray-900 bg-neutral-900 p-8 md:px-33 md:pt-10 md:pb-8">
+      <div className="flex flex-col justify-between gap-7 lg:flex lg:gap-0">
         <div>
           <Link href="/" className="flex items-center">
             <Image src="/icons/API Overload Logo.svg" alt="logo" width={60} height={60} />

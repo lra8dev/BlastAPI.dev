@@ -137,7 +137,7 @@ const RenderField = ({ items, control, className }: RenderFieldProps) => {
                   rows={4}
                   placeholder={placeholder}
                   className={cn(
-                    "rounded-md border-neutral-700 bg-neutral-800 p-2 text-gray-200 hover:brightness-125 focus:outline-none focus-visible:ring-0",
+                    "rounded-md border-neutral-700/50 bg-dark-3 p-2 text-gray-200 hover:brightness-125 focus:outline-none focus-visible:ring-0",
                     className,
                   )}
                   {...field}
@@ -161,13 +161,13 @@ const RenderField = ({ items, control, className }: RenderFieldProps) => {
                 <Select onValueChange={field.onChange} defaultValue={field.value}>
                   <SelectTrigger
                     className={cn(
-                      "border-neutral-700 bg-neutral-800 text-gray-200 hover:brightness-115 appearance-none focus:outline-none focus-visible:ring-0",
+                      "border-neutral-700/50 bg-dark-3 text-gray-200 hover:brightness-105 appearance-none focus:outline-none focus-visible:ring-0",
                       className,
                     )}
                   >
                     <SelectValue placeholder={placeholder} />
                   </SelectTrigger>
-                  <SelectContent className="border-neutral-700/45 bg-neutral-800 text-gray-200 focus:outline-none focus-visible:ring-0">
+                  <SelectContent className="border-neutral-700/45 bg-dark-3 text-gray-200 focus:outline-none focus-visible:ring-0">
                     {options?.map(opt => (
                       <SelectItem key={opt.method} value={opt.method}>
                         {opt.method}
@@ -195,7 +195,7 @@ const RenderField = ({ items, control, className }: RenderFieldProps) => {
                   type={type}
                   placeholder={placeholder}
                   className={cn(
-                    "text-sm placeholder:text-sm border-neutral-700 rounded-md bg-neutral-800 text-gray-300 hover:brightness-125 outline-none appearance-none [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none focus:border-none focus:outline-none focus-visible:ring-1 focus-visible:ring-electric-blue",
+                    "text-sm placeholder:text-sm border-neutral-700/50 rounded-md bg-dark-3 text-gray-300 hover:brightness-110 transition-all delay-75 ease-in-out outline-none appearance-none [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none focus:border-none focus:outline-none focus-visible:ring-1 focus-visible:ring-electric-blue",
                     className,
                   )}
                   {...field}
