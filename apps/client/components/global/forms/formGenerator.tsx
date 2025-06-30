@@ -161,7 +161,7 @@ const RenderField = ({ items, control, className }: RenderFieldProps) => {
                 <Select onValueChange={field.onChange} defaultValue={field.value}>
                   <SelectTrigger
                     className={cn(
-                      "border-neutral-700/50 bg-dark-3 text-gray-200 hover:brightness-105 appearance-none focus:outline-none focus-visible:ring-0",
+                      "border-neutral-700/50 text-gray-200 hover:brightness-105 appearance-none focus:outline-none focus-visible:ring-0",
                       className,
                     )}
                   >
@@ -169,7 +169,11 @@ const RenderField = ({ items, control, className }: RenderFieldProps) => {
                   </SelectTrigger>
                   <SelectContent className="border-neutral-700/45 bg-dark-3 text-gray-200 focus:outline-none focus-visible:ring-0">
                     {options?.map(opt => (
-                      <SelectItem key={opt.method} value={opt.method}>
+                      <SelectItem
+                        key={opt.method}
+                        value={opt.method}
+                        className="focus-visible:bg-white/10"
+                      >
                         {opt.method}
                       </SelectItem>
                     ))}
@@ -195,7 +199,7 @@ const RenderField = ({ items, control, className }: RenderFieldProps) => {
                   type={type}
                   placeholder={placeholder}
                   className={cn(
-                    "text-sm placeholder:text-sm border-neutral-700/50 rounded-md bg-dark-3 text-gray-300 hover:brightness-110 transition-all delay-75 ease-in-out outline-none appearance-none [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none focus:border-none focus:outline-none focus-visible:ring-1 focus-visible:ring-electric-blue",
+                    "text-sm placeholder:text-sm border-neutral-700/50 rounded-md bg-dark-3 text-gray-300 hover:brightness-110 transition-all delay-75 ease-in-out outline-none appearance-none [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none focus-visible:border-none focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-electric-blue",
                     className,
                   )}
                   {...field}

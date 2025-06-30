@@ -3,7 +3,6 @@
 import { Area, AreaChart, CartesianGrid, XAxis, YAxis } from "recharts";
 import { ChartContainer, ChartTooltip, ChartTooltipContent } from "@/components/ui/chart";
 
-// WIP: improve later
 const chartConfig = {
   totalRequests: {
     label: "Total Requests",
@@ -12,12 +11,14 @@ const chartConfig = {
 };
 
 export const LoadDataConfigChart = ({
-  totalRequests,
   duration,
   requestRate,
   concurrency,
+  totalRequests,
 }: LoadDataConfigChartProps) => {
-  const data = Array.from({ length: duration + 1 }, (_, second) => {
+  const step = duration > 120 ? 5 : 1;
+  const data = Array.from({ length: Math.floor(duration / step) + 1 }, (_, i) => {
+    const second = i * step;
     const total = Math.min(Math.round(second * requestRate), totalRequests);
     return {
       second: `${second}s`,
@@ -28,25 +29,30 @@ export const LoadDataConfigChart = ({
   });
 
   return (
-    <ChartContainer config={chartConfig} className="size-full bg-electric-blue/4">
-      <AreaChart data={data} width={600} height={300} accessibilityLayer>
+    <ChartContainer config={chartConfig} className="w-full h-[320px]">
+      <AreaChart
+        data={data}
+        margin={{ top: 1, bottom: 14 }}
+        accessibilityLayer
+        desc="Total requests over time"
+      >
         <CartesianGrid stroke="#ffffff13" vertical={false} />
+
         <XAxis
           dataKey="second"
           axisLine={false}
           tick={{ fill: "#6b7280", fontSize: 12 }}
-          tickFormatter={value => value.slice(0, 3)}
           label={{
             value: "Duration (seconds)",
             position: "center",
-            dy: 14,
-            fill: "#9ca3af",
+            dy: 24,
+            fill: "var(--color-electric-blue)",
             fontSize: 12,
+            fontWeight: 600,
           }}
         />
 
         <YAxis
-          // domain={[0, "dataMax + 2"]}
           axisLine={false}
           tickLine={false}
           tick={{ fill: "#6b7280", fontSize: 12 }}
@@ -55,20 +61,30 @@ export const LoadDataConfigChart = ({
             angle: -90,
             position: "center",
             dx: -20,
-            fill: "#9ca3af",
+            fill: "var(--color-primary-electric-blue)",
             fontSize: 12,
           }}
         />
 
-        <ChartTooltip content={<ChartTooltipContent hideLabel={false} cursor={false} />} />
+        <ChartTooltip
+          content={
+            <ChartTooltipContent
+              hideLabel={false}
+              cursor={false}
+              labelClassName="text-gray-300/70 px-4 pb-2 border-b border-neutral-700/40"
+              className="font-inter bg-dark-5 rounded border border-neutral-700/30"
+            />
+          }
+        />
+
         <Area
           dataKey="totalRequests"
           type="stepAfter"
           stroke="#3b82f6"
           fill="#3b82f6"
-          fillOpacity={0.2}
+          fillOpacity={0.1}
           strokeWidth={3}
-          activeDot={{ r: 5, fill: "#1e3a8a", stroke: "#ffffff9a", strokeWidth: 3 }}
+          activeDot={{ r: 7, fill: "#1e3a8a", stroke: "#ffffff7a", strokeWidth: 6 }}
         />
       </AreaChart>
     </ChartContainer>

@@ -45,12 +45,14 @@ export const JSONTable = ({ setValue }: SetFormValueProp) => {
   };
 
   return (
-    <Table className="w-full border border-neutral-700">
+    <Table className="w-full">
       <TableHeader>
         <TableRow className="hover:bg-transparent">
-          <TableHead className="border border-neutral-700 text-gray-300/70">Key</TableHead>
-          <TableHead className="border border-neutral-700 text-gray-300/70">Value</TableHead>
-          <TableHead className="border border-neutral-700 text-gray-300/70">Description</TableHead>
+          <TableHead className="border border-neutral-700/70 text-gray-300/70">Key</TableHead>
+          <TableHead className="border border-neutral-700/70 text-gray-300/70">Value</TableHead>
+          <TableHead className="border border-neutral-700/70 text-gray-300/70">
+            Description
+          </TableHead>
         </TableRow>
       </TableHeader>
       <TableBody>
@@ -61,23 +63,23 @@ export const JSONTable = ({ setValue }: SetFormValueProp) => {
             onMouseEnter={() => setHover(index)}
             onMouseLeave={() => setHover(null)}
           >
-            <TableCell className="border border-neutral-700">
+            <TableCell className="border border-neutral-700/70">
               <Input
-                className="rounded-xs border-none focus-visible:ring focus-visible:ring-neutral-700/40 p-0 h-fit"
+                className="rounded-xs border-none focus-visible:ring focus-visible:ring-neutral-700/40 p-0 h-fit bg-transparent"
                 placeholder="Key"
                 value={row.key}
                 onChange={e => handleChange(index, "key", e.target.value)}
               />
             </TableCell>
-            <TableCell className="border border-neutral-700">
+            <TableCell className="border border-neutral-700/70">
               <Input
-                className="rounded-xs border-none focus-visible:ring focus-visible:ring-neutral-700/40 p-0 h-fit"
+                className="rounded-xs border-none focus-visible:ring focus-visible:ring-neutral-700/40 p-0 h-fit bg-transparent"
                 placeholder="Value"
                 value={row.value}
                 onChange={e => handleChange(index, "value", e.target.value)}
               />
             </TableCell>
-            <TableCell className="border border-neutral-700">
+            <TableCell className="border border-neutral-700/70">
               <div className="flex items-center relative">
                 <Input
                   className="h-fit rounded-xs border-none focus-visible:ring focus-visible:ring-neutral-700/40 p-0"

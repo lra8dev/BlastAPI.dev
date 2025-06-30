@@ -5,7 +5,7 @@ import { FOOTER_ITEMS } from "@/constants";
 export const Footer = () => {
   return (
     <footer className="flex flex-col border-t border-gray-900 bg-neutral-900 p-8 md:px-33 md:pt-10 md:pb-8">
-      <div className="flex flex-col justify-between gap-7 lg:flex lg:gap-0">
+      <div className="flex flex-col justify-between gap-7 lg:flex lg:gap-4">
         <div>
           <Link href="/" className="flex items-center">
             <Image src="/icons/API Overload Logo.svg" alt="logo" width={60} height={60} />
@@ -37,7 +37,7 @@ export const Footer = () => {
           Built with 💻, ☕ & 💖 by{" "}
           <Link
             href="https://github.com/laxmanrathod69"
-            className="hover:underline hover:underline-offset-3"
+            className="hover:underline hover:underline-offset-3 text-gray-200/80 hover:text-gray-200"
           >
             Lucky
           </Link>

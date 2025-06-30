@@ -14,7 +14,7 @@ export const useTestForm = () => {
       name: getFormattedDateTime(),
       url: "",
       method: "GET",
-      totalRequests: 20,
+      totalRequests: 25,
       concurrency: 10,
       duration: 16,
       requestRate: 6,

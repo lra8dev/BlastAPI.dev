@@ -2,6 +2,7 @@ import { HttpPerformanceChart } from "@/components/charts/http-performance";
 import { LoadSummaryChart } from "@/components/charts/load-summary";
 import { Card } from "@/components/global/card";
 import { TestSummaryMetadata } from "@/hooks/test-summary-metadata";
+import { SummaryHeader } from "../summary-header";
 // import { SummaryTopCards } from "../summary-top-cards";
 
 export const TestSummary = () => {
@@ -65,65 +66,51 @@ export const TestSummary = () => {
     { name: "max", value: 618 },
   ];
 
+  const testResult = {
+    id: "tp74c_jmq3rj7b95h7mnyp6m6jyztdpzbg4_e3x9",
+    createdAt: "Jun 21, 2025, 2:08:44 PM",
+    duration: "6m 27s",
+    region: "us-east-1",
+    resources: "4096 vCPU/8192 MiB",
+    userEmail: "luckyrathod@gmail.com",
+  };
+
+  const summaryHeaderData = {
+    vusersCreated: (5095).toLocaleString() || "0",
+    totalReqCompleted: (5028).toLocaleString() || "0",
+    successRate: 98.68, // WIP: add fallback value
+    totalReqFailed: (0).toLocaleString() || "0",
+    failureRate: 0, // WIP: add fallback value
+    avgRequestPS: (25966).toLocaleString() || "0",
+    peakRequestPS: (54754).toLocaleString() || "0",
+  };
+
   return (
-    <section className="w-full flex justify-between gap-3 md:gap-4 lg:gap-6">
+    <section className="w-full flex flex-col justify-between lg:flex-row gap-3 md:gap-4 lg:gap-6">
       <div className="w-full flex flex-col gap-3 md:gap-4 lg:gap-6">
         {/* <SummaryTopCards /> */}
         <Card className="w-full flex flex-col gap-0 p-0">
-          <div className="px-5 py-3.5">
-            <h3 className="font-medium text-xs text-gray-300/75 md:text-sm">Load summary</h3>
-          </div>
-          <div className="flex w-full text-center bg-zinc-900/90 border-y border-neutral-700/30">
-            <div className="flex items-center justify-between w-full py-4 border-r border-neutral-700/30 hover:bg-zinc-950/30">
-              <div className="w-full px-4 border-r border-neutral-700/30">
-                <h3 className="font-semibold text-lg text-neutral-100">5,095</h3>
-                <p className="font-medium lowercase text-[0.8125rem] text-neutral-400/60">
-                  vusers created
-                </p>
-              </div>
-              <div className="w-full flex flex-col gap-3 font-medium text-xs px-6">
-                <div className="w-full flex justify-between text-neutral-100 border-b border-neutral-200">
-                  <h3>5,028 completed</h3>
-                  <p>98.68%</p>
-                </div>
-                <div className="w-full flex justify-between text-neutral-50 border-b border-dotted border-neutral-400">
-                  <h3>0 failed</h3>
-                  <p>0%</p>
-                </div>
-              </div>
-            </div>
-            <div className="flex items-center justify-between w-full py-4 hover:bg-zinc-950/30">
-              <div className="w-full px-4 border-r border-neutral-700/30">
-                <h3 className="font-semibold text-lg text-neutral-100">25,966</h3>
-                <p className="font-medium lowercase text-[0.8125rem] text-neutral-400/60">
-                  average req/s
-                </p>
-              </div>
-              <div className="w-full px-4">
-                <h3 className="font-semibold text-lg text-neutral-100">54,754</h3>
-                <p className="font-medium lowercase text-[0.8125rem] text-neutral-400/60">
-                  peak req/s
-                </p>
-              </div>
-            </div>
-          </div>
+          <header className="px-5 py-3.5">
+            <h3 className="font-medium text-[0.8125rem] text-gray-300/75">Load summary</h3>
+          </header>
+          <SummaryHeader data={summaryHeaderData} />
           <div className="px-5 py-2.5">
             <LoadSummaryChart data={chartData} />
           </div>
         </Card>
         <Card className="w-full flex flex-col gap-0 p-0">
-          <div className="px-5 py-3.5  border-b border-neutral-700/30">
-            <h3 className="font-medium text-xs text-gray-300/75 md:text-sm">HTTP performance</h3>
-          </div>
+          <header className="px-5 py-3.5  border-b border-neutral-700/30">
+            <h3 className="font-medium text-[0.8125rem] text-gray-300/75">HTTP performance</h3>
+          </header>
           <div className="pb-4">
             <HttpPerformanceChart data={httpPChartData} />
           </div>
         </Card>
       </div>
-      <div>
-        <TestSummaryMetadata />
+      <aside className="flex-1">
+        <TestSummaryMetadata testResult={testResult} />
         {/* WIP: <TestSummaryNotes /> */}
-      </div>
+      </aside>
     </section>
   );
 };
