@@ -107,9 +107,14 @@ declare interface HttpPerformanceChartProps {
 
 declare type TestSummaryParams = { params: Promise<{ id: string }> };
 
-declare interface TestTypeNavProps {
+declare interface NavTypeBtnsProps {
   test: string;
   setTest: (id: string) => void;
+  NAV_TYPES: {
+    id: string;
+    name: string;
+    icon: ForwardRefExoticComponent<Omit<LucideProps, "ref"> & RefAttributes<SVGSVGElement>>;
+  }[];
 }
 
 type itemProps = {
@@ -131,3 +136,15 @@ declare interface CustDropdownMenuProps {
 declare type TestRunId = {
   testRunId: string;
 };
+
+declare interface SummaryHeaderProps {
+  data: {
+    vusersCreated: string;
+    totalReqCompleted: string;
+    successRate: number;
+    totalReqFailed: string;
+    failureRate: number;
+    avgRequestPS: string;
+    peakRequestPS: string;
+  };
+}

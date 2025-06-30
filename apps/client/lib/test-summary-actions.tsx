@@ -32,9 +32,9 @@ export const TEST_SUMMARY_DI = (testRunId: string) => [
     children: (
       <PrimaryBtn
         title="Copy Test ID"
-        className="font-normal text-gray-300/90 text-sm group-focus:text-gray-200/81"
+        className="font-medium text-gray-300/90 text-[0.8125rem] group-focus:text-gray-200/81"
       >
-        <FileDigit className="size-3 text-gray-300/90 group-focus:text-gray-200/81" />
+        <FileDigit className="size-[0.8125rem] text-gray-300/90 group-focus:text-gray-200/81" />
       </PrimaryBtn>
     ),
     action: (itemId: string) => testSummaryActions(testRunId, itemId),
@@ -44,9 +44,9 @@ export const TEST_SUMMARY_DI = (testRunId: string) => [
     children: (
       <PrimaryBtn
         title="Download JSON Report"
-        className="font-normal text-gray-300/90 text-sm group-focus:text-gray-200/81"
+        className="font-medium text-gray-300/90 text-[0.8125rem] group-focus:text-gray-200/81"
       >
-        <Braces className="size-3 text-gray-300/90 group-focus:text-gray-200/81" />
+        <Braces className="size-[0.8125rem] text-gray-300/90 group-focus:text-gray-200/81" />
       </PrimaryBtn>
     ),
     action: (itemId: string) => testSummaryActions(testRunId, itemId),
@@ -59,9 +59,9 @@ export const TEST_SUMMARY_SPECIAL_DI = (testRunId: string) => [
     children: (
       <PrimaryBtn
         title="Delete Test"
-        className="font-normal text-red-400/90 text-sm group-focus:text-gray-200/75"
+        className="font-medium text-red-400/90 text-[0.8125rem] group-focus:text-red-300"
       >
-        <Trash2 className="text-red-400/90 size-3 group-focus:text-gray-200/75" />
+        <Trash2 className="text-red-400/90 size-[0.8125rem] group-focus:text-red-300" />
       </PrimaryBtn>
     ),
     action: (itemId: string) => testSummaryActions(testRunId, itemId),

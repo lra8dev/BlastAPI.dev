@@ -162,10 +162,10 @@
 
 @layer utilities {
   .box-hover {
-    @apply hover:bg-dark-2 hover:text-gray-200 transition-all delay-150 ease-in-out hover:dark:bg-gray-800;
+    @apply hover:bg-dark-2 hover:text-gray-200 transition-all delay-150 ease-in-out;
   }
 
   .box-hover-2 {
-    @apply hover:bg-white/6 hover:text-gray-300 transition-all delay-150 ease-in-out hover:dark:bg-gray-800;
+    @apply hover:bg-white/6 hover:text-gray-300 transition-all delay-150 ease-in-out;
   }
 }
