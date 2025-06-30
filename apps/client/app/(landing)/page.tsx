@@ -7,12 +7,12 @@ import { FAQs } from "./_components/faq";
 
 const Home = () => {
   return (
-    <main className="size-full font-inter bg-dark-gray">
+    <main className="size-full font-inter bg-dark">
       <BGBeams className="size-full">
         <Header />
         {/* WIP: add snapshots to the hero section */}
         <section className="flex flex-col items-center justify-center gap-5 h-screen px-4 md:px-16 lg:p-0">
-          <div className="grid gap-3 px-7 xl:pt-41 md:px-9 lg:px-0">
+          <div className="flex flex-col gap-3 px-7 xl:pt-41 md:px-9 lg:px-0">
             <h1 className="font-semibold text-gray-200 bg-clip-text text-center text-3xl xl:text-4xl md:font-bold lg:leading-12">
               The Complete Load Testing Platform
             </h1>
@@ -30,7 +30,7 @@ const Home = () => {
             </Button>
             <Button
               variant="primary"
-              className="font-light text-xs p-2 rounded sm:p-3 sm:text-sm bg-dark-gray-2 border border-neutral-800 brightness-85 hover:brightness-120 text-gray-300/95 uppercase"
+              className="font-light text-xs p-2 rounded sm:p-3 sm:text-sm bg-dark-2 border border-neutral-700/20 brightness-85 hover:brightness-120 text-gray-300/95 uppercase"
             >
               Tolk to Sales
             </Button>

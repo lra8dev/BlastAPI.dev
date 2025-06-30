@@ -13,7 +13,7 @@ export const FAQs = () => {
   const [expanded, setExpanded] = useState<string>("");
 
   return (
-    <section className="grid grid-cols-1 w-full justify-between gap-5 border-t border-gray-900 bg-neutral-950/80 p-8 md:px-16 lg:px-34 md:py-16 lg:flex lg:pt-24 lg:pb-28">
+    <section className="flex flex-col w-full justify-between gap-5 border-t border-gray-900 bg-neutral-950/80 p-8 md:px-16 lg:px-33 md:py-16 lg:flex lg:pt-24 lg:pb-28">
       <div className="flex flex-col font-semibold text-2xl lg:w-1/2">
         <h1 className="text-muted-foreground">Frequently Asked</h1>
         <h1 className="text-gray-200/90">Questions</h1>

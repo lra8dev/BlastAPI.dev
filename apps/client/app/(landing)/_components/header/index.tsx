@@ -16,8 +16,8 @@ export const Header = () => {
       const isActive = pathname === href;
       const baseClass = "box-hover rounded font-light text-gray-300 transition-colors";
       const activeClass = isMobile
-        ? "bg-dark-gray text-gray-200 border border-neutral-700"
-        : "bg-dark-gray-2 text-gray-200 border border-gray-700/30";
+        ? "bg-dark-4 text-gray-200 border border-neutral-700/20"
+        : "bg-dark-2 text-gray-200 border border-gray-700/20";
       const sharedClass = isMobile
         ? "flex-grow py-2 text-center text-xs md:text-sm md:px-3 md:py-2"
         : "px-3 py-2 text-sm";
@@ -35,14 +35,14 @@ export const Header = () => {
 
   return (
     <>
-      <header className="hidden md:flex md:fixed top-0 z-50 w-full items-center justify-between backdrop-blur-md drop-shadow-sm px-4 lg:px-16 py-5">
+      <header className="hidden md:flex md:fixed top-0 z-50 w-full items-center justify-between backdrop-blur-xs px-4 md:px-5 lg:px-32 pt-5">
         <Link href="/">
           <figure className="flex items-center gap-2">
             <Image
               src="/icons/API Overload Logo.svg"
               alt="API Overload Logo"
-              width={60}
-              height={60}
+              width={50}
+              height={50}
               priority
             />
             <h1 className="font-bold font-orbitron text-white text-base">Overload</h1>
@@ -54,7 +54,7 @@ export const Header = () => {
         <div className="font-jetbrains flex items-center gap-3">
           <PrimaryBtn
             title="GitHub"
-            className="font-light p-3 text-sm bg-dark-gray-2 border border-neutral-800 text-gray-300/95 rounded brightness-90 hover:brightness-110"
+            className="font-light p-3 text-sm bg-dark-2 border border-neutral-700/20 text-gray-300/95 rounded brightness-90 hover:brightness-110"
           >
             <Github className="w-4 h-4" />
           </PrimaryBtn>
@@ -74,8 +74,8 @@ export const Header = () => {
               <Image
                 src="/icons/API Overload Logo.svg"
                 alt="API Overload Logo"
-                width={60}
-                height={60}
+                width={50}
+                height={50}
               />
             </figure>
           </Link>
@@ -83,7 +83,7 @@ export const Header = () => {
           <div className="font-jetbrains flex items-center gap-2">
             <PrimaryBtn
               title="GitHub"
-              className="text-xs p-2 md:text-[0.8rem] font-light gap-1 bg-dark-gray-2 border border-neutral-800 text-gray-300/95 rounded brightness-90 hover:brightness-110"
+              className="text-xs p-2 md:text-[0.8rem] font-light gap-1 bg-dark-2 border border-neutral-700/20 text-gray-300/95 rounded brightness-90 hover:brightness-110"
             >
               <Github />
             </PrimaryBtn>
