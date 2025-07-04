@@ -1,3 +1,6 @@
+"use client";
+
+import { useCallback } from "react";
 import { Card } from "@/components/global/card";
 import { getMetadataItems } from "@/lib/test-summary-metadata-items";
 
@@ -16,7 +19,7 @@ interface TestSummaryMetadataProps {
 }
 
 export const TestSummaryMetadata = ({ testResult }: TestSummaryMetadataProps) => {
-  const metadataItems = getMetadataItems(testResult);
+  const metadataItems = useCallback(() => getMetadataItems(testResult), [testResult]);
 
   return (
     <Card className="w-full gap-0 p-0 md:w-80">
@@ -24,7 +27,7 @@ export const TestSummaryMetadata = ({ testResult }: TestSummaryMetadataProps) =>
         <h3 className="font-medium text-[0.8125rem] text-gray-300/75">Metadata</h3>
       </header>
       <div className="flex flex-wrap md:flex-nowrap md:flex-col gap-2 px-5 py-4 font-medium text-zinc-300/78 overflow-hidden">
-        {metadataItems.map(item => (
+        {metadataItems().map(item => (
           <div
             key={item.label}
             aria-label={item.label}
@@ -34,18 +37,6 @@ export const TestSummaryMetadata = ({ testResult }: TestSummaryMetadataProps) =>
             <span className="truncate">{item.value}</span>
           </div>
         ))}
-
-        {/* TODO: remove it later */}
-        {/* {metadataItems.map(item => (
-          <div
-            key={item.label}
-            aria-label={item.label}
-            className="flex items-center gap-2 text-[0.8125rem]"
-          >
-            <item.icon size={16} aria-hidden="true" />
-            <span className="truncate">{item.value}</span>
-          </div>
-        ))} */}
       </div>
     </Card>
   );

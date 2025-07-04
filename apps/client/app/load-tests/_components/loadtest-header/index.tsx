@@ -6,18 +6,13 @@ import { PrimaryBtn } from "@/components/global/buttons/primary";
 import { CustDropdownMenu } from "@/components/global/dropdown-menu";
 import { Button } from "@/components/ui/button";
 import { TEST_SUMMARY_ACTIONS, TEST_SUMMARY_BTNS } from "@/constants";
+import { LOAD_TEST_DROPDOWN_ITEMS } from "@/lib/loadtest-action-btns";
 import { NavTypeBtns } from "@/lib/nav-type-buttons";
-import { TEST_SUMMARY_DI, TEST_SUMMARY_SPECIAL_DI } from "@/lib/test-summary-actions";
 
 export const LoadTestHeader = ({ testRunId }: TestRunId) => {
   const [test, setTest] = useState<string>(TEST_SUMMARY_BTNS[0].id);
 
-  const di = useCallback(() => {
-    return {
-      items: TEST_SUMMARY_DI(testRunId),
-      specialItems: TEST_SUMMARY_SPECIAL_DI(testRunId),
-    };
-  }, [testRunId]);
+  const items = useCallback(() => LOAD_TEST_DROPDOWN_ITEMS(testRunId), [testRunId]);
 
   return (
     <header className="sticky z-50 top-0 bg-dark-2 border-b border-neutral-700/25">
@@ -62,9 +57,7 @@ export const LoadTestHeader = ({ testRunId }: TestRunId) => {
                 <Ellipsis aria-hidden="true" />
               </Button>
             }
-            items={di().items}
-            specialItems={di().specialItems}
-            specialClassName="focus:bg-red-500/50"
+            items={items()}
           />
         </div>
       </nav>

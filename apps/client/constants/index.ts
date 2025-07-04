@@ -35,6 +35,22 @@ export const TEST_SUMMARY_ACTIONS = [
   { id: v4(), name: "Share", icon: Share },
 ];
 
+export enum UserMenuAction {
+  EditProfile = "edit-profile",
+  SignOut = "sign-out",
+  SystemTheme = "system-theme",
+  LightTheme = "light-theme",
+  DarkTheme = "dark-theme",
+  LocalTime = "local-time",
+  UTCTime = "utc-time",
+}
+
+export enum TestSummaryMenuAction {
+  CopyId = "copy-test-id",
+  DeleteTest = "delete-test",
+  DownloadReport = "download-json-report",
+}
+
 const loadConfigs: SliderNames[] = ["totalRequests", "duration", "concurrency", "requestRate"];
 export const LOAD_CONFIG = loadConfigs.map(name => loadConfigProps(name));
 

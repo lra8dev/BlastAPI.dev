@@ -117,20 +117,22 @@ declare interface NavTypeBtnsProps {
   }[];
 }
 
-type itemProps = {
+declare type UserProfileAction = {
   id: string;
   children: React.ReactNode;
-  action: (itemId: string) => void;
+  actionId?: string;
+  subItems?: UserProfileAction[];
+  isSeparator?: boolean;
+  itemShortcut?: React.ReactNode;
+  isDestructive?: boolean;
 };
 
 declare interface CustDropdownMenuProps {
   trigger: React.ReactNode;
-  items: itemProps[];
-  specialItems?: itemProps[];
+  items: UserProfileAction[];
   triggerClassName?: string;
   contentClassName?: string;
   itemClassName?: string;
-  specialClassName?: string;
 }
 
 declare type TestRunId = {
@@ -147,4 +149,11 @@ declare interface SummaryHeaderProps {
     avgRequestPS: string;
     peakRequestPS: string;
   };
+}
+
+declare interface UserAvatarProps {
+  url?: string;
+  fallbackChar?: string;
+  alt?: string;
+  className?: string;
 }

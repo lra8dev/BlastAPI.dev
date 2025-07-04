@@ -6,6 +6,7 @@ const copyId = v4();
 const downloadJsonId = v4();
 const deleteTestId = v4();
 
+// TODO: improve it later
 const testSummaryActions = (testRunId: string, itemId: string) => {
   switch (itemId) {
     case copyId:
@@ -26,15 +27,12 @@ const testSummaryActions = (testRunId: string, itemId: string) => {
   }
 };
 
-export const TEST_SUMMARY_DI = (testRunId: string) => [
+export const LOAD_TEST_DROPDOWN_ITEMS = (testRunId: string) => [
   {
     id: copyId,
     children: (
-      <PrimaryBtn
-        title="Copy Test ID"
-        className="font-medium text-gray-300/90 text-[0.8125rem] group-focus:text-gray-200/81"
-      >
-        <FileDigit className="size-[0.8125rem] text-gray-300/90 group-focus:text-gray-200/81" />
+      <PrimaryBtn title="Copy Test ID" className="font-medium text-[0.8125rem] text-gray-300/80">
+        <FileDigit className="size-[0.8125rem]" />
       </PrimaryBtn>
     ),
     action: (itemId: string) => testSummaryActions(testRunId, itemId),
@@ -44,16 +42,13 @@ export const TEST_SUMMARY_DI = (testRunId: string) => [
     children: (
       <PrimaryBtn
         title="Download JSON Report"
-        className="font-medium text-gray-300/90 text-[0.8125rem] group-focus:text-gray-200/81"
+        className="font-medium text-[0.8125rem] text-gray-300/80"
       >
-        <Braces className="size-[0.8125rem] text-gray-300/90 group-focus:text-gray-200/81" />
+        <Braces className="size-[0.8125rem]" />
       </PrimaryBtn>
     ),
     action: (itemId: string) => testSummaryActions(testRunId, itemId),
   },
-];
-
-export const TEST_SUMMARY_SPECIAL_DI = (testRunId: string) => [
   {
     id: deleteTestId,
     children: (
@@ -61,9 +56,11 @@ export const TEST_SUMMARY_SPECIAL_DI = (testRunId: string) => [
         title="Delete Test"
         className="font-medium text-red-400/90 text-[0.8125rem] group-focus:text-red-300"
       >
-        <Trash2 className="text-red-400/90 size-[0.8125rem] group-focus:text-red-300" />
+        <Trash2 className="size-[0.8125rem] group-focus:text-red-300" />
       </PrimaryBtn>
     ),
     action: (itemId: string) => testSummaryActions(testRunId, itemId),
+    isSeparator: true,
+    isDestructive: true,
   },
 ];
