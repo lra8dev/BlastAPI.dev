@@ -1,9 +1,13 @@
 {
-  "name": "@api-overload/utils",
+  "name": "@blastapi/utils",
   "version": "1.0.0",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "scripts": {
-    "build": "tsc -p tsconfig.json"
+    "build": "tsc"
+  },
+  "dependencies": {
+    "@blastapi/db": "workspace:*",
+    "bcryptjs": "^3.0.2"
   }
 }
