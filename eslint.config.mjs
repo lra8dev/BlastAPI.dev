@@ -1,76 +1,53 @@
-import { defineConfig, globalIgnores } from "eslint/config";
-import { fixupConfigRules } from "@eslint/compat";
+import tsPlugin from "@typescript-eslint/eslint-plugin";
+import tsParser from "@typescript-eslint/parser";
+import reactPlugin from "eslint-plugin-react";
+import reactHooksPlugin from "eslint-plugin-react-hooks";
+import prettierPlugin from "eslint-plugin-prettier";
 import simpleImportSort from "eslint-plugin-simple-import-sort";
 import unusedImports from "eslint-plugin-unused-imports";
-import tsParser from "@typescript-eslint/parser";
-import path from "node:path";
-import { fileURLToPath } from "node:url";
-import js from "@eslint/js";
-import { FlatCompat } from "@eslint/eslintrc";
+import nextPlugin from "@next/eslint-plugin-next";
+import prettierConfig from "eslint-config-prettier";
 
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
-const compat = new FlatCompat({
-  baseDirectory: __dirname,
-  recommendedConfig: js.configs.recommended,
-  allConfig: js.configs.all,
-});
+const ignorePatterns = [
+  "**/dist/**",
+  "**/.next/**",
+  "**/node_modules/**",
+  "**/prisma/generated/**",
+];
 
-export default defineConfig([
-  globalIgnores(["**/dist", "**/.next", "**/node_modules", "**/prisma/generated"]),
+export default [
   {
-    extends: fixupConfigRules(
-      compat.extends(
-        "eslint:recommended",
-        "plugin:@typescript-eslint/recommended",
-        "plugin:prettier/recommended",
-        "plugin:react/recommended",
-        "plugin:react-hooks/recommended",
-        "next/core-web-vitals",
-      ),
-    ),
-
-    plugins: {
-      "simple-import-sort": simpleImportSort,
-      "unused-imports": unusedImports,
-    },
-
+    ignores: ignorePatterns,
+  },
+  {
+    files: ["**/*.{ts,tsx}"],
     languageOptions: {
       parser: tsParser,
       ecmaVersion: "latest",
       sourceType: "module",
-
       parserOptions: {
-        project: ["tsconfig.base.json", "apps/*/tsconfig.json"],
-        tsconfigRootDir: __dirname,
-        ecmaFeatures: {
-          jsx: true,
-        },
-        createDefaultProgram: true,
+        project: ["tsconfig.base.json", "apps/*/tsconfig.json", "packages/*/tsconfig.json"],
+        tsconfigRootDir: process.cwd(),
+        ecmaFeatures: { jsx: true },
       },
     },
-
-    settings: {
-      react: {
-        version: "detect",
-      },
+    plugins: {
+      "@typescript-eslint": tsPlugin,
+      "simple-import-sort": simpleImportSort,
+      "unused-imports": unusedImports,
+      prettier: prettierPlugin,
     },
-
     rules: {
+      ...tsPlugin.configs.recommended.rules,
       "no-console": "warn",
       "unused-imports/no-unused-imports": "error",
       "simple-import-sort/exports": "warn",
       "simple-import-sort/imports": [
         "warn",
         {
-          groups: [
-            // Sort in alphabetical order
-            ["^\\u0000", "^@?\\w", "^", "^\\."],
-          ],
+          groups: [["^\\u0000", "^@?\\w", "^", "^\\."]],
         },
       ],
-
-      "@next/next/no-html-link-for-pages": "off", // Next.js specific rule
       "@typescript-eslint/no-explicit-any": "warn",
       "unused-imports/no-unused-vars": [
         "warn",
@@ -81,8 +58,43 @@ export default defineConfig([
           argsIgnorePattern: "^_",
         },
       ],
+      "prettier/prettier": "error",
     },
-
-    ignores: ["**/dist", "**/node_modules"],
   },
-]);
+
+  {
+    files: ["**/*.{js,tsx}"],
+    languageOptions: {
+      parser: tsParser,
+      parserOptions: {
+        ecmaFeatures: { jsx: true },
+      },
+    },
+    plugins: {
+      react: reactPlugin,
+      "react-hooks": reactHooksPlugin,
+    },
+    settings: {
+      react: { version: "detect" },
+    },
+    rules: {
+      ...reactPlugin.configs.recommended.rules,
+      ...reactHooksPlugin.configs.recommended.rules,
+      "react/react-in-jsx-scope": "off",
+    },
+  },
+
+  {
+    files: ["apps/**/*.{ts,tsx}"],
+    plugins: {
+      "@next/next": nextPlugin,
+    },
+    rules: {
+      ...nextPlugin.configs.recommended.rules,
+      ...nextPlugin.configs["core-web-vitals"].rules,
+      "@next/next/no-html-link-for-pages": "off",
+    },
+  },
+
+  prettierConfig,
+];
