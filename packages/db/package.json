@@ -1,0 +1,22 @@
+{
+  "name": "@blastapi/db",
+  "version": "1.0.0",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "build": "tsc",
+    "db:generate": "prisma generate",
+    "db:migrate": "prisma migrate dev",
+    "db:deploy": "prisma migrate deploy",
+    "db:reset": "prisma migrate reset",
+    "db:studio": "prisma studio"
+  },
+  "devDependencies": {
+    "@types/node": "^24.0.15",
+    "prisma": "catalog:prisma",
+    "typescript": "^5.8.3"
+  },
+  "dependencies": {
+    "@prisma/client": "6.12.0"
+  }
+}

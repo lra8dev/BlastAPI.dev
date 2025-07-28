@@ -1,0 +1,158 @@
+generator client {
+  provider = "prisma-client-js"
+  output   = "./generated/client"
+}
+
+datasource db {
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
+}
+
+model User {
+  id            String    @id @default(uuid()) @db.Uuid
+  name          String?
+  email         String    @unique
+  emailVerified DateTime?
+  password      String?
+  image         String?
+  role          UserRole  @default(user)
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+
+  accounts Account[]
+  sessions Session[]
+  testRuns TestRun[]
+}
+
+model Account {
+  userId            String  @db.Uuid
+  type              String
+  provider          String
+  providerAccountId String
+  refresh_token     String?
+  access_token      String?
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String?
+  session_state     String?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@id([provider, providerAccountId])
+}
+
+model Session {
+  sessionToken String   @unique
+  userId       String   @db.Uuid
+  expires      DateTime
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model VerificationToken {
+  identifier String
+  token      String
+  expires    DateTime
+
+  @@id([identifier, token])
+}
+
+model TestRun {
+  id          String     @id @default(uuid()) @db.Uuid
+  userId      String     @db.Uuid
+  status      TestStatus @default(Queued)
+  scheduledAt DateTime? // for scheduled tests
+  startedAt   DateTime?
+  endedAt     DateTime?
+  createdAt   DateTime   @default(now())
+  updatedAt   DateTime   @updatedAt
+
+  user        User         @relation(fields: [userId], references: [id])
+  testConfig  TestConfig?
+  testMetrics TestMetric[]
+  testResult  TestResult?
+}
+
+model TestMetric {
+  id           String   @id @default(uuid()) @db.Uuid
+  testRunId    String   @db.Uuid
+  timestamp    DateTime @default(now())
+  latency      Float
+  throughput   Float
+  statusCode   Int
+  usersCreated Int
+  p95          Float
+  p99          Float
+  avgRequest   Float
+  maxRequest   Float
+
+  testRun TestRun @relation(fields: [testRunId], references: [id])
+}
+
+model TestConfig {
+  id               String     @id @default(uuid()) @db.Uuid
+  testRunId        String     @unique @db.Uuid
+  name             String
+  url              String
+  method           HttpMethod
+  region           String
+  duration         Float
+  requestRate      Int
+  requestCount     Int
+  concurrencyLevel Int
+  headers          Json?
+  body             Json?
+
+  testRun TestRun @relation(fields: [testRunId], references: [id])
+}
+
+model TestResult {
+  id                 String @id @default(uuid()) @db.Uuid
+  testRunId          String @unique @db.Uuid
+  successRate        Float
+  errorRate          Float
+  avgResponseTime    Float
+  maxResponseTime    Float
+  avgLatency         Float
+  avgThroughput      Float
+  peakThroughput     Float
+  totalRequests      Int
+  duration           Float
+  p50ResponseTime    Float
+  p95ResponseTime    Float
+  p99ResponseTime    Float
+  successfulRequests Float
+  failedRequests     Float
+
+  logs      Json?
+  createdAt DateTime @default(now())
+
+  testRun TestRun @relation(fields: [testRunId], references: [id])
+}
+
+enum UserRole {
+  user
+  admin
+}
+
+enum HttpMethod {
+  GET
+  POST
+  PUT
+  DELETE
+}
+
+enum TestStatus {
+  Queued
+  Running
+  Completed
+  Failed
+  Cancled
+}
