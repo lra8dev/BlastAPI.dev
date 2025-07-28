@@ -1,5 +1,9 @@
-node_modules
-dist
-build
-.next
-apps/server/prisma/generated/client
+node_modules/
+dist/
+build/
+.next/
+pnpm-lock.yaml
+**/prisma/*
+.DS_Store
+*.log
+*.tmp
