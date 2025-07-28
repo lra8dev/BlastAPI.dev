@@ -30,7 +30,6 @@ coverage/
 *.swo
 
 # IDE - VSCode
-.vs/*
 .vscode/*
 !.vscode/settings.json
 !.vscode/tasks.json
@@ -39,3 +38,8 @@ coverage/
 
 # Others
 turbo/
+
+# Prisma
+**/prisma/dev.db
+**/prisma/generated/
+**/prisma/migrations/
