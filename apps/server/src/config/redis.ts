@@ -7,6 +7,12 @@ export const redis = new Redis({
   maxRetriesPerRequest: null,
 });
 
+// FIXME: Env variables are not loading here...
+console.log("redis SERER PORT", process.env.SERVER_PORT);
+console.log("src/config loading Redis Host:", process.env.REDIS_HOST!);
+console.log("src/config loading Redis Port:", process.env.REDIS_PORT!);
+console.log("src/config loading Redis Password:", process.env.REDIS_PASSWORD!);
+
 redis.on("connect", () => {
   console.log("Connected to Redis Cloud! ✅");
 });
