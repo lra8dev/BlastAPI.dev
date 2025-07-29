@@ -18,7 +18,7 @@ export const createNewTest = async (req: Request, res: Response) => {
     const { id } = parsed.data;
 
     if (!id) {
-      return res.status(400).json({ message: "Missing test ID in configuration" });
+      return res.status(400).json({ message: "Missing test ID" });
     }
 
     const testRun = await prisma.testRun.create({
