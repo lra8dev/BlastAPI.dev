@@ -15,7 +15,7 @@ export const getTestResult = async (req: Request, res: Response) => {
     });
 
     if (!result) {
-      return res.status(404).json({ error: "Test result not found." });
+      return res.status(404).json({ message: "Test result not found." });
     }
 
     return res.status(200).json(result);
