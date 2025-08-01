@@ -152,7 +152,7 @@ enum HttpMethod {
 enum TestStatus {
   Queued
   Running
-  Completed
+  Succeeded
   Failed
-  Cancled
+  Canceled
 }
