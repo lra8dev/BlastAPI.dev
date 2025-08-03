@@ -1,38 +1,34 @@
 "use client";
 
+import { Clock4, Globe } from "lucide-react";
 import Link from "next/link";
-import { useSearchParams } from "next/navigation";
 import { Fragment, useMemo } from "react";
 import { UserAvatar } from "@/components/avatar";
+import { Tags } from "@/components/tag-buttons";
 import { TestStatus } from "@/components/test-status";
-import { TestHistories } from "../../_types";
+import { CustTooltip } from "@/components/tooltip";
+import { formatDateTime } from "@/utils/format-datetime";
+import { formatDuration } from "@/utils/format-duration";
 import { generateFallbackChars } from "@/utils/generate-fallback-char";
 import { getRelativeTime } from "@/utils/get-relative-time";
-import { Clock4, Globe } from "lucide-react";
-import { Tags } from "@/components/tag-buttons";
-import { formatDuration } from "@/utils/format-duration";
-import { TestHistoryBadge } from "../history-badges";
-import { formatDateTime } from "@/utils/format-datetime";
-import { CustTooltip } from "@/components/tooltip";
+import { useNavigation } from "../../_hooks";
+import { TestHistories } from "../../_types";
 import { TestNotFound } from "../filter-not-found";
+import { TestHistoryBadge } from "../history-badges";
 
 export const TestsHistory = ({ data }: TestHistories) => {
-  const searchParams = useSearchParams();
+  const { getSearchParam } = useNavigation();
 
   const filters = useMemo(
     () => ({
-      name: searchParams.get("tags") ?? "",
-      status: searchParams.get("status") ?? "",
-      email: searchParams.get("user") ?? "",
-      createdAt: searchParams.get("created") ?? "",
-      notes: searchParams.get("notes") === "true",
+      name: getSearchParam("tags") ?? "",
+      status: getSearchParam("status") ?? "",
+      email: getSearchParam("user") ?? "",
+      createdAt: getSearchParam("created") ?? "",
+      notes: getSearchParam("notes") === "true",
     }),
-    [searchParams],
+    [getSearchParam],
   );
-
-  if (!data || data.length === 0) {
-    return null;
-  }
 
   const filteredData = useMemo(() => {
     return data.filter(test => {
@@ -59,6 +55,14 @@ export const TestsHistory = ({ data }: TestHistories) => {
       return true;
     });
   }, [data, filters]);
+
+  if (data.length === 0) {
+    if (Object.values(filters).some(value => value)) {
+      return <TestNotFound />;
+    }
+
+    return null;
+  }
 
   const groupedTests = filteredData.reduce(
     (groups, test) => {
