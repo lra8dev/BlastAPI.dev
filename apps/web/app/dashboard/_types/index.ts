@@ -26,13 +26,13 @@ export interface TestHistories {
 
 interface FilterOption {
   id?: string;
-  name: string;
+  name?: string;
   icon?: LucideIcon;
   iconCN?: string;
   children?: React.ReactNode;
 }
 
-export interface FilterActionsConfig {
+export interface PrimaryFilterConfig {
   key: string;
   label: string;
   icon: LucideIcon;
@@ -40,10 +40,22 @@ export interface FilterActionsConfig {
   options?: FilterOption[];
 }
 
-export interface FilterActions {
-  tests: { name: string }[];
-  users: { name: string; children: React.ReactNode }[];
+export interface FilterOptions {
+  testsOptions: { name: string }[];
+  usersOptions: { name: string; children: React.ReactNode }[];
 }
+
+export interface NavigationHandlers {
+  hasSearchParam: (name: string, value?: string) => boolean;
+  updateSearchParam: (name: string, value?: string | boolean) => void;
+  getSearchParam?: (name: string) => string | null;
+}
+
+export interface PrimaryFiltersProps extends NavigationHandlers {
+  options: PrimaryFilterConfig[];
+}
+
+export interface ClearFilterProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {}
 
 export interface TestBadge {
   notes?: string[];
