@@ -1,11 +1,11 @@
-import Link from "next/link";
-import { Button } from "@/components/ui/button";
 import { Plus } from "lucide-react";
+import { ChevronDown, Folders } from "lucide-react";
+import Link from "next/link";
 import { CustPopover } from "@/components/popover";
+import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { TestHistories } from "../../_types";
-import { ChevronDown, Folders } from "lucide-react";
-import { FilterActions } from "../filter-button";
+import { FilterBar } from "../filter-bar";
 
 export const DashboardHeader = ({ data }: TestHistories) => (
   <header className="sticky z-50 top-0 bg-white dark:bg-dark-2 border-y dark:border-neutral-700/30 shadow-xs">
@@ -35,7 +35,7 @@ export const DashboardHeader = ({ data }: TestHistories) => (
           <Separator orientation="vertical" />
         </div>
         <div className="hidden sm:flex gap-2 items-center">
-          <FilterActions data={data} />
+          <FilterBar data={data} />
         </div>
       </div>
       <Link href="/newtest">
@@ -51,7 +51,7 @@ export const DashboardHeader = ({ data }: TestHistories) => (
       </Link>
     </nav>
     <nav className="sm:hidden flex gap-2 w-full items-center overflow-hidden flex-wrap flex-1 px-3 py-2 md:py-2.5 md:px-4 lg:px-6">
-      <FilterActions data={data} />
+      <FilterBar data={data} />
     </nav>
   </header>
 );
