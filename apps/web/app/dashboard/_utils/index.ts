@@ -1,12 +1,15 @@
 import { Ban, CheckCircle2, Circle, CircleX, Loader, Plus, User } from "lucide-react";
-import { FilterActions, FilterActionsConfig } from "../_types";
+import { FilterOptions, PrimaryFilterConfig } from "../_types";
 
-export const filterActionsConfig = ({ tests, users }: FilterActions): FilterActionsConfig[] => [
+export const primaryFilterConfig = ({
+  testsOptions,
+  usersOptions,
+}: FilterOptions): PrimaryFilterConfig[] => [
   {
     key: "tags",
     label: "Name",
     icon: Plus,
-    options: tests,
+    options: testsOptions,
     isCommandPallet: true,
   },
   {
@@ -24,6 +27,6 @@ export const filterActionsConfig = ({ tests, users }: FilterActions): FilterActi
     key: "userid",
     label: "User",
     icon: User,
-    options: users,
+    options: usersOptions,
   },
 ];
