@@ -118,16 +118,19 @@ model TestResult {
   testRunId          String @unique @db.Uuid
   successRate        Float
   errorRate          Float
-  avgResponseTime    Float
-  maxResponseTime    Float
   avgLatency         Float
   avgThroughput      Float
   peakThroughput     Float
-  totalRequests      Int
   duration           Float
+  totalRequests      Float
+  requestRate        Float
+  totalResponses     Float
+  minResponseTime    Float
+  avgResponseTime    Float
   p50ResponseTime    Float
   p95ResponseTime    Float
   p99ResponseTime    Float
+  maxResponseTime    Float
   successfulRequests Float
   failedRequests     Float
 
