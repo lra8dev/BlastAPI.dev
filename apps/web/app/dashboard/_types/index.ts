@@ -1,26 +1,32 @@
-import { TestStatus } from "@blastapi/db";
+import { HealthCheckStatus, TestStatus, UserRole } from "@blastapi/db";
 import { TestRegions } from "@blastapi/validators";
 import { LucideIcon } from "lucide-react";
 
 export interface TestHistories {
-  data: {
+  data?: {
     id: string;
     status: TestStatus;
     createdAt: Date;
-    notes?: string[];
-
-    testConfig: {
-      name: string;
-      region: TestRegions;
-      duration: number;
-    };
-
     user: {
-      id: string;
-      name: string | null;
+      name?: string;
       email: string;
-      image: string | null;
+      image?: string;
+      role: UserRole;
     };
+    healthCheckSummary: {
+      passedChecks: number;
+      totalChecks: number;
+      overallStatus: HealthCheckStatus;
+    };
+    testConfig: { name: string; region: TestRegions; duration: number };
+    notes?: string[];
+  }[];
+}
+
+export interface FilterBarProps {
+  data?: {
+    testConfig: { name: string };
+    user: { name?: string; email: string; image?: string; role: UserRole };
   }[];
 }
 
@@ -40,10 +46,15 @@ export interface PrimaryFilterConfig {
   options?: FilterOption[];
 }
 
-export interface FilterOptions {
-  testsOptions: { name: string }[];
-  usersOptions: { name: string; children: React.ReactNode }[];
-}
+export type FilterProps =
+  | Record<
+      string,
+      {
+        testConfig: { name: string };
+        user: { name?: string; email: string; image?: string };
+      }
+    >
+  | undefined;
 
 export interface NavigationHandlers {
   hasSearchParam: (name: string, value?: string) => boolean;
@@ -58,6 +69,6 @@ export interface PrimaryFiltersProps extends NavigationHandlers {
 export interface ClearFilterProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {}
 
 export interface TestBadge {
-  notes?: string[];
+  notesLength?: number;
   shared?: boolean;
 }

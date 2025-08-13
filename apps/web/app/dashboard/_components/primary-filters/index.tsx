@@ -28,31 +28,29 @@ export const PrimaryFilters = ({
         </Button>
       }
     >
-      {filter.options?.every(opt => !opt?.name?.trim()) ? (
-        <p className="px-4 py-1 text-muted-foreground">Data not found</p>
+      {filter.options?.length === 0 ? (
+        <p className="px-4 py-1 text-muted-foreground">Currently {filter.label} is not available</p>
       ) : (
-        filter.options?.map((option, ind) =>
-          option?.name?.trim() ? (
-            <span
-              key={ind}
-              onClick={() => {
-                hasSearchParam(filter.key, option.name)
-                  ? updateSearchParam(filter.key, false)
-                  : updateSearchParam(filter.key, option.name);
-              }}
-              className={cn(
-                "flex items-center gap-2 px-2 py-1 text-neutral-500 hover:bg-neutral-200/50 dark:text-gray-300/70 dark:hover:bg-neutral-200/7 dark:hover:text-gray-300 dark:hover:brightness-110 cursor-pointer rounded",
-                hasSearchParam(filter.key, option.name) &&
-                  "bg-neutral-200/50 dark:bg-neutral-200/7 text-neutral-600 dark:text-gray-300",
-              )}
-            >
-              {option.icon && <option.icon className={cn("size-3.5 opacity-80", option.iconCN)} />}
-              {option.children}
-              {option.name}
-              {hasSearchParam(filter.key, option.name) && <Check className="ml-auto size-3" />}
-            </span>
-          ) : null,
-        )
+        filter.options?.map((option, ind) => (
+          <span
+            key={ind}
+            onClick={() => {
+              hasSearchParam(filter.key, option.name)
+                ? updateSearchParam(filter.key, false)
+                : updateSearchParam(filter.key, option.name);
+            }}
+            className={cn(
+              "flex items-center gap-2 px-2 py-1 text-neutral-500 hover:bg-neutral-200/50 dark:text-gray-300/70 dark:hover:bg-neutral-200/7 dark:hover:text-gray-300 dark:hover:brightness-110 cursor-pointer rounded",
+              hasSearchParam(filter.key, option.name) &&
+                "bg-neutral-200/50 dark:bg-neutral-200/7 text-neutral-600 dark:text-gray-300",
+            )}
+          >
+            {option.icon && <option.icon className={cn("size-3.5 opacity-80", option.iconCN)} />}
+            {option.children}
+            {option.name}
+            {hasSearchParam(filter.key, option.name) && <Check className="ml-auto size-3" />}
+          </span>
+        ))
       )}
 
       {hasSearchParam(filter.key) && (
