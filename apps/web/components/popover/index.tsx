@@ -1,7 +1,7 @@
 import { PopoverClose } from "@radix-ui/react-popover";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { cn } from "@/lib/utils";
-import { CustPopoverProps } from "@/types/general";
+import { CustPopoverProps } from "@/types";
 import { Card } from "../ui/card";
 
 export const CustPopover = ({
