@@ -4,12 +4,12 @@ import Link from "next/link";
 import { CustPopover } from "@/components/popover";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
-import { TestHistories } from "../../_types";
+import { FilterBarProps } from "../../_types";
 import { FilterBar } from "../filter-bar";
 
-export const DashboardHeader = ({ data }: TestHistories) => (
-  <header className="sticky z-50 top-0 bg-white dark:bg-dark-2 border-y dark:border-neutral-700/30 shadow-xs">
-    <nav className="flex w-full items-center justify-between px-3 py-2 md:py-2.5 md:px-4 lg:px-6">
+export const DashboardHeader = ({ data }: FilterBarProps) => (
+  <header className="sticky z-50 top-0 border-y dark:border-neutral-700/30 shadow-xs">
+    <nav className="flex w-full items-center justify-between px-3 py-3 md:py-2.5 md:px-4 lg:px-6">
       <div className="flex gap-2 items-center">
         <CustPopover
           trigger={
@@ -20,7 +20,7 @@ export const DashboardHeader = ({ data }: TestHistories) => (
             >
               <Folders className="size-3.5" />
               Views
-              <ChevronDown className="size-3.5 group-focus/chevron:rotate-180" />
+              <ChevronDown className="size-3.5 group-focus/chevron:rotate-180 transition-transform" />
             </Button>
           }
           align="start"

@@ -2,17 +2,17 @@ import { Link2, StickyNote } from "lucide-react";
 import { Badge } from "@/components/badge";
 import { TestBadge } from "../../_types";
 
-export const TestHistoryBadge = ({ notes, shared }: TestBadge) => {
-  if (!notes?.length && !shared) {
+export const TestHistoryBadge = ({ notesLength, shared }: TestBadge) => {
+  if (!notesLength && !shared) {
     return null;
   }
 
   return (
     <>
-      {notes?.length && (
+      {notesLength && (
         <Badge key="notes" className="flex items-center gap-1 dark:bg-dark-3/60">
           <StickyNote className="size-3 rotate-90" />
-          {notes.length} note{notes.length > 1 ? "s" : ""}
+          {notesLength} note{notesLength > 1 ? "s" : ""}
         </Badge>
       )}
       {shared && (
