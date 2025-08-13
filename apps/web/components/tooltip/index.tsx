@@ -1,6 +1,6 @@
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 import { cn } from "@/lib/utils";
-import { CustTooltipProps } from "@/types/general";
+import { CustTooltipProps } from "@/types";
 
 export const CustTooltip = ({ content, children, label }: CustTooltipProps) => (
   <Tooltip disableHoverableContent>

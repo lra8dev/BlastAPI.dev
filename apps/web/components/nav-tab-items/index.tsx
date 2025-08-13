@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { cn } from "@/lib/utils";
-import { NavTabProps } from "@/types/general";
+import { NavTabProps } from "@/types";
 
 export const NavTabItems = ({ tabItems, className }: NavTabProps) => {
   const pathname = usePathname();

@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button";
 import { UserOrg } from "@/components/user-org";
 import { LAYOUT_HEADER_TABS, USER_DROPDOWN_ITEMS } from "@/constants";
 import { cn } from "@/lib/utils";
-import { LayoutHeaderProps } from "@/types/general";
+import { LayoutHeaderProps } from "@/types";
 import { generateFallbackChars } from "@/utils/generate-fallback-char";
 import { UserAvatar } from "../avatar";
 import { CustDropdownMenu } from "../dropdown-menu";

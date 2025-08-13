@@ -14,7 +14,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { JsonRow } from "@/types/general";
+import { JsonRow } from "@/types";
 
 export const JSONTable = <T extends FieldValues>({ setValue }: SetFormValueProps<T>) => {
   const [rows, setRows] = useState<JsonRow[]>([{ key: "", value: "" }]);
