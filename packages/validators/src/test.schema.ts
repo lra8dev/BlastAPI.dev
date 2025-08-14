@@ -18,6 +18,7 @@ export enum TestRegions {
 
 export const newTestSchema = z.object({
   id: z.uuid(),
+  userId: z.uuid(),
   name: z.string().min(1, "Name is required").max(100, "Name is too long!"),
   url: z.url("Enter a valid url!"),
   method: z.enum(HttpMethod),
