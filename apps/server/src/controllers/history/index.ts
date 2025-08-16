@@ -6,34 +6,64 @@ export const getTestHistory = async (req: Request, res: Response) => {
   try {
     const { userId } = req.params;
 
-    if (!userId) {
-      return res.status(400).json({ message: "Invalid user id" });
+    if (!userId || typeof userId !== "string" || userId.trim() === "") {
+      return res.status(400).json({ success: false, message: "Invalid user id" });
     }
 
-    const testHistories = await prisma.testRun.findMany({
-      where: { userId },
-      orderBy: { createdAt: "desc" },
-      include: {
-        user: {
-          select: {
-            name: true,
-            email: true,
-            image: true,
-            role: true,
+    const testHistories = await prisma.$transaction(async tx => {
+      return await tx.testRun.findMany({
+        where: { userId: userId.trim() },
+        select: {
+          id: true,
+          status: true,
+          createdAt: true,
+          user: {
+            select: {
+              name: true,
+              email: true,
+              image: true,
+              role: true,
+            },
+          },
+          testConfig: {
+            select: {
+              name: true,
+              region: true,
+            },
+          },
+          testResult: {
+            select: {
+              duration: true,
+            },
+          },
+          healthCheckSummary: {
+            select: {
+              passedChecks: true,
+              failedChecks: true,
+              totalChecks: true,
+              overallStatus: true,
+            },
           },
         },
-        testConfig: true,
-        testMetrics: true,
-        testResult: true,
-      },
+        take: 10,
+      });
     });
 
-    if (!testHistories.length) {
-      return res.status(404).json({ message: "No tests found" });
+    if (!testHistories || testHistories.length === 0) {
+      return res.status(404).json({ success: false, message: "No tests found" });
     }
 
-    return res.status(200).json({ data: testHistories });
+    const serializedData = JSON.parse(JSON.stringify(testHistories)) as typeof testHistories;
+
+    return res.status(200).json({
+      success: true,
+      message: "Test history fetched successfully",
+      data: serializedData,
+    });
   } catch (error) {
-    return res.status(500).json({ message: errorMessage(error) });
+    return res.status(500).json({
+      success: false,
+      message: errorMessage(error) || "Failed to fetch test history",
+    });
   }
 };
