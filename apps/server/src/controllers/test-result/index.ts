@@ -92,3 +92,51 @@ export const getTestResult = async (req: Request, res: Response) => {
     });
   }
 };
+
+export const getTestResultSummary = async (req: Request, res: Response) => {
+  try {
+    const { testRunId } = req.params;
+
+    if (!testRunId || typeof testRunId !== "string" || testRunId.trim() === "") {
+      return res.status(400).json({ success: false, message: "Invalid test run ID" });
+    }
+
+    const summary = await prisma.testRun.findUnique({
+      where: { id: testRunId.trim() },
+      select: {
+        status: true,
+        testConfig: {
+          select: { name: true },
+        },
+        testResult: {
+          select: { logs: true },
+        },
+        healthCheckSummary: {
+          select: {
+            passedChecks: true,
+            failedChecks: true,
+            totalChecks: true,
+            overallStatus: true,
+          },
+        },
+      },
+    });
+
+    if (!summary) {
+      return res.status(404).json({ success: false, message: "Test result not found" });
+    }
+
+    const serializedData = JSON.parse(JSON.stringify(summary)) as typeof summary;
+
+    return res.status(200).json({
+      success: true,
+      message: "Test result summary recieved successfully",
+      data: serializedData,
+    });
+  } catch (error) {
+    return res.status(500).json({
+      success: false,
+      message: errorMessage(error) || "Failed to fetch test result summary",
+    });
+  }
+};
