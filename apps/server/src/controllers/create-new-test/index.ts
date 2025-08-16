@@ -10,21 +10,22 @@ export const createNewTest = async (req: Request, res: Response) => {
 
     if (!parsed.success) {
       return res.status(400).json({
+        success: false,
         message: "Invalid test configuration",
         details: parsed.error.message,
       });
     }
 
-    const { id } = parsed.data;
+    const { id, userId } = parsed.data;
 
-    if (!id) {
-      return res.status(400).json({ message: "Missing test ID" });
+    if (!id || !userId) {
+      return res.status(400).json({ success: false, message: "Missing test ID or user ID" });
     }
 
     const testRun = await prisma.testRun.create({
       data: {
         id,
-        userId: id,
+        userId,
         status: "Queued",
         createdAt: new Date(),
       },
@@ -43,19 +44,20 @@ export const createNewTest = async (req: Request, res: Response) => {
         data: { status: "Failed" },
       });
 
-      return res.status(500).json({ message: "Failed to enqueue test job" });
+      return res.status(500).json({ success: false, message: "Failed to enqueue test job" });
     }
 
     return res.status(201).json({
       success: true,
-      jobId,
-      testRun,
       message: "Test successfully queued for execution",
-      estimatedStartTime: "Within 30 seconds", // TODO: Adjust based on queue processing speed
+      data: {
+        jobId,
+        testRunId: testRun.id,
+        status: testRun.status,
+        createdAt: testRun.createdAt,
+      },
     });
-  } catch (error: any) {
-    console.error("❌ Error creating test run:", error);
-
+  } catch (error) {
     // Attempt cleanup if test was partially created
     if (req.body?.id) {
       try {
@@ -69,7 +71,8 @@ export const createNewTest = async (req: Request, res: Response) => {
     }
 
     return res.status(500).json({
-      message: errorMessage(error),
+      success: false,
+      message: errorMessage(error) || "Failed to create test run",
       timestamp: new Date().toISOString(),
     });
   }
