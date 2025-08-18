@@ -6,3 +6,5 @@ catalogs:
     prisma: latest
   zod:
     zod: "latest"
+  uuid:
+    uuid: "latest"
