@@ -1,6 +1,7 @@
 import { X } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { ClearFilterProps } from "../../_types";
+
+interface ClearFilterProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {}
 
 export const ClearFilter = ({ ...rest }: ClearFilterProps) => (
   <Button
