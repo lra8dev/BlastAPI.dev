@@ -1,25 +1,20 @@
-"use server";
-
+import { Suspense } from "react";
 import { auth } from "@/auth";
-import { fetchApi } from "@/lib/api";
-import { CTACard } from "./_components/cta-card";
-import { DashboardHeader } from "./_components/header";
-import { TestsHistory } from "./_components/tests-history";
-import { TestHistories } from "./_types";
+import { DashboardContent } from "./_components/dashboard-content";
+import { TestHistorySkeleton } from "./_components/test-history-skeleton";
 
 const DashboardPage = async () => {
   const session = await auth();
-  const { data, error } = await fetchApi<TestHistories>(`/test-history/${session?.user.id}`);
 
-  if (error) {
-    console.warn(`History unavailable: ${error.message}`);
+  if (!session?.user?.id) {
+    return null;
   }
 
   return (
     <section className="flex flex-col w-full min-h-screen pb-14">
-      <DashboardHeader data={data?.data} />
-      <TestsHistory data={data?.data} />
-      <CTACard isHistoryCount={!!data?.data?.length} />
+      <Suspense fallback={<TestHistorySkeleton />}>
+        <DashboardContent userId={session.user.id} />
+      </Suspense>
     </section>
   );
 };

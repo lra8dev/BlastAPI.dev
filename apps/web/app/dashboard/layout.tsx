@@ -1,12 +1,12 @@
 import { redirect } from "next/navigation";
 import { auth } from "@/auth";
 import { Header } from "@/components/header";
-import { LayoutProps } from "@/types/general";
+import { LayoutProps } from "@/types";
 
 const DashboardLayout = async ({ children }: LayoutProps) => {
   const session = await auth();
 
-  if (!session?.user) {
+  if (!session?.user?.id) {
     return redirect(`/signin?callbackUrl=${encodeURIComponent("/dashboard")}`);
   }
 
