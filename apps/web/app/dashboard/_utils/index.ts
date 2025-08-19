@@ -1,40 +1,52 @@
-import { Ban, CheckCircle2, Circle, CircleX, Loader, Plus, User } from "lucide-react";
-import { UserAvatar } from "@/components/avatar";
-import { generateFallbackChars } from "@/utils/generate-fallback-char";
-import { FilterProps, PrimaryFilterConfig } from "../_types";
+import { FilteringData, PrimaryFilterConfig } from "../_types";
 
-export const primaryFilterConfig = ({ ...data }: FilterProps): PrimaryFilterConfig[] => {
+const STATUS_OPTIONS = [
+  { icon: "CheckCircle2", name: "Succeeded", iconCN: "text-teal-500" },
+  { icon: "CircleX", name: "Failed", iconCN: "text-red-500" },
+  { icon: "Ban", name: "Canceled", iconCN: "text-yellow-500" },
+  { icon: "Loader", name: "Running", iconCN: "text-purple-500" },
+];
+
+export const primaryFilterConfig = (tests: FilteringData[]): PrimaryFilterConfig[] => {
+  const testOptions = Array.from(new Set(tests.map(data => data.test.name))).map(name => ({
+    name,
+  }));
+
+  const uniqueUsers = new Map();
+  tests.forEach(data => {
+    const userKey = `${data.user.email}`;
+    if (!uniqueUsers.has(userKey)) {
+      uniqueUsers.set(userKey, {
+        name: data.user.name ?? data.user.email,
+        user: {
+          url: data.user.image ?? undefined,
+          email: data.user.email,
+        },
+      });
+    }
+  });
+
+  const userOptions = Array.from(uniqueUsers.values());
+
   return [
     {
       key: "tags",
       label: "Name",
-      icon: Plus,
-      options: Object.keys(data || {}).map(name => ({ name })),
+      icon: "Plus",
+      options: testOptions,
       isCommandPallet: true,
     },
     {
       key: "status",
       label: "Status",
-      icon: Circle,
-      options: [
-        { icon: CheckCircle2, name: "Succeeded", iconCN: "text-teal-500" },
-        { icon: CircleX, name: "Failed", iconCN: "text-red-500" },
-        { icon: Ban, name: "Canceled", iconCN: "text-yellow-500" },
-        { icon: Loader, name: "Running", iconCN: "text-purple-500" },
-      ],
+      icon: "Circle",
+      options: STATUS_OPTIONS,
     },
     {
       key: "userid",
       label: "User",
-      icon: User,
-      options: Object.values(data || {}).map(test => ({
-        name: test.user.name,
-        children: UserAvatar({
-          url: test.user.image,
-          className: "size-5.5",
-          fallbackChar: generateFallbackChars(test.user.email),
-        }),
-      })),
+      icon: "User",
+      options: userOptions,
     },
   ];
 };
