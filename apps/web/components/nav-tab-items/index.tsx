@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { DynamicIcon } from "@/lib/dynamic-icons";
 import { cn } from "@/lib/utils";
 import { NavTabProps } from "@/types";
 
@@ -25,7 +26,11 @@ export const NavTabItems = ({ tabItems, className }: NavTabProps) => {
                 "text-neutral-600 bg-neutral-200 dark:text-neutral-200 dark:bg-neutral-200/9",
             )}
           >
-            <item.icon className="size-3 md:size-[0.8125rem]" aria-hidden="true" />
+            <DynamicIcon
+              name={item.icon}
+              className="size-3 md:size-[0.8125rem]"
+              aria-hidden="true"
+            />
             {item.name}
           </li>
         </Link>

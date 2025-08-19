@@ -16,6 +16,7 @@ import {
   DropdownMenuSubTrigger,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { DynamicIcon } from "@/lib/dynamic-icons";
 import { cn } from "@/lib/utils";
 import { CustDropdownMenuProps } from "@/types";
 
@@ -50,7 +51,7 @@ export const CustDropdownMenu = ({ trigger, menuItems }: CustDropdownMenuProps) 
           break;
       }
     },
-    [setSelectedMap, router, signOut, setTheme, theme],
+    [setSelectedMap, router, setTheme, theme],
   );
 
   return (
@@ -75,7 +76,7 @@ export const CustDropdownMenu = ({ trigger, menuItems }: CustDropdownMenuProps) 
                   )}
                 >
                   <div className="flex items-center gap-2">
-                    {item?.icon && <item.icon className="size-3.5" />}
+                    {item?.icon && <DynamicIcon name={item.icon} className="size-3.5" />}
                     <span>{item.label}</span>
                   </div>
                   {selectedMap[item.id] && (
@@ -98,7 +99,7 @@ export const CustDropdownMenu = ({ trigger, menuItems }: CustDropdownMenuProps) 
                         onSelect={() => handleSelect(item.id, { id: sub.id, value: sub.label })}
                         className="flex items-center gap-2 cursor-pointer text-[0.8125rem]"
                       >
-                        {sub?.icon && <sub.icon className="size-3.5" />}
+                        {sub?.icon && <DynamicIcon name={sub.icon} className="size-3.5" />}
                         {sub.label}
                         {isSelected && <Check className="size-3.5 ml-auto" />}
                       </DropdownMenuItem>
@@ -111,7 +112,7 @@ export const CustDropdownMenu = ({ trigger, menuItems }: CustDropdownMenuProps) 
                 onSelect={() => handleSelect(item.id)}
                 className="flex items-center gap-2 cursor-pointer text-[0.8125rem]"
               >
-                {item?.icon && <item.icon className="size-3.5" />}
+                {item?.icon && <DynamicIcon name={item.icon} className="size-3.5" />}
                 {item.label}
               </DropdownMenuItem>
             )}
