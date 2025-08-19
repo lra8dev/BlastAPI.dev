@@ -16,7 +16,7 @@ export const dashboardCardContents = [
       <>
         <Link
           href="/dashboard/settings/team-members"
-          className="underline underline-offset-2 font-semibold text-neutral-600 dark:text-gray-200"
+          className="underline decoration-neutral-400 dark:decoration-neutral-500 hover:decoration-neutral-600 dark:hover:decoration-gray-200 underline-offset-2 font-semibold text-neutral-600 dark:text-gray-200"
         >
           Invite team members
         </Link>{" "}
@@ -30,7 +30,7 @@ export const dashboardCardContents = [
         <span className="font-semibold text-neutral-600 dark:text-gray-200">Run your first </span>
         <Link
           href="/newtest"
-          className="underline underline-offset-2 hover:brightness-110 text-neutral-600 dark:text-gray-200 font-semibold"
+          className="underline underline-offset-2 decoration-neutral-400 dark:decoration-neutral-500 hover:decoration-neutral-600 dark:hover:decoration-gray-200 hover:brightness-110 text-neutral-600 dark:text-gray-200 font-semibold"
         >
           test
         </Link>
