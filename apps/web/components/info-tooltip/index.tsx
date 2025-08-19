@@ -1,10 +1,11 @@
+import { ClassValue } from "clsx";
 import { cn } from "@/lib/utils";
 import { CustTooltip } from "../tooltip";
 
 interface InfoTooltipProps {
   content: string;
   label?: string;
-  className?: string;
+  className?: ClassValue;
 }
 
 export const InfoTooltip = ({ content, label, className }: InfoTooltipProps) => {

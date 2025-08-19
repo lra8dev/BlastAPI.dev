@@ -1,5 +1,5 @@
 import { cn } from "@/lib/utils";
-import { IconProps } from "./types";
+import { IconProps } from "@/types";
 
 export const GoogleIcon = ({ className, size = 24 }: IconProps) => (
   <svg

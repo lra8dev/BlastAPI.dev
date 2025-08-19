@@ -1,5 +1,5 @@
 import { cn } from "@/lib/utils";
-import { IconProps } from "./types";
+import { IconProps } from "@/types";
 
 export const GitHubIcon = ({ className, size = 24 }: IconProps) => (
   <svg
