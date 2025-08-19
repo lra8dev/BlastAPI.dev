@@ -1,5 +1,3 @@
-"use client";
-
 import Image from "next/image";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
@@ -13,14 +11,16 @@ import { CustDropdownMenu } from "../dropdown-menu";
 import { NavTabItems } from "../nav-tab-items";
 
 export const Header = ({ user, className }: LayoutHeaderProps) => {
+  const fallbackChar = generateFallbackChars(user.name ?? user.email);
+
   return (
     <header
       className={cn(
-        "w-full font-inter bg-white dark:bg-dark-5 border-b dark:border-neutral-700/25 shadow-xs",
+        "w-full font-inter dark:bg-dark-5 border-b dark:border-neutral-700/25 shadow-xs p-3 md:px-4 lg:px-6",
         className,
       )}
     >
-      <nav className="flex items-center justify-between w-full flex-wrap overflow-hidden px-3 py-3 md:px-4 lg:px-6">
+      <nav className="flex items-center justify-between w-full flex-wrap overflow-hidden max-md:pb-2">
         <div className="flex items-center gap-4">
           <div className="flex items-center gap-1">
             <Link href="/dashboard">
@@ -30,6 +30,7 @@ export const Header = ({ user, className }: LayoutHeaderProps) => {
                 width={105}
                 height={105}
                 className="max-[421px]:hidden"
+                priority
               />
               <Image
                 src="/assets/BlastAPI_logo_single.svg"
@@ -37,6 +38,7 @@ export const Header = ({ user, className }: LayoutHeaderProps) => {
                 width={19}
                 height={19}
                 className="min-[421px]:hidden"
+                priority
               />
             </Link>
 
@@ -48,17 +50,14 @@ export const Header = ({ user, className }: LayoutHeaderProps) => {
 
         <CustDropdownMenu
           trigger={
-            <Button variant="primary" size="icon" className="rounded-full bg-transparent">
-              <UserAvatar
-                url={user.image ?? undefined}
-                fallbackChar={generateFallbackChars(user.name ?? user.email)}
-              />
+            <Button variant="primary" className="rounded-full bg-transparent size-8">
+              <UserAvatar url={user.image ?? undefined} fallbackChar={fallbackChar} />
             </Button>
           }
           menuItems={USER_DROPDOWN_ITEMS}
         />
       </nav>
-      <nav className="md:hidden">
+      <nav className="md:hidden border-t pt-2 dark:border-neutral-700/32">
         <NavTabItems tabItems={LAYOUT_HEADER_TABS} className="overflow-hidden flex-wrap flex-1" />
       </nav>
     </header>
