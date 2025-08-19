@@ -1,13 +1,17 @@
+"use client";
+
 import { CalendarDays } from "lucide-react";
 import { Badge } from "@/components/badge";
 import { CustPopover } from "@/components/popover";
 import { Button } from "@/components/ui/button";
 import { Calendar } from "@/components/ui/calendar";
 import { formatDateTime } from "@/utils/format-datetime";
-import { NavigationHandlers } from "../../_types";
+import { useNavigation } from "../../_hooks";
 import { ClearFilter } from "../clear-filter";
 
-export const DateFilter = ({ hasSearchParam, updateSearchParam }: NavigationHandlers) => {
+export const DateFilter = () => {
+  const { hasSearchParam, updateSearchParam } = useNavigation();
+
   return (
     <CustPopover
       trigger={

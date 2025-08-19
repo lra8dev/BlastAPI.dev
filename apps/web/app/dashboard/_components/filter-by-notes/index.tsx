@@ -1,7 +1,11 @@
-import { Switch } from "@/components/ui/switch";
-import { NavigationHandlers } from "../../_types";
+"use client";
 
-export const NotesFilter = ({ hasSearchParam, updateSearchParam }: NavigationHandlers) => {
+import { Switch } from "@/components/ui/switch";
+import { useNavigation } from "../../_hooks";
+
+export const NotesFilter = () => {
+  const { hasSearchParam, updateSearchParam } = useNavigation();
+
   return (
     <div title="Filter by Notes" className="h-fit filter-btn filter-btn-hover">
       <Switch
