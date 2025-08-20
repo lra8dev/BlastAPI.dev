@@ -1,4 +1,4 @@
-import { PageLoader } from "@/components/loader/page-loader";
+import { PageLoader } from "@/components/page-loader";
 
 const LoadingDashboard = () => {
   return <PageLoader />;
