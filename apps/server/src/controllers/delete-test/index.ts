@@ -1,5 +1,6 @@
 import { prisma } from "@blastapi/db";
 import { Request, Response } from "express";
+import { validate } from "uuid";
 import { errorMessage } from "@/utils/error-message";
 
 export const deleteTest = async (req: Request, res: Response) => {
@@ -7,10 +8,17 @@ export const deleteTest = async (req: Request, res: Response) => {
     const { testRunId: id } = req.params;
 
     if (!id || typeof id !== "string" || id.trim() === "") {
-      return res.status(400).json({ success: false, message: "Invalid test ID" });
+      return res.status(400).json({ success: false, message: "Test run ID is required" });
     }
 
     const testRunId = id.trim();
+
+    if (!validate(testRunId)) {
+      return res.status(400).json({
+        success: false,
+        message: "Invalid test run ID format. Expected a valid UUID.",
+      });
+    }
 
     const testRun = await prisma.testRun.findUnique({
       where: { id: testRunId },
@@ -52,7 +60,11 @@ export const deleteTest = async (req: Request, res: Response) => {
       await tx.testRun.delete({ where: { id: testRunId } });
     });
 
-    return res.status(200).json({ success: true, message: "Test deleted successfully" });
+    return res.status(200).json({
+      success: true,
+      message: "Test deleted successfully",
+      data: { id: testRun.id },
+    });
   } catch (error) {
     return res.status(500).json({
       success: false,

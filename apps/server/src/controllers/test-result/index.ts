@@ -1,5 +1,6 @@
 import { prisma } from "@blastapi/db";
 import { Request, Response } from "express";
+import { validate } from "uuid";
 import { errorMessage } from "@/utils/error-message";
 
 export const getTestResult = async (req: Request, res: Response) => {
@@ -7,11 +8,20 @@ export const getTestResult = async (req: Request, res: Response) => {
     const { testRunId } = req.params;
 
     if (!testRunId || typeof testRunId !== "string" || testRunId.trim() === "") {
-      return res.status(400).json({ success: false, message: "Invalid test run ID" });
+      return res.status(400).json({ success: false, message: "Test run ID is required" });
+    }
+
+    const validTestRunId = testRunId.trim();
+
+    if (!validate(validTestRunId)) {
+      return res.status(400).json({
+        success: false,
+        message: "Invalid test run ID format. Expected a valid UUID.",
+      });
     }
 
     const result = await prisma.testRun.findUnique({
-      where: { id: testRunId.trim() },
+      where: { id: validTestRunId },
       select: {
         id: true,
         status: true,
@@ -98,11 +108,20 @@ export const getTestResultSummary = async (req: Request, res: Response) => {
     const { testRunId } = req.params;
 
     if (!testRunId || typeof testRunId !== "string" || testRunId.trim() === "") {
-      return res.status(400).json({ success: false, message: "Invalid test run ID" });
+      return res.status(400).json({ success: false, message: "Test run ID is required" });
+    }
+
+    const validTestRunId = testRunId.trim();
+
+    if (!validate(validTestRunId)) {
+      return res.status(400).json({
+        success: false,
+        message: "Invalid test run ID format. Expected a valid UUID.",
+      });
     }
 
     const summary = await prisma.testRun.findUnique({
-      where: { id: testRunId.trim() },
+      where: { id: validTestRunId },
       select: {
         status: true,
         testConfig: {
