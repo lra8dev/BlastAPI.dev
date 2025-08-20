@@ -23,6 +23,8 @@ model User {
   accounts Account[]
   sessions Session[]
   testRuns TestRun[]
+
+  @@index([email])
 }
 
 model Account {
@@ -68,16 +70,20 @@ model TestRun {
   id          String     @id @default(uuid()) @db.Uuid
   userId      String     @db.Uuid
   status      TestStatus @default(Queued)
-  scheduledAt DateTime? // for scheduled tests
+  scheduledAt DateTime?
   startedAt   DateTime?
   endedAt     DateTime?
   createdAt   DateTime   @default(now())
   updatedAt   DateTime   @updatedAt
 
-  user        User         @relation(fields: [userId], references: [id])
-  testConfig  TestConfig?
-  testMetrics TestMetric[]
-  testResult  TestResult?
+  user               User                @relation(fields: [userId], references: [id], onDelete: Cascade)
+  testConfig         TestConfig?
+  testMetrics        TestMetric[]
+  testResult         TestResult?
+  healthCheckSummary HealthCheckSummary?
+
+  @@index([userId, status])
+  @@index([status, createdAt])
 }
 
 model TestMetric {
@@ -93,7 +99,9 @@ model TestMetric {
   avgRequest   Float
   maxRequest   Float
 
-  testRun TestRun @relation(fields: [testRunId], references: [id])
+  testRun TestRun @relation(fields: [testRunId], references: [id], onDelete: Cascade)
+
+  @@index([testRunId, timestamp])
 }
 
 model TestConfig {
@@ -101,43 +109,83 @@ model TestConfig {
   testRunId        String     @unique @db.Uuid
   name             String
   url              String
-  method           HttpMethod
+  method           HttpMethod @default(GET)
   region           String
   duration         Float
-  requestRate      Int
+  requestRate      Int // TODO: remove this and use ramp up and ramp down
   requestCount     Int
   concurrencyLevel Int
   headers          Json?
   body             Json?
+  createdAt        DateTime   @default(now())
 
-  testRun TestRun @relation(fields: [testRunId], references: [id])
+  testRun TestRun @relation(fields: [testRunId], references: [id], onDelete: Cascade)
+
+  @@index([testRunId])
 }
 
 model TestResult {
-  id                 String @id @default(uuid()) @db.Uuid
-  testRunId          String @unique @db.Uuid
-  successRate        Float
-  errorRate          Float
-  avgLatency         Float
+  id                 String   @id @default(uuid()) @db.Uuid
+  testRunId          String   @unique @db.Uuid
+  totalRequests      Int
+  requestRate        Float
   avgThroughput      Float
   peakThroughput     Float
   duration           Float
-  totalRequests      Float
-  requestRate        Float
-  totalResponses     Float
+  totalResponses     Int
   minResponseTime    Float
   avgResponseTime    Float
   p50ResponseTime    Float
   p95ResponseTime    Float
   p99ResponseTime    Float
   maxResponseTime    Float
-  successfulRequests Float
-  failedRequests     Float
+  successRate        Float
+  errorRate          Float
+  successfulRequests Int
+  failedRequests     Int
+  statusCodes        Json
+  logs               Json?
+  createdAt          DateTime @default(now())
 
-  logs      Json?
-  createdAt DateTime @default(now())
+  testRun TestRun @relation(fields: [testRunId], references: [id], onDelete: Cascade)
 
-  testRun TestRun @relation(fields: [testRunId], references: [id])
+  @@index([testRunId])
+}
+
+model HealthCheckResult {
+  id                   String   @id @default(uuid()) @db.Uuid
+  healthCheckSummaryId String   @db.Uuid
+  checkId              String
+  checkName            String
+  metric               String
+  threshold            Float
+  actualValue          Float
+  operator             String
+  unit                 String
+  passed               Boolean
+  failureDetails       Json?
+  createdAt            DateTime @default(now())
+
+  healthCheckSummary HealthCheckSummary? @relation(fields: [healthCheckSummaryId], references: [id], onDelete: Cascade)
+
+  @@index([healthCheckSummaryId, checkId])
+}
+
+model HealthCheckSummary {
+  id             String            @id @default(uuid()) @db.Uuid
+  testRunId      String            @unique @db.Uuid
+  totalChecks    Int
+  passedChecks   Int
+  failedChecks   Int
+  passPercentage Float
+  overallStatus  HealthCheckStatus
+  createdAt      DateTime          @default(now())
+  updatedAt      DateTime          @updatedAt
+
+  testRun            TestRun             @relation(fields: [testRunId], references: [id], onDelete: Cascade)
+  healthCheckResults HealthCheckResult[]
+
+  @@index([testRunId])
 }
 
 enum UserRole {
@@ -158,4 +206,11 @@ enum TestStatus {
   Succeeded
   Failed
   Canceled
+  Timeout
+}
+
+enum HealthCheckStatus {
+  PASS
+  FAIL
+  PARTIAL
 }
