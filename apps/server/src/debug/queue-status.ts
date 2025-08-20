@@ -1,14 +1,15 @@
 import { createRedisConnection, testQueue } from "@/config/bullmq";
+import { queueLogger } from "@/lib/logger";
 
 const redis = createRedisConnection();
 
 export const debugQueueStatus = async () => {
   try {
-    console.log("🔍 Debugging Queue Status...");
+    queueLogger.info("Debugging Queue Status...");
 
     // Check Redis connection
     const ping = await redis.ping();
-    console.log("Redis ping:", ping);
+    queueLogger.info({ ping }, "Redis ping result");
 
     // Get queue counts
     const waiting = await testQueue.getWaiting();
@@ -17,50 +18,66 @@ export const debugQueueStatus = async () => {
     const failed = await testQueue.getFailed();
     const delayed = await testQueue.getDelayed();
 
-    console.log("📊 Queue Statistics:");
-    console.log(`- Waiting jobs: ${waiting.length}`);
-    console.log(`- Active jobs: ${active.length}`);
-    console.log(`- Completed jobs: ${completed.length}`);
-    console.log(`- Failed jobs: ${failed.length}`);
-    console.log(`- Delayed jobs: ${delayed.length}`);
+    const queueStats = {
+      waiting: waiting.length,
+      active: active.length,
+      completed: completed.length,
+      failed: failed.length,
+      delayed: delayed.length,
+    };
+
+    queueLogger.info({ stats: queueStats }, "Queue Statistics");
 
     // Show waiting jobs details
     if (waiting.length > 0) {
-      console.log("⏳ Waiting jobs:");
+      queueLogger.info("Waiting jobs details:");
       waiting.forEach((job, index) => {
-        console.log(
-          `  ${index + 1}. Job ${job.id} - ${job.name} (Data: ${JSON.stringify(job.data)})`,
+        queueLogger.info(
+          {
+            jobNumber: index + 1,
+            jobId: job.id,
+            jobName: job.name,
+            jobData: job.data,
+          },
+          "Waiting job",
         );
       });
     }
 
     // Show active jobs details
     if (active.length > 0) {
-      console.log("🔄 Active jobs:");
+      queueLogger.info("Active jobs details:");
       active.forEach((job, index) => {
-        console.log(`  ${index + 1}. Job ${job.id} - ${job.name}`);
+        queueLogger.info({ jobNumber: index + 1, jobId: job.id, jobName: job.name }, "Active job");
       });
     }
 
     // Show failed jobs
     if (failed.length > 0) {
-      console.log("❌ Failed jobs:");
+      queueLogger.info("Failed jobs details:");
       failed.forEach((job, index) => {
-        console.log(`  ${index + 1}. Job ${job.id} - ${job.failedReason}`);
+        queueLogger.error(
+          {
+            jobNumber: index + 1,
+            jobId: job.id,
+            failedReason: job.failedReason,
+          },
+          "Failed job",
+        );
       });
     }
 
     // Check if workers are registered
     const workers = await redis.smembers(`bull:${testQueue.name}:workers`);
-    console.log(`👷 Registered workers: ${workers.length}`);
+    queueLogger.info({ workerCount: workers.length }, "Registered workers");
     workers.forEach((worker, index) => {
-      console.log(`  ${index + 1}. ${worker}`);
+      queueLogger.info({ workerNumber: index + 1, worker }, "Worker details");
     });
 
     // Get queue health
     const health = await testQueue.getJobCounts();
-    console.log("🏥 Queue health:", health);
+    queueLogger.info({ health }, "Queue health");
   } catch (error) {
-    console.error("❌ Error debugging queue:", error);
+    queueLogger.error({ err: error }, "Error debugging queue");
   }
 };

@@ -1,5 +1,7 @@
+import "@/jobs/job-queue"; // WIP: Run Worker as Separate Process
 import http from "http";
 import app from "./app";
+import { appLogger } from "./lib/logger";
 import { initSocket } from "./lib/socket";
 
 const server = http.createServer(app);
@@ -9,5 +11,5 @@ initSocket(server);
 
 // WIP: Handle errors, graceful shutdown and restart. Also listen on custom domain
 server.listen(PORT, () => {
-  console.log(`🚀 Server running on http://localhost:${PORT}`);
+  appLogger.info({ port: PORT }, "Server running");
 });
