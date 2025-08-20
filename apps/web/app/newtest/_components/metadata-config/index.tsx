@@ -3,7 +3,11 @@ import { FieldGenerator } from "@/components/form/field-generator";
 import { Card } from "@/components/ui/card";
 import { METADATA_CONFIG } from "../../_constants";
 
-export const Metadata = <T extends FieldValues>({ control }: { control: Control<T> }) => {
+interface MetadataProps<T extends FieldValues> {
+  control: Control<T>;
+}
+
+export const Metadata = <T extends FieldValues>({ control }: MetadataProps<T>) => {
   return (
     <div className="flex flex-col items-center md:flex-row md:justify-between gap-3 md:gap-6">
       {METADATA_CONFIG.map(config => (

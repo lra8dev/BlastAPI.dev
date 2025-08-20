@@ -1,7 +1,6 @@
 import { JsonEditor } from "@/components/json-editor";
 import { JSONTable } from "@/components/json-table";
-import { FieldConfig } from "@/types/form";
-import { CustSelectOption } from "@/types/general";
+import { CustSelectOption, FieldConfig } from "@/types";
 
 export const HTTP_METHODS: CustSelectOption[] = [
   { value: "GET", label: "GET" },

@@ -1,6 +1,5 @@
 import { FieldValues, Path } from "react-hook-form";
 import { HTTP_METHODS, REQUEST_CONFIG_ITEMS, REQUEST_CONFIG_TABS } from "@/app/newtest/_constants";
-import { RequestConfigProps } from "@/app/newtest/_types";
 import { FieldGenerator } from "@/components/form/field-generator";
 import { CustSelect } from "@/components/select";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -8,6 +7,7 @@ import { FormField, FormItem } from "@/components/ui/form";
 import { Separator } from "@/components/ui/separator";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { cn } from "@/lib/utils";
+import { RequestConfigProps } from "../../_types";
 
 export const RequestConfig = <T extends FieldValues>({
   control,
