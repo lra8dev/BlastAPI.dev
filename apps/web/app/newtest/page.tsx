@@ -1,9 +1,9 @@
 import { redirect } from "next/navigation";
 import { auth } from "@/auth";
 import { Header } from "@/components/header";
-import { NewTestFormConfig } from "./_components/form";
+import { NewTestConfig } from "./_components/form";
 
-const NewTest = async () => {
+const NewTestPage = async () => {
   const session = await auth();
 
   if (!session?.user) {
@@ -12,10 +12,10 @@ const NewTest = async () => {
 
   return (
     <main className="w-full flex flex-col gap-3 md:gap-6 font-inter bg-white dark:bg-dark">
-      <Header user={session.user} className="sticky top-0 z-50" />
-      <NewTestFormConfig userId={session.user.id} />
+      <Header user={session.user} className="sticky top-0 z-50 bg-white" />
+      <NewTestConfig userId={session.user.id} />
     </main>
   );
 };
 
-export default NewTest;
+export default NewTestPage;

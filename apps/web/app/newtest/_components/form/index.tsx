@@ -1,6 +1,7 @@
 "use client";
 
 import { CircleChevronRight, Loader2 } from "lucide-react";
+import { useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Form } from "@/components/ui/form";
 import { useNewTestForm } from "../../_hooks/validators";
@@ -8,9 +9,19 @@ import { LoadConfig } from "../load-config";
 import { Metadata } from "../metadata-config";
 import { RequestConfig } from "../request-config";
 
-export const NewTestConfig = () => {
-  const { newTestForm, control, handleSubmit, onSubmit, getValues, setValue, isPending } =
+interface NewTestConfigProps {
+  userId: string;
+}
+
+export const NewTestConfig = ({ userId }: NewTestConfigProps) => {
+  const { newTestForm, handleSubmit, control, onSubmit, getValues, setValue, isPending } =
     useNewTestForm();
+
+  useEffect(() => {
+    if (userId) {
+      setValue("userId", userId);
+    }
+  }, [userId, setValue]);
 
   return (
     <Form {...newTestForm}>
@@ -45,8 +56,10 @@ export const NewTestConfig = () => {
           </span>
           <Button
             size="lg"
+            type="button"
             variant="primary"
-            className="font-normal text-xs md:text-sm text-neutral-700 dark:text-gray-200/85 bg-muted border-neutral-200 dark:border-neutral-700/30 hover:bg-gray-200 dark:hover:bg-neutral-800/60 transition-colors shadow-xs backdrop-blur-sm"
+            disabled
+            className="font-normal text-xs md:text-sm text-neutral-700 dark:text-gray-200/85 bg-muted border-neutral-200 dark:border-neutral-700/30 hover:bg-gray-200 dark:hover:bg-neutral-800/60 transition-colors shadow-xs backdrop-blur-sm cursor-not-allowed"
           >
             Save Draft
           </Button>

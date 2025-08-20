@@ -7,7 +7,7 @@ import { useMemo } from "react";
 import { Control, FieldValues, Path, useForm, useWatch } from "react-hook-form";
 import { v4 as uuid } from "uuid";
 import { useCreateTest } from "@/app/newtest/_hooks/controllers";
-import { getFormattedDateTime } from "@/utils/formatted-date-time";
+import { formatDateTime } from "@/utils/format-datetime";
 
 export const useNewTestForm = () => {
   const { createTest, isPending } = useCreateTest();
@@ -15,7 +15,8 @@ export const useNewTestForm = () => {
   const defaultValues = useMemo(
     () => ({
       id: uuid(),
-      name: getFormattedDateTime(),
+      userId: "",
+      name: formatDateTime(Date.now()).replace(/[, ]/g, "_").replace("__", "_"),
       url: "",
       method: HttpMethod.GET,
       region: TestRegions.SaEast1,
@@ -33,11 +34,13 @@ export const useNewTestForm = () => {
     resolver: zodResolver(newTestSchema),
     defaultValues,
     mode: "onChange",
+    shouldFocusError: true,
+    shouldUseNativeValidation: false,
   });
 
   const { handleSubmit, control, getValues, setValue, reset } = newTestForm;
 
-  const onSubmit = async (payload: NewTestConfig) => {
+  const onSubmit = (payload: NewTestConfig) => {
     if (!isPending) {
       createTest(payload);
       reset();
