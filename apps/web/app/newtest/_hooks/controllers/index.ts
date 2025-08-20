@@ -5,28 +5,32 @@ import { useMutation } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import { fetchApi } from "@/lib/api";
+import { NewTestResponse } from "../../_types";
 
 export const useCreateTest = () => {
   const router = useRouter();
 
   const { mutate: createTest, isPending } = useMutation({
     mutationKey: ["createTest"],
+
     mutationFn: async (payload: NewTestConfig) => {
-      const response = await fetchApi<NewTestConfig>("/api/newtest", {
+      return fetchApi<NewTestResponse>("/api/newtest", {
         method: "POST",
         body: JSON.stringify(payload),
       });
-      return response;
     },
-    onSuccess: data => {
-      if (data?.id) {
-        toast.success("Test started for execution");
-        router.push(`/test/run/${data.id}`);
+    onSuccess: ({ data, error, message }) => {
+      if (error) {
+        toast.error(message);
+        return router.push("/dashboard");
       }
+
+      toast.success(message);
+      return router.push(`/test/result/${data.testRunId}`);
     },
     onError: error => {
-      toast.error(error.message || "Something went wrong");
-      console.error(JSON.stringify(error, null, 2));
+      toast.error(error.message);
+      router.push("/dashboard");
     },
   });
 
