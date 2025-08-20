@@ -2,16 +2,18 @@ import { prisma } from "@blastapi/db";
 import { NewTestConfig } from "@blastapi/validators";
 import axios, { AxiosResponse } from "axios";
 import pLimit from "p-limit";
+import { jobLogger } from "@/lib/logger";
+import { retry } from "@/lib/retry";
 import { getIO } from "@/lib/socket";
 import { RequestMetrics } from "@/types";
+import { errorMessage } from "@/utils/error-message";
 import { calPerformanceStats } from "@/utils/performance-stats";
-import { retry } from "@/utils/retry";
+import { HealthCheckService } from "../health-check";
 
 export const executeTestJob = async (config: NewTestConfig) => {
   const io = getIO();
   const { url, method, totalRequests, concurrency, headers, body } = config;
 
-  // Initialize tracking variables
   const startTime = Date.now();
   let completed = 0;
   let failed = 0;
@@ -19,7 +21,6 @@ export const executeTestJob = async (config: NewTestConfig) => {
   const statusCodes: Map<number, number> = new Map();
 
   try {
-    // Update TestRun status to Running
     const { id: testRunId } = await retry(() =>
       prisma.testRun.update({
         where: { id: config.id },
@@ -31,43 +32,39 @@ export const executeTestJob = async (config: NewTestConfig) => {
       }),
     );
 
-    // Save initial test configurations
-    await retry(() =>
-      prisma.testConfig.create({
-        data: {
-          testRunId,
-          url,
-          method,
-          name: config.name,
-          region: config.region,
-          duration: config.duration || 20,
-          requestRate: config.requestRate,
-          requestCount: totalRequests || 50,
-          concurrencyLevel: concurrency,
-          headers: headers ?? undefined,
-          body: body ?? undefined,
-        },
-        select: {},
-      }),
-    );
-
-    // Emit test started event
-    io.emit(`test:${testRunId}:started`, {
-      testRunId,
-      message: "Load test started",
-      config: {
-        url,
-        method,
-        totalRequests,
-        concurrency,
-        expectedDuration: Math.ceil(totalRequests / concurrency),
-      },
+    const existingConfig = await prisma.testConfig.findUnique({
+      where: { testRunId },
     });
 
-    // Create concurrency limiter
+    if (!existingConfig) {
+      await retry(() =>
+        prisma.testConfig.create({
+          data: {
+            testRunId,
+            url,
+            method,
+            name: config.name,
+            region: config.region,
+            duration: config.duration,
+            requestRate: config.requestRate,
+            requestCount: totalRequests,
+            concurrencyLevel: concurrency,
+            headers: headers ?? undefined,
+            body: body ?? undefined,
+          },
+          select: { id: true },
+        }),
+      );
+    }
+
+    io.emit(`test:${testRunId}:started`, {
+      testRunId,
+      message: "Test started for execution",
+      startedAt: Date.now(),
+    });
+
     const limitConcurrency = pLimit(concurrency);
 
-    // Execute requests with proper error handling and metrics collection
     await Promise.allSettled(
       Array.from({ length: totalRequests }, (_, index) =>
         limitConcurrency(async () => {
@@ -78,10 +75,11 @@ export const executeTestJob = async (config: NewTestConfig) => {
             const response: AxiosResponse = await axios({
               url,
               method: method.toLowerCase(),
-              headers: headers ? JSON.parse(headers) : undefined, // WIP: make headers as JSON object
-              data: body ? JSON.parse(body) : undefined, // WIP: make body as JSON object
-              timeout: 15000, // Increased timeout
+              headers: headers ? JSON.parse(headers) : undefined,
+              data: body ? JSON.parse(body) : undefined,
+              timeout: 15000,
               validateStatus: () => true,
+              maxRedirects: 5,
             });
 
             const latency = performance.now() - requestStart;
@@ -98,13 +96,13 @@ export const executeTestJob = async (config: NewTestConfig) => {
             statusCodes.set(response.status, (statusCodes.get(response.status) || 0) + 1);
 
             if (success) {
-              // Only count successful requests for response times
               requestMetrics.push(requestMetric);
             } else {
               failed++;
               requestMetric.errorMessage = `HTTP ${response.status}`;
+              requestMetrics.push(requestMetric);
             }
-          } catch (error: any) {
+          } catch (error) {
             const latency = performance.now() - requestStart;
             failed++;
 
@@ -113,44 +111,58 @@ export const executeTestJob = async (config: NewTestConfig) => {
               statusCode: 0,
               success: false,
               timestamp: Date.now(),
-              errorMessage: error.code || error.message || "Unknown error",
+              errorMessage: errorMessage(error) || "Unknown error",
             };
 
-            // Emit specific error for monitoring
-            io.emit(`test:${testRunId}:error`, {
-              requestIndex: index,
-              error: error.message,
-              latency,
-              timestamp: Date.now(),
-            });
+            // Add failed requests to metrics
+            requestMetrics.push(requestMetric);
+
+            if (index % 10 === 0) {
+              io.emit(`test:${testRunId}:error`, {
+                requestIndex: index,
+                error: errorMessage(error),
+                latency,
+                timestamp: Date.now(),
+              });
+            }
           } finally {
             completed++;
 
-            // Calculate real-time performance metrics
-            const currentStats = calPerformanceStats(requestMetrics);
-            const currentThroughput = completed / ((Date.now() - startTime) / 1000);
+            // Calculate real-time performance metrics from successful requests only
+            const successfulMetrics = requestMetrics.filter(m => m.success);
+            const currentStats = calPerformanceStats(successfulMetrics);
+            const currentThroughput = completed / (Date.now() - startTime);
 
             // Save individual request metric to database
-            await retry(
-              () =>
-                prisma.testMetric.create({
-                  data: {
-                    testRunId,
-                    latency: requestMetric.latency,
-                    statusCode: requestMetric.statusCode,
-                    throughput: currentThroughput,
-                    timestamp: new Date(requestMetric.timestamp),
-                    usersCreated: completed,
-                    p95: currentStats.p95,
-                    p99: currentStats.p99,
-                    avgRequest: currentStats.avg,
-                    maxRequest: currentStats.max,
-                  },
-                  select: {},
-                }),
-              2,
-              100,
-            );
+            if (completed % 5 === 0 || completed === totalRequests) {
+              try {
+                await retry(
+                  () =>
+                    prisma.testMetric.create({
+                      data: {
+                        testRunId,
+                        latency: requestMetric.latency,
+                        statusCode: requestMetric.statusCode,
+                        throughput: currentThroughput,
+                        timestamp: new Date(requestMetric.timestamp),
+                        usersCreated: completed,
+                        p95: currentStats.p95,
+                        p99: currentStats.p99,
+                        avgRequest: currentStats.avg,
+                        maxRequest: currentStats.max,
+                      },
+                      select: { id: true },
+                    }),
+                  2,
+                  100,
+                );
+              } catch (dbError) {
+                jobLogger.warn(
+                  { err: dbError, requestIndex: index },
+                  "Could not save metric for request",
+                );
+              }
+            }
 
             // Emit progress with detailed metrics every 10 requests or at completion
             if (completed % 10 === 0 || completed === totalRequests) {
@@ -158,12 +170,13 @@ export const executeTestJob = async (config: NewTestConfig) => {
                 completed,
                 total: totalRequests,
                 failed,
-                successRate: ((completed - failed) / completed) * 100,
+                successRate: completed > 0 ? ((completed - failed) / completed) * 100 : 0,
                 currentThroughput: Math.round(currentThroughput * 100) / 100,
+                minLatency: Math.round(currentStats.min * 100) / 100,
                 avgLatency: Math.round(currentStats.avg * 100) / 100,
                 p95Latency: Math.round(currentStats.p95 * 100) / 100,
-                statusCodeDistribution: Object.fromEntries(statusCodes),
-                elapsedTime: Math.round((Date.now() - startTime) / 1000),
+                statusCodes: Object.fromEntries(statusCodes),
+                elapsedTime: Math.round(Date.now() - startTime),
               };
 
               io.emit(`test:${testRunId}:progress`, progressData);
@@ -174,9 +187,11 @@ export const executeTestJob = async (config: NewTestConfig) => {
     );
 
     // Calculate final comprehensive metrics
-    const duration = (Date.now() - startTime) / 1000;
+    const duration = Date.now() - startTime;
     const successfulRequests = completed - failed;
-    const finalStats = calPerformanceStats(requestMetrics);
+
+    const successfulMetrics = requestMetrics.filter(m => m.success);
+    const finalStats = calPerformanceStats(successfulMetrics);
 
     // Handle case where all requests failed
     if (successfulRequests === 0) {
@@ -187,7 +202,7 @@ export const executeTestJob = async (config: NewTestConfig) => {
             status: "Failed",
             updatedAt: new Date(),
           },
-          select: {},
+          select: { id: true },
         }),
       );
 
@@ -209,84 +224,94 @@ export const executeTestJob = async (config: NewTestConfig) => {
       return testRunId;
     }
 
-    // Prepare comprehensive test results
+    const requestRate = totalRequests / duration;
+
+    const metricsForHealthCheck = {
+      p50: finalStats.p50,
+      p95: finalStats.p95,
+      p99: finalStats.p99,
+      avg: finalStats.avg,
+      min: finalStats.min,
+      max: finalStats.max,
+      successRate: (successfulRequests / totalRequests) * 100,
+      errorRate: (failed / totalRequests) * 100,
+      totalRequests,
+      failedRequests: failed,
+    };
+
+    let healthCheckSummary = null;
+
+    try {
+      healthCheckSummary = await HealthCheckService.executeHealthChecks(
+        testRunId,
+        metricsForHealthCheck,
+      );
+    } catch (healthCheckError) {
+      jobLogger.warn({ err: healthCheckError }, "Health check failed");
+    }
+
     const result = {
       testRunId,
       successRate: (successfulRequests / totalRequests) * 100,
       errorRate: (failed / totalRequests) * 100,
-      avgResponseTime: finalStats.avg,
-      maxResponseTime: finalStats.max,
-      minResponseTime: finalStats.min,
-      p50ResponseTime: finalStats.p50,
-      p95ResponseTime: finalStats.p95,
-      p99ResponseTime: finalStats.p99,
-      avgLatency: finalStats.avg,
-      avgThroughput: completed / duration,
+      minResponseTime: Math.round(finalStats.min),
+      avgResponseTime: Math.round(finalStats.avg),
+      p50ResponseTime: Math.round(finalStats.p50),
+      p95ResponseTime: Math.round(finalStats.p95),
+      p99ResponseTime: Math.round(finalStats.p99),
+      maxResponseTime: Math.round(finalStats.max),
+      avgThroughput: Math.round(completed / duration),
       peakThroughput: Math.max(
         ...requestMetrics.map(
-          (_, i) => (i + 1) / ((requestMetrics[i]?.timestamp ?? 0 - startTime) / 1000) || 0,
+          (_, i) => (i + 1) / (requestMetrics[i]?.timestamp ?? startTime - startTime) || 0,
         ),
       ),
+      requestRate: Math.round(requestRate),
+      totalResponses: completed,
       totalRequests,
       successfulRequests,
       failedRequests: failed,
-      duration,
-      // statusCodeDistribution: Object.fromEntries(statusCodes), // WIP: Add code distribution
-      concurrencyLevel: concurrency,
+      duration: Math.round(duration),
+      statusCodes: Object.fromEntries(statusCodes),
     };
 
-    // Emit comprehensive completion event
-    io.emit(`test:${testRunId}:complete`, {
-      ...result,
-      message: "Load test completed successfully",
-      summary: {
-        performance:
-          finalStats.avg < 100
-            ? "Excellent"
-            : finalStats.avg < 500
-              ? "Good"
-              : finalStats.avg < 1000
-                ? "Average"
-                : "Poor",
-        reliability:
-          result.successRate > 99
-            ? "Excellent"
-            : result.successRate > 95
-              ? "Good"
-              : result.successRate > 90
-                ? "Average"
-                : "Poor",
-      },
-    });
-
-    // Save consolidated test result
     await retry(() =>
       prisma.testResult.create({
         data: {
           ...result,
         },
-        select: {},
+        select: { id: true },
       }),
     );
 
-    // Update test run status to completed
+    let finalTestStatus: "Succeeded" | "Failed" = "Succeeded";
+
+    if (healthCheckSummary && healthCheckSummary.overallStatus === "FAIL") {
+      jobLogger.warn(
+        {
+          failedChecks: healthCheckSummary.failedChecks,
+          totalChecks: healthCheckSummary.totalChecks,
+        },
+        "Test execution succeeded but failed health checks",
+      );
+    }
+
     await retry(() =>
       prisma.testRun.update({
         where: { id: testRunId },
         data: {
-          status: "Completed",
+          status: finalTestStatus,
           endedAt: new Date(),
           updatedAt: new Date(),
         },
-        select: {},
+        select: { id: true },
       }),
     );
 
-    return testRunId;
-  } catch (error: any) {
-    console.error(`❌ Critical error in test execution:`, error);
+    io.emit(`test:${testRunId}:complete`, { testRunId, message: "Test completed successfully" });
 
-    // Update status to failed on critical errors
+    return testRunId;
+  } catch (error) {
     await retry(() =>
       prisma.testRun.update({
         where: { id: config.id },
@@ -294,13 +319,12 @@ export const executeTestJob = async (config: NewTestConfig) => {
           status: "Failed",
           updatedAt: new Date(),
         },
-        select: {},
+        select: { id: true },
       }),
     );
 
-    // Emit critical failure event
     io.emit(`test:${config.id}:critical-error`, {
-      error: error.message,
+      error: errorMessage(error),
       completed,
       failed,
       timestamp: Date.now(),
