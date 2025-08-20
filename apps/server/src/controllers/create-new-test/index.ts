@@ -2,6 +2,7 @@ import { prisma } from "@blastapi/db";
 import { newTestSchema } from "@blastapi/validators";
 import { Request, Response } from "express";
 import { enqueueTestJob } from "@/jobs/produce-test-job";
+import { appLogger } from "@/lib/logger";
 import { errorMessage } from "@/utils/error-message";
 
 export const createNewTest = async (req: Request, res: Response) => {
@@ -66,7 +67,7 @@ export const createNewTest = async (req: Request, res: Response) => {
           data: { status: "Failed" },
         });
       } catch (cleanupError) {
-        console.error("❌ Failed to cleanup failed test run:", cleanupError);
+        appLogger.error({ err: cleanupError }, "Failed to cleanup failed test run");
       }
     }
 
