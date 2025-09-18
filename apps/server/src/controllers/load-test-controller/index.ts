@@ -133,9 +133,15 @@ export class TestController {
 
       // Emit test created event
       try {
-        const socketService = getSocketService();
-        socketService.emitToUser(userId, "test:created", {
-          testRun,
+        getSocketService().emitToUser(userId, "test:created", {
+          testRun: {
+            name: testConfig.name,
+            duration: testConfig.duration,
+            vusers: testConfig.vusers,
+            rampUp: testConfig.rampUp,
+            rampUpStesps: testConfig.rampUpSteps,
+            ...testRun,
+          },
           jobId: job.id,
         });
       } catch (socketError) {
