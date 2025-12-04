@@ -4,6 +4,7 @@ import Redis from "ioredis";
 import { logger } from "@/lib/logger";
 import { LoadTestResult, TestJobData } from "@/types";
 import { LoadTestEngine } from "../load-test-engine";
+import { getSocketService } from "../socket";
 
 export class QueueService {
   private redis: Redis;
@@ -46,7 +47,7 @@ export class QueueService {
     this.testQueue.process("run-test", 5, async job => {
       const { testRunId, userId, config } = job.data;
 
-      logger.info(`Starting load test ${testRunId} for user ${userId}`);
+      logger.info(`Starting load test '${testRunId}' for user ${userId}`);
 
       try {
         await prisma.testRun.update({
@@ -57,6 +58,18 @@ export class QueueService {
           },
           select: { id: true },
         });
+
+        // Emit socket event for test started
+        try {
+          const socketService = getSocketService();
+          socketService.emitTestStatusUpdate({
+            testRunId,
+            status: TestStatus.Running,
+            startedAt: new Date().toLocaleString(),
+          });
+        } catch {
+          logger.warn(`Could not emit socket event for test '${testRunId}' start`);
+        }
 
         // Run the load test
         const result = await this.loadTestEngine.runTest(testRunId, config);
@@ -72,10 +85,22 @@ export class QueueService {
           select: { id: true },
         });
 
-        logger.info(`Load test ${testRunId} completed successfully`);
+        // Emit socket event for test completed successfully
+        try {
+          const socketService = getSocketService();
+          socketService.emitTestStatusUpdate({
+            testRunId,
+            status: TestStatus.Succeeded,
+            endedAt: new Date().toLocaleString(),
+          });
+        } catch {
+          logger.warn(`Could not emit socket event for test '${testRunId}' completion`);
+        }
+
+        logger.info(`Load test '${testRunId}' completed successfully`);
         return result;
       } catch (error) {
-        logger.error(`Load test ${testRunId} failed`);
+        logger.error(`Load test '${testRunId}' failed`);
 
         await prisma.testRun.update({
           where: { id: testRunId },
@@ -86,6 +111,19 @@ export class QueueService {
           select: { id: true },
         });
 
+        // Emit socket event for test failed
+        try {
+          const socketService = getSocketService();
+          socketService.emitTestStatusUpdate({
+            testRunId,
+            status: TestStatus.Failed,
+            endedAt: new Date().toLocaleString(),
+            error: error instanceof Error ? error.message : "Unknown error",
+          });
+        } catch {
+          logger.warn(`Could not emit socket event for test '${testRunId}' failure`);
+        }
+
         await prisma.errorInfo.create({
           data: {
             testRunId,
@@ -93,7 +131,7 @@ export class QueueService {
             message: error instanceof Error ? error.message : "Unknown error",
             details: {
               stack: error instanceof Error ? error.stack : undefined,
-              timestamp: new Date().toISOString(),
+              timestamp: new Date().toLocaleString(),
             },
           },
           select: { id: true },
