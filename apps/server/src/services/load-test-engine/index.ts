@@ -327,8 +327,7 @@ export class LoadTestEngine {
       avgThroughput,
       maxThroughput:
         timeSeriesMetrics.length > 0 ? Math.max(...timeSeriesMetrics.map(m => m.throughput)) : 0,
-      vusersCreated:
-        this.metrics.length > 0 ? Math.max(...this.metrics.map(m => m.vuserId)) + 1 : 0, // WIP: calculate total sample requests made instead of vuserId
+      vusersCreated: this.metrics.length || 0,
       minResponseTime: responseTimes.length > 0 ? Math.min(...responseTimes) : 0,
       avgResponseTime:
         responseTimes.length > 0

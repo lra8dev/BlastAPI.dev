@@ -10,7 +10,7 @@ import morgan from "morgan";
 import { Server as SocketServer } from "socket.io";
 import { logger } from "@/lib/logger";
 import { authMiddleware, errorHandler } from "@/middleware";
-import { authRouter, metricsRouter, testsRouter, userRouter } from "@/routes";
+import { authRouter, testsRouter, userRouter } from "@/routes";
 import { initializeQueues } from "@/services/queue";
 import { setupSocketHandlers } from "@/services/socket";
 
@@ -97,7 +97,6 @@ class BlastAPIServer {
     this.app.use("/api/auth", authRouter);
     this.app.use("/api/user", authMiddleware, userRouter);
     this.app.use("/api/test", authMiddleware, testsRouter);
-    this.app.use("/api/metrics", authMiddleware, metricsRouter);
 
     // 404 handler
     this.app.use((req, res) => {
@@ -153,7 +152,6 @@ class BlastAPIServer {
   }
 }
 
-// Initialize server
 const server = new BlastAPIServer();
 
 // Graceful shutdown
