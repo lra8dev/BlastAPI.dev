@@ -5,7 +5,7 @@ declare const globalThis: {
 } & typeof global;
 
 const prismaClientSingleton = () => {
-  return new PrismaClient({ log: ["query", "warn", "error"] });
+  return new PrismaClient();
 };
 
 export const prisma = globalThis.prismaGlobal ?? prismaClientSingleton();
