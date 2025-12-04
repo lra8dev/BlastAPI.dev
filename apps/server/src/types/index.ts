@@ -1,47 +1,96 @@
-import { HealthCheckResult as HltCkResult, HealthCheckStatus } from "@blastapi/db";
+import { HealthCheckResult as HealthCRType, HealthCheckStatus, HttpMethod } from "@blastapi/db";
+import type { Socket } from "socket.io";
 
-export interface RequestMetrics {
-  latency: number;
+export interface TestJobData {
+  testRunId: string;
+  userId: string;
+  config: LoadTestConfig;
+}
+
+export interface LoadTestConfig {
+  url: string;
+  method: HttpMethod;
+  duration: number;
+  vusers: number;
+  rampUp: number;
+  rampUpSteps: number;
+  headers?: Record<string, string>;
+  body?: Record<string, string>;
+}
+
+export interface WindowTestMetric {
+  timestamp: number;
+  responseTime: number;
   statusCode: number;
   success: boolean;
+  error?: string;
+  vuserId: number;
+}
+
+export interface TestMetrics {
   timestamp: number;
-  errorMessage?: string;
+  throughput: number;
+  statusCode: number;
+  vusersCreated: number;
+  vusersActive: number;
+  p95ResponseTime: number;
+  p99ResponseTime: number;
 }
 
-export interface PerformanceStats {
-  p50: number;
-  p95: number;
-  p99: number;
-  avg: number;
-  min: number;
-  max: number;
+export interface TestSummary {
+  avgThroughput: number;
+  maxThroughput: number;
+  vusersCreated: number;
+  minResponseTime: number;
+  avgResponseTime: number;
+  p50ResponseTime: number;
+  p95ResponseTime: number;
+  p99ResponseTime: number;
+  maxResponseTime: number;
+  successRate: number;
+  errorRate: number;
+  successfulRequests: number;
+  failedRequests: number;
+  statusCodes: Record<string, number>;
 }
 
-export type HealthCheckResult = Omit<HltCkResult, "id" | "healthCheckSummaryId">;
+// eslint-disable-next-line @typescript-eslint/no-empty-object-type
+export interface HealthCheckResult
+  extends Omit<HealthCRType, "id" | "healthCheckSummaryId" | "createdAt"> {}
 
-export interface HealthCheckSummary {
-  testRunId: string;
+export interface HealthCheck {
   totalChecks: number;
   passedChecks: number;
   failedChecks: number;
-  overallStatus: HealthCheckStatus;
   passPercentage: number;
-  checks: HealthCheckResult[];
+  overallStatus: HealthCheckStatus;
+  results: HealthCheckResult[];
 }
 
-export interface PerformanceMetrics extends PerformanceStats {
-  successRate: number;
-  errorRate: number;
-  totalRequests: number;
-  failedRequests: number;
+export interface LoadTestResult {
+  summary: TestSummary;
+  metrics: TestMetrics[];
+  healthChecks?: HealthCheck;
+  logs?: string[];
 }
 
-export interface HealthCheckThreshold {
+export interface AuthenticatedSocket extends Socket {
+  userId?: string;
+  userRole?: "admin" | "user";
+  userEmail?: string;
+  sessionId?: string;
+}
+
+export interface SocketUser {
   id: string;
-  name: string;
-  metric: "p99" | "p95" | "p90" | "avg" | "max" | "min";
-  operator: "<" | ">" | "<=" | ">=" | "=" | "!=";
-  value: number;
-  unit: "ms" | "s" | "%" | "count";
-  description?: string;
+  email: string;
+  role: "admin" | "user";
+  sessionId: string;
+}
+
+export interface TestSubscription {
+  testRunId: string;
+  userId: string;
+  socketId: string;
+  subscribedAt: Date;
 }
