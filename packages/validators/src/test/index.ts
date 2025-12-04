@@ -17,27 +17,22 @@ export enum TestRegions {
 }
 
 export const newTestSchema = z.object({
-  id: z.uuid(),
-  userId: z.uuid(),
-  name: z.string().min(1, "Name is required").max(100, "Name is too long!"),
+  name: z.string().min(1, "Name is required").max(255, "Name is too long!"),
   url: z.url("Enter a valid url!"),
   method: z.enum(HttpMethod),
   region: z.enum(TestRegions),
-  totalRequests: z
+  duration: z
     .number()
-    .min(1, "Total requests must be greater than 0!")
-    .max(100, "No more that 100"),
-  concurrency: z
+    .min(1, "Duration must be greater than 0!")
+    .max(480, "No more that 480 seconds"),
+  rampUp: z.number().min(1, "Ramp up must be greater than 0!").max(300, "No more that 300 seconds"),
+  rampUpSteps: z
     .number()
-    .min(1, "Concurrency must be greater than 0!")
-    .max(100, "No more that 100"),
-  duration: z.number().min(1, "Duration must be greater than 0!").max(100, "No more that 100"),
-  requestRate: z
-    .number()
-    .min(1, "Request rate must be greater than 0!")
-    .max(100, "No more that 100"),
-  headers: z.string().nullable(),
-  body: z.string().nullable(),
+    .min(1, "Ramp up steps must be greater than 0!")
+    .max(50, "No more that 50"),
+  vusers: z.number().min(1, "Virtual users must be greater than 0!").max(1000, "No more that 1000"),
+  headers: z.record(z.string(), z.string()).optional(),
+  body: z.record(z.string(), z.string()).optional(),
 });
 
 export type NewTestConfig = z.infer<typeof newTestSchema>;
