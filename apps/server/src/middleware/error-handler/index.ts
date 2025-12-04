@@ -207,9 +207,4 @@ export const monitorError = (error: Error, context?: string): void => {
     },
     "Error monitoring",
   );
-
-  // WIP: Integrate external monitoring service in Production
-  if (process.env.NODE_ENV === "production" && !isOperational) {
-    // sentryClient.captureException(error);
-  }
 };

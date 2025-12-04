@@ -93,6 +93,7 @@ export class TestController {
             id: true,
             status: true,
             createdAt: true,
+            startedAt: true,
           },
         });
 
@@ -131,19 +132,24 @@ export class TestController {
         throw new ApiError("Failed to queue test for execution", StatusCodes.INTERNAL_SERVER_ERROR);
       }
 
-      // Emit test created event
       try {
-        getSocketService().emitToUser(userId, "test:created", {
+        const testCreationData = {
           testRun: {
+            id: testRun.id,
             name: testConfig.name,
+            status: testRun.status,
             duration: testConfig.duration,
+            region: testConfig.region,
             vusers: testConfig.vusers,
             rampUp: testConfig.rampUp,
-            rampUpStesps: testConfig.rampUpSteps,
-            ...testRun,
+            rampUpSteps: testConfig.rampUpSteps,
+            createdAt: testRun.createdAt,
+            startedAt: testRun.startedAt,
           },
           jobId: job.id,
-        });
+        };
+
+        getSocketService().emitEvent("test:created", testCreationData);
       } catch (socketError) {
         logger.warn(`Failed to emit test creation event: ${socketError}`);
       }
@@ -228,7 +234,6 @@ export class TestController {
               maxResponseTime: true,
               statusCodes: true,
               // TODO: implement totalResponses
-              // TODO: implement totalResponses
             },
           },
           testMetrics: true,
@@ -308,7 +313,9 @@ export class TestController {
             createdAt: true,
             testConfig: {
               select: {
+                name: true,
                 duration: true,
+                region: true,
               },
             },
             healthCheckSummary: {
@@ -367,187 +374,188 @@ export class TestController {
     }
   }
 
-  public async cancelTest(req: AuthRequest, res: Response): Promise<void> {
-    const userId = req.user!.id;
-    const userRole = req.user!.role;
-    const { id } = req.params;
+  // WIP: Cancel test implementation
+  // public async cancelTest(req: AuthRequest, res: Response): Promise<void> {
+  //   const userId = req.user!.id;
+  //   const userRole = req.user!.role;
+  //   const { id } = req.params;
 
-    if (!id || !isValidUUID(id.trim())) {
-      throw new ApiError("Invalid test run ID format", StatusCodes.BAD_REQUEST);
-    }
+  //   if (!id || !isValidUUID(id.trim())) {
+  //     throw new ApiError("Invalid test run ID format", StatusCodes.BAD_REQUEST);
+  //   }
 
-    try {
-      const testRun = await prisma.testRun.findFirst({
-        where: {
-          id,
-          OR: [{ userId }, ...(userRole === "admin" ? [{}] : [])],
-        },
-        select: {
-          id: true,
-          status: true,
-          userId: true,
-          testConfig: {
-            select: {
-              name: true,
-            },
-          },
-        },
-      });
+  //   try {
+  //     const testRun = await prisma.testRun.findFirst({
+  //       where: {
+  //         id,
+  //         OR: [{ userId }, ...(userRole === "admin" ? [{}] : [])],
+  //       },
+  //       select: {
+  //         id: true,
+  //         status: true,
+  //         userId: true,
+  //         testConfig: {
+  //           select: {
+  //             name: true,
+  //           },
+  //         },
+  //       },
+  //     });
 
-      if (!testRun) {
-        throw new ApiError("Test run not found", StatusCodes.NOT_FOUND);
-      }
+  //     if (!testRun) {
+  //       throw new ApiError("Test run not found", StatusCodes.NOT_FOUND);
+  //     }
 
-      if (!["Queued", "Running"].includes(testRun.status)) {
-        throw new ApiError(
-          `Test cannot be cancelled in current state: ${testRun.status}`,
-          StatusCodes.BAD_REQUEST,
-        );
-      }
+  //     if (!["Queued", "Running"].includes(testRun.status)) {
+  //       throw new ApiError(
+  //         `Test cannot be cancelled in current state: ${testRun.status}`,
+  //         StatusCodes.BAD_REQUEST,
+  //       );
+  //     }
 
-      // Update test status in transaction
-      await prisma.$transaction(async tx => {
-        await tx.testRun.update({
-          where: { id },
-          data: {
-            status: "Canceled",
-            endedAt: new Date(),
-          },
-        });
-      });
+  //     // Update test status in transaction
+  //     await prisma.$transaction(async tx => {
+  //       await tx.testRun.update({
+  //         where: { id },
+  //         data: {
+  //           status: "Canceled",
+  //           endedAt: new Date(),
+  //         },
+  //       });
+  //     });
 
-      // WIP: Try to cancel job in queue (if still queued)
-      // try {
-      //   const _queueService = getQueueService();
-      // Note: Queue service would need jobId tracking for specific cancellation
-      // For now, we mark as cancelled in database and let the worker handle it
-      //   logger.info(`Job cancellation requested for test ${testId}`);
-      // } catch (queueError) {
-      //   logger.warn(
-      //     `Failed to cancel queue job for test ${testId}: ${queueError instanceof Error ? queueError.message : "Unknown error"}`,
-      //   );
-      // }
+  // WIP: Try to cancel job in queue (if still queued)
+  // try {
+  //   const _queueService = getQueueService();
+  // Note: Queue service would need jobId tracking for specific cancellation
+  // For now, we mark as cancelled in database and let the worker handle it
+  //   logger.info(`Job cancellation requested for test ${testId}`);
+  // } catch (queueError) {
+  //   logger.warn(
+  //     `Failed to cancel queue job for test ${testId}: ${queueError instanceof Error ? queueError.message : "Unknown error"}`,
+  //   );
+  // }
 
-      // Emit cancellation event
-      try {
-        const socketService = getSocketService();
-        socketService.emitTestStatusUpdate(id, "Canceled");
-        socketService.emitToUser(testRun.userId, "test:cancelled", {
-          testRunId: id,
-          testName: testRun.testConfig?.name,
-          cancelledBy: userId,
-          cancelledAt: new Date().toISOString(),
-        });
-      } catch (socketError) {
-        logger.warn(`Failed to emit cancellation event: ${socketError}`);
-      }
+  // Emit cancellation event
+  //     try {
+  //       const socketService = getSocketService();
+  //       socketService.emitTestStatusUpdate(id, "Canceled");
+  //       socketService.emitToUser(testRun.userId, "test:cancelled", {
+  //         testRunId: id,
+  //         testName: testRun.testConfig?.name,
+  //         cancelledBy: userId,
+  //         cancelledAt: new Date().toISOString(),
+  //       });
+  //     } catch (socketError) {
+  //       logger.warn(`Failed to emit cancellation event: ${socketError}`);
+  //     }
 
-      logger.info(`Test ${id} (${testRun.testConfig?.name}) cancelled by user ${userId}`);
+  //     logger.info(`Test ${id} (${testRun.testConfig?.name}) cancelled by user ${userId}`);
 
-      res.json({
-        success: true,
-        message: "Test cancelled successfully",
-        data: {
-          testRunId: id,
-          cancelledAt: new Date().toISOString(),
-          previousStatus: testRun.status,
-        },
-      });
-    } catch (error) {
-      if (error instanceof ApiError) {
-        throw error;
-      }
-      logger.error(
-        `Failed to cancel test ${id} for user ${userId}: ${error instanceof Error ? error.message : "Unknown error"}`,
-      );
-      throw new ApiError("Failed to cancel test", StatusCodes.INTERNAL_SERVER_ERROR);
-    }
-  }
+  //     res.json({
+  //       success: true,
+  //       message: "Test cancelled successfully",
+  //       data: {
+  //         testRunId: id,
+  //         cancelledAt: new Date().toISOString(),
+  //         previousStatus: testRun.status,
+  //       },
+  //     });
+  //   } catch (error) {
+  //     if (error instanceof ApiError) {
+  //       throw error;
+  //     }
+  //     logger.error(
+  //       `Failed to cancel test ${id} for user ${userId}: ${error instanceof Error ? error.message : "Unknown error"}`,
+  //     );
+  //     throw new ApiError("Failed to cancel test", StatusCodes.INTERNAL_SERVER_ERROR);
+  //   }
+  // }
 
-  public async deleteTest(req: AuthRequest, res: Response): Promise<void> {
-    const userId = req.user!.id;
-    const userRole = req.user!.role;
-    const { id: testRunId } = req.params;
+  // public async deleteTest(req: AuthRequest, res: Response): Promise<void> {
+  //   const userId = req.user!.id;
+  //   const userRole = req.user!.role;
+  //   const { id: testRunId } = req.params;
 
-    if (!testRunId || !isValidUUID(testRunId.trim())) {
-      throw new ApiError("Invalid test run ID format", StatusCodes.BAD_REQUEST);
-    }
+  //   if (!testRunId || !isValidUUID(testRunId.trim())) {
+  //     throw new ApiError("Invalid test run ID format", StatusCodes.BAD_REQUEST);
+  //   }
 
-    try {
-      const testRun = await prisma.testRun.findFirst({
-        where: {
-          id: testRunId,
-          OR: [{ userId }, ...(userRole === "admin" ? [{}] : [])],
-        },
-        select: {
-          id: true,
-          status: true,
-          userId: true,
-          testConfig: {
-            select: {
-              name: true,
-            },
-          },
-        },
-      });
+  //   try {
+  //     const testRun = await prisma.testRun.findFirst({
+  //       where: {
+  //         id: testRunId,
+  //         OR: [{ userId }, ...(userRole === "admin" ? [{}] : [])],
+  //       },
+  //       select: {
+  //         id: true,
+  //         status: true,
+  //         userId: true,
+  //         testConfig: {
+  //           select: {
+  //             name: true,
+  //           },
+  //         },
+  //       },
+  //     });
 
-      if (!testRun) {
-        throw new ApiError("Test run not found", StatusCodes.NOT_FOUND);
-      }
+  //     if (!testRun) {
+  //       throw new ApiError("Test run not found", StatusCodes.NOT_FOUND);
+  //     }
 
-      if (["Running", "Queued"].includes(testRun.status)) {
-        throw new ApiError(
-          `Cannot delete test that is currently ${testRun.status.toLowerCase()}. Please cancel the test first.`,
-          StatusCodes.BAD_REQUEST,
-        );
-      }
+  //     if (["Running", "Queued"].includes(testRun.status)) {
+  //       throw new ApiError(
+  //         `Cannot delete test that is currently ${testRun.status.toLowerCase()}. Please cancel the test first.`,
+  //         StatusCodes.BAD_REQUEST,
+  //       );
+  //     }
 
-      // Delete test and all related data in transaction
-      await prisma.$transaction(async tx => {
-        // Delete related data first due to foreign key constraints
-        await tx.errorInfo.deleteMany({
-          where: {
-            testRunId,
-          },
-        });
+  //     // Delete test and all related data in transaction
+  //     await prisma.$transaction(async tx => {
+  //       // Delete related data first due to foreign key constraints
+  //       await tx.errorInfo.deleteMany({
+  //         where: {
+  //           testRunId,
+  //         },
+  //       });
 
-        await tx.healthCheckSummary.deleteMany({
-          where: {
-            testRunId,
-          },
-        });
+  //       await tx.healthCheckSummary.deleteMany({
+  //         where: {
+  //           testRunId,
+  //         },
+  //       });
 
-        await tx.testResult.deleteMany({
-          where: { testRunId },
-        });
+  //       await tx.testResult.deleteMany({
+  //         where: { testRunId },
+  //       });
 
-        // Delete the test run itself
-        await tx.testRun.delete({
-          where: { id: testRunId },
-        });
-      });
+  //       // Delete the test run itself
+  //       await tx.testRun.delete({
+  //         where: { id: testRunId },
+  //       });
+  //     });
 
-      logger.info(`Test ${testRunId} (${testRun.testConfig?.name}) deleted by user ${userId}`);
+  //     logger.info(`Test ${testRunId} (${testRun.testConfig?.name}) deleted by user ${userId}`);
 
-      res.json({
-        success: true,
-        message: "Test deleted successfully",
-        data: {
-          testRunId,
-          deletedAt: new Date().toISOString(),
-          testName: testRun.testConfig?.name,
-        },
-      });
-    } catch (error) {
-      if (error instanceof ApiError) {
-        throw error;
-      }
-      logger.error(
-        `Failed to delete test ${testRunId} for user ${userId}: ${error instanceof Error ? error.message : "Unknown error"}`,
-      );
-      throw new ApiError("Failed to delete test", StatusCodes.INTERNAL_SERVER_ERROR);
-    }
-  }
+  //     res.json({
+  //       success: true,
+  //       message: "Test deleted successfully",
+  //       data: {
+  //         testRunId,
+  //         deletedAt: new Date().toISOString(),
+  //         testName: testRun.testConfig?.name,
+  //       },
+  //     });
+  //   } catch (error) {
+  //     if (error instanceof ApiError) {
+  //       throw error;
+  //     }
+  //     logger.error(
+  //       `Failed to delete test ${testRunId} for user ${userId}: ${error instanceof Error ? error.message : "Unknown error"}`,
+  //     );
+  //     throw new ApiError("Failed to delete test", StatusCodes.INTERNAL_SERVER_ERROR);
+  //   }
+  // }
 
   public async getTestMetrics(req: AuthRequest, res: Response): Promise<void> {
     const userId = req.user!.id;
@@ -848,14 +856,8 @@ export class TestController {
         ];
       });
 
-    // Get queue stats
     const queueService = getQueueService();
     const queueStats = await queueService.getQueueStats();
-
-    // Get socket stats
-    const socketService = getSocketService();
-    const connectedUsers = socketService.getConnectedUsers().length;
-    const totalSockets = socketService.getTotalConnectedSockets();
 
     res.json({
       success: true,
@@ -866,8 +868,6 @@ export class TestController {
           runningTests,
           queuedTests,
           todayTests,
-          connectedUsers,
-          totalSockets,
         },
         queue: queueStats,
       },

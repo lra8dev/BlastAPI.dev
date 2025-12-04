@@ -1,6 +1,6 @@
 import { Router } from "express";
 import { TestController } from "@/controllers";
-import { asyncHandler, requireAdmin, safeAsyncHandler } from "@/middleware";
+import { asyncHandler, requireAdmin } from "@/middleware";
 
 const testController = new TestController();
 
@@ -16,10 +16,10 @@ testsRouter.get("/history", asyncHandler(testController.getUserTestRuns));
 testsRouter.get("/:id", asyncHandler(testController.getTestRun));
 
 // POST /api/test/:id/cancel - Cancel a running test
-testsRouter.post("/:id/cancel", safeAsyncHandler(testController.cancelTest));
+// testsRouter.post("/:id/cancel", safeAsyncHandler(testController.cancelTest));
 
 // DELETE /api/test/:id - Delete a test run
-testsRouter.delete("/:id", asyncHandler(testController.deleteTest));
+// testsRouter.delete("/:id", asyncHandler(testController.deleteTest));
 
 // GET /api/test/:id/metrics - Get test metrics (time series data)
 testsRouter.get("/:id/metrics", asyncHandler(testController.getTestMetrics));
