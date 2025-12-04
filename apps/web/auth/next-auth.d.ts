@@ -1,4 +1,4 @@
-import { User as DatabaseUser } from "@prisma/client";
+import { User as DatabaseUser } from "@blastapi/db";
 import { Session as DefaultSession } from "next-auth";
 
 declare module "next-auth" {
