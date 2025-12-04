@@ -1,28 +1,18 @@
 import { PrismaAdapter } from "@auth/prisma-adapter";
 import { prisma } from "@blastapi/db";
-import { safeUser, validatePassword } from "@blastapi/utils";
+import { validatePassword } from "@blastapi/utils";
 import { signInSchema } from "@blastapi/validators";
 import type { NextAuthConfig } from "next-auth";
+import { decode, encode } from "next-auth/jwt";
 import Credentials from "next-auth/providers/credentials";
 import GitHub from "next-auth/providers/github";
 import Google from "next-auth/providers/google";
 
+const adapter = PrismaAdapter(prisma);
+
 export const authConfig: NextAuthConfig = {
-  adapter: PrismaAdapter(prisma),
-  logger: {
-    error(code, ...message) {
-      console.error(code, message);
-    },
-    warn(code, ...message) {
-      console.warn(code, message);
-    },
-    debug(code, ...message) {
-      console.debug(code, ...message);
-    },
-  },
-  session: {
-    strategy: "database",
-  },
+  adapter,
+  session: { strategy: "database" },
   providers: [
     GitHub({
       clientId: process.env.AUTH_GITHUB_ID!,
@@ -37,52 +27,39 @@ export const authConfig: NextAuthConfig = {
     Credentials({
       id: "credentials",
       credentials: {
-        email: {
-          type: "email",
-        },
-        password: {
-          type: "password",
-        },
+        email: { label: "Email", type: "email" },
+        password: { label: "Password", type: "password" },
       },
       async authorize(credentials) {
-        if (!credentials?.email || !credentials?.password) {
-          throw new Error("Missing credentials"); // TODO: what response return to the the user?
-        }
+        const { success, data } = signInSchema.safeParse(credentials);
+
+        if (!success) return null;
+
+        const { email, password } = data;
 
         try {
-          const parsed = signInSchema.parse(credentials);
+          const user = await prisma.user.findUnique({ where: { email } });
 
-          const user = await prisma.user.findUnique({
-            where: { email: parsed.email },
-          });
+          if (!user || !user.password) return null;
 
-          if (!user || !user.password) {
-            throw new Error("User not found"); // TODO: what response return to the the user?
-          }
+          const isPasswordValid = await validatePassword(password, user.password);
 
-          const isPasswordValid = await validatePassword(parsed.password, user.password);
+          if (!isPasswordValid) return null;
 
-          if (!isPasswordValid) {
-            throw new Error("Invalid password"); // TODO: what response return to the the user?
-          }
+          // eslint-disable-next-line @typescript-eslint/no-unused-vars
+          const { password: _, ...safeUser } = user;
 
-          return safeUser(user);
-        } catch (error) {
-          console.error("Authorization error:", error);
-          throw new Error("Authorization error");
+          return safeUser;
+        } catch {
+          return null;
         }
       },
     }),
   ],
   callbacks: {
     async signIn({ user, account }) {
-      if (["google", "github", "credentials"].includes(account?.provider ?? "")) {
-        return !!user;
-      }
-
-      return false;
+      return ["google", "github", "credentials"].includes(account?.provider ?? "") && !!user;
     },
-
     async session({ session, user }) {
       if (session.user && user) {
         session.user = {
@@ -93,12 +70,67 @@ export const authConfig: NextAuthConfig = {
       }
       return session;
     },
-  },
+    async redirect({ url, baseUrl }) {
+      if (url.startsWith("/")) {
+        return `${baseUrl}${url}`;
+      }
 
+      if (new URL(url).origin === baseUrl) {
+        return url;
+      }
+
+      return baseUrl;
+    },
+    async jwt({ token, account, user }) {
+      if (account?.provider === "credentials") {
+        token.isCredentials = true;
+      }
+
+      if (user?.id) {
+        token.sub = user.id;
+      }
+
+      return token;
+    },
+  },
+  jwt: {
+    encode: async ({ token, secret, maxAge, salt }) => {
+      try {
+        if (token?.sub && token?.isCredentials) {
+          const sessionToken = crypto.randomUUID();
+          const expires = new Date(Date.now() + (maxAge ?? 30 * 24 * 60 * 60) * 1000);
+
+          await adapter?.createSession?.({
+            sessionToken,
+            userId: token.sub,
+            expires,
+          });
+
+          return sessionToken;
+        }
+
+        return await encode({ token, secret, maxAge, salt });
+      } catch (error) {
+        throw error;
+      }
+    },
+    decode: async ({ token, secret, salt }) => {
+      try {
+        if (
+          token &&
+          /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(token)
+        ) {
+          return null;
+        }
+
+        return await decode({ token, secret, salt });
+      } catch (error) {
+        throw error;
+      }
+    },
+  },
   pages: {
     signIn: "/signin",
     signOut: "/signout",
-    error: "/auth/error",
-    verifyRequest: "/auth/verify-request",
   },
 };
