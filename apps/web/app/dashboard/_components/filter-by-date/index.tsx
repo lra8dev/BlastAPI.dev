@@ -5,12 +5,12 @@ import { Badge } from "@/components/badge";
 import { CustPopover } from "@/components/popover";
 import { Button } from "@/components/ui/button";
 import { Calendar } from "@/components/ui/calendar";
-import { formatDateTime } from "@/utils/format-datetime";
+import { formatDateTime } from "@/utils/time";
 import { useNavigation } from "../../_hooks";
 import { ClearFilter } from "../clear-filter";
 
 export const DateFilter = () => {
-  const { hasSearchParam, updateSearchParam } = useNavigation();
+  const { hasSearchParam, updateSearchParam, getSearchParam } = useNavigation();
 
   return (
     <CustPopover
@@ -29,7 +29,8 @@ export const DateFilter = () => {
     >
       <Calendar
         mode="single"
-        onSelect={date => updateSearchParam("created", formatDateTime(date ?? 0))}
+        selected={getSearchParam("created") ? new Date(getSearchParam("created")!) : undefined}
+        onSelect={date => updateSearchParam("created", formatDateTime(date ?? 0).split(",")[0])}
       />
 
       {hasSearchParam("created") && (

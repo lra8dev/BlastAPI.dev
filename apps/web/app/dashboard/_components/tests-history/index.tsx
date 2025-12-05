@@ -7,17 +7,18 @@ import { UserAvatar } from "@/components/avatar";
 import { Tags } from "@/components/tag-buttons";
 import { TestStatus } from "@/components/test-status";
 import { CustTooltip } from "@/components/tooltip";
-import { formatDateTime } from "@/utils/format-datetime";
+import { TEST_STATUS_MAP } from "@/constants";
 import { formatDuration } from "@/utils/format-duration";
 import { generateFallbackChars } from "@/utils/generate-fallback-char";
-import { getRelativeTime } from "@/utils/get-relative-time";
+import { formatDateTime } from "@/utils/time/format-datetime";
+import { getRelativeTime } from "@/utils/time/get-relative-time";
 import { useNavigation } from "../../_hooks";
 import { TestHistory } from "../../_types";
 import { TestNotFound } from "../filter-not-found";
 import { TestHistoryBadge } from "../history-badges";
 
 interface TestHistoryProps {
-  tests: TestHistory[];
+  tests: TestHistory["testRuns"];
 }
 
 export const TestsHistory = ({ tests }: TestHistoryProps) => {
@@ -49,7 +50,10 @@ export const TestsHistory = ({ tests }: TestHistoryProps) => {
           return false;
         }
 
-        if (filters.createdAt && formatDateTime(test.createdAt) !== filters.createdAt) {
+        if (
+          filters.createdAt &&
+          formatDateTime(test.createdAt).split(",")[0] !== filters.createdAt
+        ) {
           return false;
         }
 
@@ -85,7 +89,7 @@ export const TestsHistory = ({ tests }: TestHistoryProps) => {
 
             return groups;
           },
-          {} as Record<string, TestHistory[]>,
+          {} as Record<string, TestHistory["testRuns"]>,
         ),
       ).map(([createdDate, tests]) => (
         <Fragment key={createdDate}>
@@ -95,63 +99,71 @@ export const TestsHistory = ({ tests }: TestHistoryProps) => {
             <p className="opacity-75">{getRelativeTime(tests[0].createdAt)}</p>
           </header>
 
-          {tests.map(test => (
-            <Link
-              key={test.id}
-              role="row"
-              href={`/test/result/${test.id}`}
-              className="flex items-center justify-between gap-2 flex-wrap overflow-hidden lg:gap-3 w-full font-medium border-b dark:border-neutral-700/30 dark:hover:bg-neutral-200/2 hover:bg-neutral-50/50 cursor-pointer px-4 py-1.5 lg:px-6"
-            >
-              <div className="flex items-center gap-2 lg:gap-x-3">
-                <TestStatus
-                  passedChecks={test.healthCheckSummary?.passedChecks ?? 0}
-                  totalChecks={test.healthCheckSummary?.totalChecks ?? 2}
-                  status={test.healthCheckSummary?.overallStatus ?? "FAIL"}
-                />
-                <div className="flex flex-col max-w-xs">
-                  <div className="flex items-center gap-2">
-                    <h3 className="text-[0.8125rem] text-neutral-700 dark:text-gray-200 truncate">
-                      {test.user.name}
-                    </h3>
-                    <TestHistoryBadge notesLength={test.testResult?.notes?.length} />
-                  </div>
-                  <p className="max-[53rem]:hidden font-jetbrains font-extralight text-[0.6rem] text-muted-foreground opacity-70 truncate">
-                    {test.id}
-                  </p>
-                </div>
-              </div>
-              <div className="flex items-center gap-8">
-                <Tags
-                  className="max-sm:hidden"
-                  metadata={[
-                    { icon: Globe, label: test.testConfig?.region ?? "NA" },
-                    { icon: Clock4, label: formatDuration(test.testResult?.duration ?? 0) },
-                  ]}
-                />
-                <div className="flex items-center gap-2">
-                  <CustTooltip content={formatDateTime(test.createdAt)}>
-                    <p className="text-xs text-neutral-500/90 dark:text-gray-300/70">
-                      {getRelativeTime(test.createdAt)}
-                    </p>
-                  </CustTooltip>
-                  <CustTooltip label="Started by" content={test.user.name ?? test.user.email}>
-                    <UserAvatar
-                      url={test.user.image ?? undefined}
-                      fallbackChar={generateFallbackChars(test.user.name ?? test.user.email)}
-                      className="size-5"
+          {tests.map(test => {
+            const { icon, className, label } =
+              TEST_STATUS_MAP[test.healthCheckSummary?.overallStatus ?? "FAIL"];
+
+            return (
+              <Link
+                key={test.id}
+                role="row"
+                href={`/test/result/${test.id}`}
+                className="flex items-center justify-between gap-2 flex-wrap overflow-hidden lg:gap-3 w-full font-medium border-b dark:border-neutral-700/30 dark:hover:bg-neutral-200/2 hover:bg-neutral-50/50 cursor-pointer px-4 py-1.5 lg:px-6"
+              >
+                <div className="flex items-center gap-2 lg:gap-x-3">
+                  <CustTooltip content={label} className={"rounded-full " + className} side="right">
+                    <TestStatus
+                      passedChecks={test.healthCheckSummary?.passedChecks ?? 0}
+                      totalChecks={test.healthCheckSummary?.totalChecks ?? 2}
+                      className={className}
+                      icon={icon}
                     />
                   </CustTooltip>
+                  <div className="flex flex-col max-w-xs">
+                    <div className="flex items-center gap-2">
+                      <h3 className="text-[0.8125rem] text-neutral-700 dark:text-gray-200 truncate">
+                        {test.testConfig?.name || "Untitled Test"}
+                      </h3>
+                      <TestHistoryBadge notesLength={test.testResult?.notes?.length} />
+                    </div>
+                    <p className="max-[53rem]:hidden font-jetbrains font-extralight text-[0.6rem] text-muted-foreground opacity-70 truncate">
+                      {test.id}
+                    </p>
+                  </div>
                 </div>
-              </div>
-              <Tags
-                className="sm:hidden"
-                metadata={[
-                  { icon: Globe, label: test.testConfig?.region ?? "NA" },
-                  { icon: Clock4, label: formatDuration(test.testResult?.duration ?? 0) },
-                ]}
-              />
-            </Link>
-          ))}
+                <div className="flex items-center gap-8">
+                  <Tags
+                    className="max-sm:hidden"
+                    metadata={[
+                      { icon: Globe, label: test.testConfig?.region ?? "NA" },
+                      { icon: Clock4, label: formatDuration(test.testConfig?.duration ?? 0) },
+                    ]}
+                  />
+                  <div className="flex items-center gap-2">
+                    <CustTooltip content={formatDateTime(test.createdAt)}>
+                      <p className="text-xs text-neutral-500/90 dark:text-gray-300/70">
+                        {getRelativeTime(test.createdAt)}
+                      </p>
+                    </CustTooltip>
+                    <CustTooltip label="Started by" content={test.user.name ?? test.user.email}>
+                      <UserAvatar
+                        url={test.user.image ?? undefined}
+                        fallbackChar={generateFallbackChars(test.user.name ?? test.user.email)}
+                        className="size-5"
+                      />
+                    </CustTooltip>
+                  </div>
+                </div>
+                <Tags
+                  className="sm:hidden"
+                  metadata={[
+                    { icon: Globe, label: test.testConfig?.region ?? "NA" },
+                    { icon: Clock4, label: formatDuration(test.testConfig?.duration ?? 0) },
+                  ]}
+                />
+              </Link>
+            );
+          })}
         </Fragment>
       ))}
     </div>

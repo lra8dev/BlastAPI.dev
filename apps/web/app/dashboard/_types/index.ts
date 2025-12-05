@@ -8,25 +8,37 @@ interface User {
   role: UserRole;
 }
 
+export interface Pagination {
+  page: number;
+  limit: number;
+  total: number;
+  totalPages: number;
+  hasNext: boolean;
+  hasPrev: boolean;
+}
+
 export interface TestHistory {
-  id: string;
-  status: TestStatus;
-  createdAt: Date;
-  user: User;
-  testConfig: {
-    name: string;
-    region: TestRegions; // WIP: test region in DB should be enum (currently string)
-  } | null;
-  testResult: {
-    duration: number;
-    notes?: string[]; // WIP: Add notes
-  } | null;
-  healthCheckSummary: {
-    totalChecks: number;
-    passedChecks: number;
-    failedChecks: number;
-    overallStatus: HealthCheckStatus;
-  } | null;
+  testRuns: {
+    id: string;
+    status: TestStatus;
+    createdAt: Date;
+    user: User;
+    testConfig: {
+      name: string;
+      region: TestRegions; // WIP: test region in DB should be enum (currently string)
+      duration: number;
+    } | null;
+    testResult: {
+      notes?: string[]; // WIP: Add notes
+    } | null;
+    healthCheckSummary: {
+      totalChecks: number;
+      passedChecks: number;
+      failedChecks: number;
+      overallStatus: HealthCheckStatus;
+    } | null;
+  }[];
+  pagination: Pagination;
 }
 
 export interface FilteringData {
