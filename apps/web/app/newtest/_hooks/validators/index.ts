@@ -5,27 +5,24 @@ import { NewTestConfig, newTestSchema, TestRegions } from "@blastapi/validators"
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useMemo } from "react";
 import { Control, FieldValues, Path, useForm, useWatch } from "react-hook-form";
-import { v4 as uuid } from "uuid";
 import { useCreateTest } from "@/app/newtest/_hooks/controllers";
-import { formatDateTime } from "@/utils/format-datetime";
+import { formatDateTime } from "@/utils/time/format-datetime";
 
 export const useNewTestForm = () => {
   const { createTest, isPending } = useCreateTest();
 
   const defaultValues = useMemo(
-    () => ({
-      id: uuid(),
-      userId: "",
-      name: formatDateTime(Date.now()).replace(/[, ]/g, "_").replace("__", "_"),
+    (): NewTestConfig => ({
+      name: formatDateTime(Date.now()),
       url: "",
       method: HttpMethod.GET,
       region: TestRegions.SaEast1,
-      totalRequests: 25,
-      concurrency: 10,
-      duration: 16,
-      requestRate: 6,
-      headers: "",
-      body: "",
+      duration: 60,
+      vusers: 100,
+      rampUp: 10,
+      rampUpSteps: 10,
+      headers: undefined,
+      body: undefined,
     }),
     [],
   );

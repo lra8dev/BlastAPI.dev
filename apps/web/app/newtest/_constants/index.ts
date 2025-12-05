@@ -1,13 +1,16 @@
+import { HttpMethod } from "@blastapi/db";
 import { JsonEditor } from "@/components/json-editor";
 import { JSONTable } from "@/components/json-table";
 import { CustSelectOption, FieldConfig } from "@/types";
 
-export const HTTP_METHODS: CustSelectOption[] = [
-  { value: "GET", label: "GET" },
-  { value: "POST", label: "POST" },
-  { value: "PUT", label: "PUT" },
-  { value: "DELETE", label: "DELETE" },
-];
+interface LoadConfig extends FieldConfig {
+  max: number;
+}
+
+export const HTTP_METHODS: CustSelectOption[] = Object.keys(HttpMethod).map(key => ({
+  value: key,
+  label: key,
+}));
 
 export const REQUEST_CONFIG_ITEMS: FieldConfig[] = [
   {
@@ -29,29 +32,33 @@ export const REQUEST_CONFIG_TABS = [
   },
 ];
 
-export const LOAD_CONFIG: FieldConfig[] = [
+export const LOAD_CONFIG: LoadConfig[] = [
   {
-    name: "totalRequests",
+    name: "vusers",
     type: "number",
-    label: "Total Requests",
-    placeholder: "10",
+    label: "Virtual Users",
+    max: 1000,
+    placeholder: "100",
   },
   {
     name: "duration",
     type: "number",
     label: "Duration (s)",
-    placeholder: "10",
+    max: 480,
+    placeholder: "300",
   },
   {
-    name: "concurrency",
+    name: "rampUp",
     type: "number",
-    label: "Concurrency",
-    placeholder: "10",
+    label: "Ramp Up Time (s)",
+    max: 300,
+    placeholder: "60",
   },
   {
-    name: "requestRate",
+    name: "rampUpSteps",
     type: "number",
-    label: "Request Rate",
+    label: "Ramp Up Steps",
+    max: 50,
     placeholder: "10",
   },
 ];

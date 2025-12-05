@@ -15,8 +15,11 @@ export interface SetFormValueProps<T extends FieldValues> {
 }
 
 export interface NewTestResponse {
+  testRun: {
+    id: string;
+    status: TestStatus;
+    createdAt: Date;
+  };
   jobId: string;
-  testRunId: string;
-  status: TestStatus;
-  createdAt: Date;
+  estimatedStartTime: number;
 }

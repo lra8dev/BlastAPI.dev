@@ -18,11 +18,11 @@ export const LoadConfig = <T extends FieldValues>({
     return typeof value === "number" ? value : value ? Number(value) : 0;
   };
 
-  const [totalRequests, duration, concurrency, requestRate] = useNumericWatch(control, [
-    "totalRequests" as Path<T>,
+  const [vusers, duration, rampUp, rampUpSteps] = useNumericWatch(control, [
+    "vusers" as Path<T>,
     "duration" as Path<T>,
-    "concurrency" as Path<T>,
-    "requestRate" as Path<T>,
+    "rampUp" as Path<T>,
+    "rampUpSteps" as Path<T>,
   ]);
 
   return (
@@ -33,7 +33,7 @@ export const LoadConfig = <T extends FieldValues>({
         </CardTitle>
       </CardHeader>
 
-      <CardContent className="flex flex-col gap-10 font-medium md:flex-row px-2">
+      <CardContent className="flex flex-col gap-10 font-medium min-[55rem]:flex-row px-2">
         <section className="flex flex-col gap-y-4 w-full md:w-2xl">
           {LOAD_CONFIG.map(item => (
             <div key={item.name} className="flex flex-col gap-y-2">
@@ -43,7 +43,7 @@ export const LoadConfig = <T extends FieldValues>({
               <div className="w-full flex items-center justify-between gap-4">
                 <Slider
                   min={1}
-                  max={100}
+                  max={item.max}
                   step={1}
                   value={[getNumericValue(item.name)]}
                   onValueChange={value =>
@@ -57,7 +57,11 @@ export const LoadConfig = <T extends FieldValues>({
                 />
                 <FieldGenerator
                   control={control}
-                  config={{ ...item, label: "" }}
+                  config={{
+                    name: item.name,
+                    type: item.type,
+                    placeholder: item.placeholder,
+                  }}
                   className="max-w-28 max-md:text-xs"
                 />
               </div>
@@ -65,13 +69,12 @@ export const LoadConfig = <T extends FieldValues>({
           ))}
         </section>
 
-        {/* FIXME: Chart getting a constant size in every device */}
         <section className="w-full">
           <LoadDataConfigChart
-            totalRequests={totalRequests}
+            vusers={vusers}
             duration={duration}
-            concurrency={concurrency}
-            requestRate={requestRate}
+            rampUp={rampUp}
+            rampUpSteps={rampUpSteps}
           />
         </section>
       </CardContent>

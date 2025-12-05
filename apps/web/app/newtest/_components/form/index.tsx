@@ -1,7 +1,6 @@
 "use client";
 
 import { CircleChevronRight, Loader2 } from "lucide-react";
-import { useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Form } from "@/components/ui/form";
 import { useNewTestForm } from "../../_hooks/validators";
@@ -9,19 +8,9 @@ import { LoadConfig } from "../load-config";
 import { Metadata } from "../metadata-config";
 import { RequestConfig } from "../request-config";
 
-interface NewTestConfigProps {
-  userId: string;
-}
-
-export const NewTestConfig = ({ userId }: NewTestConfigProps) => {
+export const NewTestConfig = () => {
   const { newTestForm, handleSubmit, control, onSubmit, getValues, setValue, isPending } =
     useNewTestForm();
-
-  useEffect(() => {
-    if (userId) {
-      setValue("userId", userId);
-    }
-  }, [userId, setValue]);
 
   return (
     <Form {...newTestForm}>

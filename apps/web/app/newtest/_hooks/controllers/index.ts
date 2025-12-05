@@ -14,19 +14,22 @@ export const useCreateTest = () => {
     mutationKey: ["createTest"],
 
     mutationFn: async (payload: NewTestConfig) => {
-      return fetchApi<NewTestResponse>("/api/newtest", {
-        method: "POST",
-        body: JSON.stringify(payload),
+      return fetchApi<NewTestResponse>({
+        url: "/api/test/newtest",
+        options: {
+          method: "POST",
+          body: JSON.stringify(payload),
+        },
       });
     },
-    onSuccess: ({ data, error, message }) => {
-      if (error) {
-        toast.error(message);
+    onSuccess: response => {
+      if (response.error) {
+        toast.error(response.error.message);
         return router.push("/dashboard");
       }
 
-      toast.success(message);
-      return router.push(`/test/result/${data.testRunId}`);
+      toast.success(response.message);
+      return router.push(`/test/run/${response.data.testRun.id}`);
     },
     onError: error => {
       toast.error(error.message);
