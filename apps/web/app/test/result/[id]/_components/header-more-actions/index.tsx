@@ -18,9 +18,10 @@ import {
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { fetchApi } from "@/lib/api";
-import { copyToClipboard } from "@/lib/copy-to-clipboard";
 import { cn } from "@/lib/utils";
+import { copyToClipboard } from "@/utils/copy-to-clipboard";
 import { RESULT_HEADER_MORE_ACTIONS } from "../../_constants";
+import { DeleteTest } from "../../_types";
 
 interface HeaderMoreActionsProps {
   testRunId: string;
@@ -32,19 +33,6 @@ export const HeaderMoreActions = ({ testRunId, testName }: HeaderMoreActionsProp
   const [isDeleting, setIsDeleting] = useState(false);
   const router = useRouter();
 
-  const handleCopyTestId = async () => {
-    try {
-      const copied = await copyToClipboard(testRunId);
-      if (copied) {
-        SuccessToast({ title: "Copied ID to clipboard" });
-      } else {
-        ErrorToast({ title: "Failed to copy ID" });
-      }
-    } catch {
-      ErrorToast({ title: "Failed to copy ID" });
-    }
-  };
-
   const handleDownloadJsonReport = () => {
     // WIP: Implement JSON report download
     ErrorToast({ title: "Download feature coming soon" });
@@ -53,29 +41,32 @@ export const HeaderMoreActions = ({ testRunId, testName }: HeaderMoreActionsProp
   const handleDeleteTest = async () => {
     setIsDeleting(true);
 
-    try {
-      const { message, error } = await fetchApi(`/api/delete-test/${testRunId}`, {
+    const response = await fetchApi<DeleteTest>({
+      url: `/api/test/${testRunId}`,
+      options: {
         method: "DELETE",
-      });
+      },
+    });
 
-      if (error) {
-        ErrorToast({ title: message || error.message });
-      } else {
-        SuccessToast({ title: message });
-        setShowDeleteDialog(false);
-        router.push("/dashboard");
-      }
-    } catch {
-      ErrorToast({ title: "Failed to delete test" });
-    } finally {
-      setIsDeleting(false);
+    if (response.error) {
+      ErrorToast({ title: response.error.message });
+    } else {
+      SuccessToast({ title: response.message });
+      setShowDeleteDialog(false);
+      router.push("/dashboard");
     }
+
+    setIsDeleting(false);
   };
 
   const handleAction = (actionName: string) => {
     switch (actionName) {
       case "Copy Test ID":
-        handleCopyTestId();
+        copyToClipboard({
+          text: testRunId,
+          onCopy: () => SuccessToast({ title: "Copied ID to clipboard" }),
+          onError: () => ErrorToast({ title: "Failed to copy ID" }),
+        });
         break;
       case "Download JSON Report":
         handleDownloadJsonReport();
@@ -109,13 +100,12 @@ export const HeaderMoreActions = ({ testRunId, testName }: HeaderMoreActionsProp
               role="listitem"
               className={cn(
                 "flex items-center gap-2 text-neutral-500 dark:text-neutral-400 rounded transition-colors cursor-pointer px-2 py-1.5 item-hover",
-                // FIXME: danger color is not applying
                 action.isSeparator &&
                   "text-red-400 dark:text-red-400/80 dark:hover:bg-red-900/45 dark:hover:text-red-200 hover:bg-red-300/90 hover:text-red-500",
               )}
               onClick={() => handleAction(action.name)}
             >
-              <action.icon className="size-[.8125rem]" />
+              <action.icon className="size-3.25" />
               {action.name}
             </span>
           </Fragment>

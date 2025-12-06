@@ -1,10 +1,10 @@
-import { Braces, FileDigit, Play, Share, Trash2 } from "lucide-react";
-import { v4 } from "uuid";
+import { Braces, FileDigit, PanelTopOpen, Play, Share, Trash2 } from "lucide-react";
 import { ResultHeaderMoreActions } from "../_types";
 
 export const TEST_SUMMARY_ACTIONS = [
-  { id: v4(), name: "Re-run", icon: Play },
-  { id: v4(), name: "Share", icon: Share },
+  { id: "Re-run", name: "Re-run", icon: Play },
+  { id: "Share", name: "Share", icon: Share },
+  { id: "Logs", name: "Logs", icon: PanelTopOpen },
 ];
 
 export const RESULT_HEADER_MORE_ACTIONS: ResultHeaderMoreActions[] = [
