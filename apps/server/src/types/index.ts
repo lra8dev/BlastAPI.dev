@@ -55,8 +55,10 @@ export interface TestSummary {
 }
 
 // eslint-disable-next-line @typescript-eslint/no-empty-object-type
-export interface HealthCheckResult
-  extends Omit<HealthCRType, "id" | "healthCheckSummaryId" | "createdAt"> {}
+export interface HealthCheckResult extends Omit<
+  HealthCRType,
+  "id" | "healthCheckSummaryId" | "createdAt"
+> {}
 
 export interface HealthCheck {
   totalChecks: number;
