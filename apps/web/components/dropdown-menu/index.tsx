@@ -21,9 +21,13 @@ import { cn } from "@/lib/utils";
 import { CustDropdownMenuProps } from "@/types";
 
 export const CustDropdownMenu = ({ trigger, menuItems }: CustDropdownMenuProps) => {
-  const [selectedMap, setSelectedMap] = useState<Record<string, string>>({});
-  const router = useRouter();
   const { setTheme, theme } = useTheme();
+  const router = useRouter();
+
+  const [selectedMap, setSelectedMap] = useState<Record<string, string>>({
+    "time-zone-menu-item": "Local time",
+    "theme-menu-item": theme ?? "System",
+  });
 
   const handleSelect = useCallback(
     (itemId: string, subItem?: { id: string; value: string }) => {
