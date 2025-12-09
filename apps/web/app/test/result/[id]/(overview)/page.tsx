@@ -6,6 +6,7 @@ import { fetchApi } from "@/lib/api";
 import { TestRunIdParams } from "@/types";
 import { ErrorCheck } from "../_components/error-check";
 import { HealthCheck } from "../_components/health-check";
+import { HttpPerformanceContent } from "../_components/http-performance";
 import { LoadSummaryContent } from "../_components/load-summary";
 import { ResultMetadata } from "../_components/result-metadata";
 import { TestResult } from "../_types";
@@ -50,6 +51,9 @@ const TestOverviewPage = async ({ params }: TestRunIdParams) => {
     );
   }
 
+  const { successfulRequests, failedRequests, statusCodes } = data.testResult;
+  const parsedStatusCodes: Record<string, number> = JSON.parse(JSON.stringify(statusCodes));
+
   return (
     <section className="flex flex-col w-full gap-3 lg:flex-row md:gap-4 lg:gap-6 p-3 md:p-4 lg:p-6">
       <div className="w-full flex flex-col gap-3 md:gap-4 lg:gap-6">
@@ -59,6 +63,14 @@ const TestOverviewPage = async ({ params }: TestRunIdParams) => {
           <ErrorCheck errorInfos={data.errorInfos} />
         </div>
         <LoadSummaryContent {...data.testResult} metrics={data.testMetrics} />
+        <HttpPerformanceContent
+          {...data.testResult}
+          statusCodes={parsedStatusCodes}
+          totalRequests={successfulRequests + failedRequests}
+          totalResponses={successfulRequests + failedRequests}
+        />
+        {/* WIP: add Chart builder */}
+        {/* <ChartBuilder /> */}
       </div>
       <aside className="h-auto">
         <ResultMetadata
