@@ -113,10 +113,11 @@ export const TestsHistory = ({ tests }: TestHistoryProps) => {
                 <div className="flex items-center gap-2 lg:gap-x-3">
                   <CustTooltip content={label} className={"rounded-full " + className} side="right">
                     <TestStatus
+                      icon={icon}
+                      className={className}
                       passedChecks={test.healthCheckSummary?.passedChecks ?? 0}
                       totalChecks={test.healthCheckSummary?.totalChecks ?? 2}
-                      className={className}
-                      icon={icon}
+                      failedChecks={test.healthCheckSummary?.failedChecks ?? 0}
                     />
                   </CustTooltip>
                   <div className="flex flex-col max-w-xs">
