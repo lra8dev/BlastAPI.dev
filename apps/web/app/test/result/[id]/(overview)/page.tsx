@@ -6,6 +6,7 @@ import { fetchApi } from "@/lib/api";
 import { TestRunIdParams } from "@/types";
 import { ErrorCheck } from "../_components/error-check";
 import { HealthCheck } from "../_components/health-check";
+import { ResultMetadata } from "../_components/result-metadata";
 import { TestResult } from "../_types";
 
 const TestOverviewPage = async ({ params }: TestRunIdParams) => {
@@ -34,7 +35,7 @@ const TestOverviewPage = async ({ params }: TestRunIdParams) => {
     );
   }
 
-  if (!data.healthCheckSummary) {
+  if (!data.testConfig || !data.healthCheckSummary) {
     return (
       <NotFound
         title="Incomplete Test Data"
@@ -52,6 +53,15 @@ const TestOverviewPage = async ({ params }: TestRunIdParams) => {
           <ErrorCheck errorInfos={data.errorInfos} />
         </div>
       </div>
+      <aside className="h-auto">
+        <ResultMetadata
+          id={data.id}
+          startedAt={data.startedAt}
+          duration={data.testConfig.duration}
+          region={data.testConfig.region}
+          user={data.user}
+        />
+      </aside>
     </section>
   );
 };
