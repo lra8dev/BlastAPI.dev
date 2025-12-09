@@ -1,21 +1,37 @@
 "use server";
 
-import { ApiReturn } from "@/types";
+import { auth } from "@/auth";
+import { ApiReturn, FetchApi } from "@/types";
 
-const BASE_URL = process.env.API_BASE_URL;
+const BASE_URL = process.env.NEXT_PUBLIC_SERVER_URL!;
 
-export const fetchApi = async <T>(url: string, options?: RequestInit): ApiReturn<T> => {
+export const fetchApi = async <T>({
+  url,
+  isAuth = true,
+  options,
+  attempt = 0,
+  retry = 2,
+}: FetchApi): ApiReturn<T> => {
+  const session = isAuth ? await auth() : null;
+
+  if (isAuth && !session?.user) {
+    return {
+      data: null,
+      error: Error("User is not authenticated"),
+    };
+  }
+
   if (!BASE_URL) {
     return {
       data: null,
       error: Error("Server API is not loaded from environment variables"),
-      message: "Server API not loaded",
     };
   }
 
   const fullUrl = `${BASE_URL}${url}`;
   const headers = {
     "Content-Type": "application/json",
+    Authorization: `Bearer ${session?.user.id || ""}`,
     ...options?.headers,
   };
 
@@ -46,31 +62,56 @@ export const fetchApi = async <T>(url: string, options?: RequestInit): ApiReturn
       return {
         data: null,
         error: Error(errorMessage),
-        message: "Response body parse error",
       };
     }
 
     if (!response.ok) {
+      if (response.status >= 500 && attempt < retry) {
+        const delay = 500 * Math.pow(2, attempt);
+        await new Promise(resolve => setTimeout(resolve, delay));
+
+        return fetchApi<T>({
+          url,
+          isAuth,
+          options,
+          attempt: attempt++,
+          retry,
+        });
+      }
+
       return {
         data: null,
         error: Error(response.statusText || "Internal Server Error"),
-        message: responseBody.message as string,
       };
     }
 
     return {
-      data: (responseBody?.data ?? responseBody) as T,
+      data: (responseBody?.data || responseBody) as T,
       error: null,
-      message: responseBody.message,
+      message: responseBody?.message || "Request successful",
     };
   } catch (networkError) {
+    if (attempt < retry) {
+      const delay = 500 * Math.pow(2, attempt);
+      await new Promise(resolve => setTimeout(resolve, delay));
+
+      return fetchApi<T>({
+        url,
+        isAuth,
+        options,
+        attempt: attempt++,
+        retry,
+      });
+    }
+
     const errorMessage =
-      networkError instanceof Error ? networkError.message : "Unknown network error";
+      networkError instanceof Error
+        ? networkError.message
+        : "Network Error. Can't reach to Server.";
 
     return {
       data: null,
       error: Error(errorMessage),
-      message: "Network Error. Can't reach to Server.",
     };
   }
 };
