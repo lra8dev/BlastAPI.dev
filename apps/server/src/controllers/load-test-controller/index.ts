@@ -198,18 +198,36 @@ export class TestController {
         },
         select: {
           id: true,
+          status: true,
           startedAt: true,
+          createdAt: true,
+          testConfig: {
+            select: {
+              name: true,
+              region: true,
+              duration: true,
+              vusers: true,
+              rampUp: true,
+              rampUpSteps: true,
+            },
+          },
+          testMetrics: true,
+          testResult: true,
           healthCheckSummary: {
             select: {
+              totalChecks: true,
+              passedChecks: true,
+              failedChecks: true,
+              overallStatus: true,
               healthCheckResults: {
+                orderBy: { createdAt: "asc" },
                 select: {
                   checkName: true,
-                  passed: true,
                   threshold: true,
                   actualValue: true,
+                  passed: true,
                   failureDetails: true,
                 },
-                orderBy: { createdAt: "asc" },
               },
             },
           },
@@ -217,27 +235,7 @@ export class TestController {
             orderBy: { timestamp: "desc" },
             take: 10,
           },
-          testResult: {
-            select: {
-              vusersCreated: true,
-              successfulRequests: true,
-              successRate: true,
-              failedRequests: true,
-              errorRate: true,
-              avgThroughput: true,
-              maxThroughput: true,
-              minResponseTime: true,
-              avgResponseTime: true,
-              p50ResponseTime: true,
-              p95ResponseTime: true,
-              p99ResponseTime: true,
-              maxResponseTime: true,
-              statusCodes: true,
-              // TODO: implement totalResponses
-            },
-          },
-          testMetrics: true,
-          testConfig: true,
+
           user: {
             select: {
               name: true,

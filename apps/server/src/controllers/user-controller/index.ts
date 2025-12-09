@@ -341,7 +341,6 @@ export class UserController {
               role: true,
               createdAt: true,
               updatedAt: true,
-              lastActiveAt: true,
               _count: {
                 select: {
                   testRuns: true,
@@ -403,7 +402,6 @@ export class UserController {
           role: true,
           createdAt: true,
           updatedAt: true,
-          lastActiveAt: true,
           testRuns: {
             select: {
               id: true,

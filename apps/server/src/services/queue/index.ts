@@ -73,29 +73,34 @@ export class QueueService {
 
         // Run the load test
         const result = await this.loadTestEngine.runTest(testRunId, config);
-
-        await this.saveTestResults(testRunId, result);
-
+        const endedAt = new Date();
         await prisma.testRun.update({
           where: { id: testRunId },
           data: {
             status: TestStatus.Succeeded,
-            endedAt: new Date(),
+            endedAt,
           },
           select: { id: true },
         });
 
-        // Emit socket event for test completed successfully
+        // Emit socket event for test completed successfully (BEFORE saving detailed results)
         try {
           const socketService = getSocketService();
           socketService.emitTestStatusUpdate({
             testRunId,
             status: TestStatus.Succeeded,
-            endedAt: new Date().toLocaleString(),
+            endedAt: endedAt.toLocaleString(),
           });
         } catch {
           logger.warn(`Could not emit socket event for test '${testRunId}' completion`);
         }
+
+        // Save detailed results asynchronously (non-blocking for client)
+        this.saveTestResults(testRunId, result).catch(error => {
+          logger.error(
+            `Failed to save test results for ${testRunId}: ${error instanceof Error ? error.message : "Unknown error"}`,
+          );
+        });
 
         logger.info(`Load test '${testRunId}' completed successfully`);
         return result;
@@ -183,7 +188,7 @@ export class QueueService {
   }
 
   private async saveTestResults(testRunId: string, result: LoadTestResult): Promise<void> {
-    await prisma.testResult.create({
+    const testResultPromise = prisma.testResult.create({
       data: {
         testRunId,
         avgThroughput: result.summary.avgThroughput,
@@ -204,21 +209,27 @@ export class QueueService {
       },
     });
 
-    if (result.metrics && result.metrics.length > 0) {
-      await prisma.testMetric.createMany({
-        data: result.metrics.map(metric => ({
-          testRunId,
-          timetamp: new Date(metric.timestamp),
-          throughput: metric.throughput,
-          statusCode: metric.statusCode,
-          vusersCreated: metric.vusersCreated,
-          vusersActive: metric.vusersActive,
-          p95ResponseTime: metric.p95ResponseTime,
-          p99ResponseTime: metric.p99ResponseTime,
-        })),
-      });
-    }
+    // Save metrics in parallel if available
+    const metricsPromise =
+      result.metrics && result.metrics.length > 0
+        ? prisma.testMetric.createMany({
+            data: result.metrics.map(metric => ({
+              testRunId,
+              timetamp: new Date(metric.timestamp),
+              throughput: metric.throughput,
+              statusCode: metric.statusCode,
+              vusersCreated: metric.vusersCreated,
+              vusersActive: metric.vusersActive,
+              p95ResponseTime: metric.p95ResponseTime,
+              p99ResponseTime: metric.p99ResponseTime,
+            })),
+          })
+        : Promise.resolve();
 
+    // Wait for test result and metrics to complete
+    await Promise.all([testResultPromise, metricsPromise]);
+
+    // Save health checks (dependent on test result)
     if (result.healthChecks) {
       const healthCheckSummary = await prisma.healthCheckSummary.create({
         data: {
