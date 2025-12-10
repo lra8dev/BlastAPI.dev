@@ -25,6 +25,7 @@ const TestOverviewPage = async ({ params }: TestRunIdParams) => {
 
   const { data, error } = await fetchApi<TestResult>({
     url: `/api/test/${id}`,
+    retry: 3,
     options: { cache: "force-cache" },
   });
 
