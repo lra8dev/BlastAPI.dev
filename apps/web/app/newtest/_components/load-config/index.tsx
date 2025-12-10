@@ -1,5 +1,4 @@
 import { FieldValues, Path, PathValue } from "react-hook-form";
-import { LoadDataConfigChart } from "@/components/charts/load-data-config";
 import { FieldGenerator } from "@/components/form/field-generator";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Slider } from "@/components/ui/slider";
@@ -7,6 +6,7 @@ import { LOAD_CONFIG } from "../../_constants";
 import { useNumericWatch } from "../../_hooks/validators";
 import { LoadConfigProps } from "../../_types";
 import { setFormValue } from "../../_utils";
+import { LoadConfigAreaChart } from "../load-config-area-chart";
 
 export const LoadConfig = <T extends FieldValues>({
   control,
@@ -70,10 +70,10 @@ export const LoadConfig = <T extends FieldValues>({
         </section>
 
         <section className="w-full">
-          <LoadDataConfigChart
+          <LoadConfigAreaChart
             vusers={vusers}
             duration={duration}
-            rampUp={rampUp}
+            rampUpTime={rampUp}
             rampUpSteps={rampUpSteps}
           />
         </section>
