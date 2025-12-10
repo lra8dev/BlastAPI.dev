@@ -32,7 +32,7 @@ export const TestHeader = async ({ testRunId }: TestHeaderProps) => {
   return (
     <header className="sticky z-50 top-0 border-y bg-white dark:bg-dark-2 dark:border-neutral-700/30 shadow-xs p-3 md:px-4 lg:px-6">
       <nav className="w-full flex flex-col min-[478px]:flex-row min-[478px]:items-center min-[478px]:justify-between gap-2">
-        <div className="flex items-center gap-4">
+        <div className="flex items-center gap-4 flex-wrap">
           <div className="flex items-center gap-2">
             <CustTooltip content={label} className={"rounded-full " + className} side="bottom">
               <TestStatus
@@ -44,7 +44,7 @@ export const TestHeader = async ({ testRunId }: TestHeaderProps) => {
               />
             </CustTooltip>
 
-            <h3 className="font-semibold text-xs md:text-[0.8125rem] text-gray-300">
+            <h3 className="font-semibold text-xs md:text-[0.8125rem] text-neutral-700 dark:text-gray-200">
               {data.testConfig?.name ?? testRunId}
             </h3>
           </div>
@@ -60,7 +60,7 @@ export const TestHeader = async ({ testRunId }: TestHeaderProps) => {
               size="sm"
               disabled
               variant="primary"
-              className="font-semibold text-xs bg-white/8 text-gray-300 border-neutral-700/40 gap-1 hover:bg-white/10 hover:brightness-110 md:gap-2 md:text-[0.8125rem]"
+              className="font-semibold text-xs bg-neutral-100 border-neutral-200 hover:bg-muted/50 dark:bg-white/8 dark:text-neutral-300/80 dark:border-neutral-700/40 dark:hover:bg-white/10 dark:hover:brightness-110 gap-1 md:gap-2 md:text-[0.8125rem]"
             >
               <action.icon className="size-3 md:size-3.25" aria-hidden="true" />
               {action.name}
