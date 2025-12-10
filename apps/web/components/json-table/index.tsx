@@ -21,15 +21,18 @@ export const JSONTable = <T extends FieldValues>({ setValue }: SetFormValueProps
   const [isHover, setHover] = useState<number | null>(null);
 
   useEffect(() => {
-    // const jsonString = rows
-    //   .filter(row => row.key.trim() !== "" || row.value.trim() !== "")
-    //   .map(row => [row.key, row.value]);
-
-    setFormValue({
-      fieldName: "headers" as Path<T>,
-      // value: jsonString as PathValue<T, Path<T>>,
-      value: "" as PathValue<T, Path<T>>, // WIP: Set JSON value insted of an Array
-      setValue,
+    const jsonString = rows.filter(
+      row =>
+        row.key.trim() !== "" ||
+        row.value.trim() !== "" ||
+        (row.description && row.description.trim() !== ""),
+    );
+    jsonString.forEach(row => {
+      setFormValue({
+        fieldName: "headers" as Path<T>,
+        value: JSON.parse(JSON.stringify({ [row.key]: row.value })) as PathValue<T, Path<T>>,
+        setValue,
+      });
     });
   }, [rows, setValue]);
 

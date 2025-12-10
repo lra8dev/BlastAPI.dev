@@ -9,7 +9,7 @@ import { SetFormValueProps } from "@/app/newtest/_types";
 import { setFormValue } from "@/app/newtest/_utils";
 
 export const JsonEditor = <T extends FieldValues>({ setValue }: SetFormValueProps<T>) => {
-  const [jsonValue, setJsonValue] = useState<string>("{}");
+  const [jsonValue, setJsonValue] = useState<Record<string, string>>({});
 
   useEffect(() => {
     if (jsonValue) {
@@ -24,11 +24,11 @@ export const JsonEditor = <T extends FieldValues>({ setValue }: SetFormValueProp
   return (
     <div className="rounded-md overflow-hidden">
       <CodeMirror
-        value={jsonValue}
+        value={JSON.stringify(jsonValue, null, 2)}
         height="200px"
         theme={oneDark}
         extensions={[json()]}
-        onChange={value => setJsonValue(value)}
+        onChange={value => setJsonValue(JSON.parse(value))}
         basicSetup={{
           lineNumbers: true,
           foldGutter: true,
