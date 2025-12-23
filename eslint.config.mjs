@@ -48,6 +48,8 @@ export default [
           groups: [["^\\u0000", "^@?\\w", "^", "^\\."]],
         },
       ],
+      "@typescript-eslint/no-unused-expressions": "warn",
+      "@typescript-eslint/no-empty-object-type": "warn",
       "@typescript-eslint/no-explicit-any": "warn",
       "unused-imports/no-unused-vars": [
         "warn",
