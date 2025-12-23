@@ -1,4 +1,4 @@
-import { Card } from "@/components/global/card";
+import { Card } from "@/components/ui/card";
 
 export const ChartBuilder = () => {
   return (
