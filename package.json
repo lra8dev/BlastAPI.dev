@@ -3,11 +3,11 @@
   "version": "1.0.0",
   "private": true,
   "type": "module",
-  "packageManager": "pnpm@10.9.0",
+  "packageManager": "pnpm@10.15.0",
   "description": "A monorepo for BlastAPI, containing client and server applications.",
   "scripts": {
     "dev": "pnpm --filter @blastapi/db db:generate && pnpm -r dev",
-    "build": "pnpm run build:clean && pnpm --filter @blastapi/db db:deploy && pnpm --filter @blastapi/db db:generate && pnpm -r build",
+    "build": "pnpm run build:clean && pnpm --filter @blastapi/db db:generate && pnpm --filter @blastapi/db db:deploy && pnpm -r build",
     "build:clean": "pnpm -r exec rm -rf dist tsconfig.tsbuildinfo",
     "start": "pnpm -r start",
     "lint": "eslint \"apps/**/*.{ts,tsx}\" \"packages/**/*.{ts,tsx}\" --fix",
