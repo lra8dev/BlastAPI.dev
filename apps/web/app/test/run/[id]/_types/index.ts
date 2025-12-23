@@ -1,3 +1,4 @@
+import { TestRegions } from "@blastapi/validators";
 import { TestCreationData } from "@/types";
 
 export interface CountdownProps {
@@ -14,4 +15,13 @@ export interface ControlAcks {
 export interface DebugInfoProps {
   testRun: TestCreationData["testRun"];
   isConnected: boolean;
+}
+
+export interface TestDetailsProps {
+  name: string;
+  duration: number;
+  vusers: number;
+  rampUp: number;
+  rampUpSteps: number;
+  region: TestRegions;
 }
