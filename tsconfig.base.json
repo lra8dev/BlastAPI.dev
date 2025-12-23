@@ -14,8 +14,6 @@
     "skipDefaultLibCheck": true,
     "isolatedModules": true,
     "forceConsistentCasingInFileNames": true,
-    "baseUrl": ".",
-    "ignoreDeprecations": "6.0",
     "paths": {
       "@/*": ["./*"],
       "@blastapi/db": ["packages/db/src"],
@@ -28,8 +26,8 @@
     "**/dist",
     "**/build",
     "**/.next",
-    "**/.prisma/client",
-    "**/prisma/generated",
+    "**/out",
+    "**/.vercel",
     "**/prisma/migrations"
   ]
 }
