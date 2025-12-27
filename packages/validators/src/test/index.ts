@@ -1,4 +1,4 @@
-import { HttpMethod } from "@blastapi/db";
+import { HttpMethod } from "@blastapi/db/types";
 import { z } from "zod";
 
 export enum TestRegions {

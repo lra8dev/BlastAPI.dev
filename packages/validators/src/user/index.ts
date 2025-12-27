@@ -1,4 +1,4 @@
-import { UserRole } from "@blastapi/db";
+import { UserRole } from "@blastapi/db/types";
 import { z } from "zod";
 
 export const signInSchema = z.object({
