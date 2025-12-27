@@ -1,4 +1,4 @@
-import { HealthCheckStatus, TestStatus, UserRole } from "@blastapi/db";
+import { HealthCheckStatus, TestStatus, UserRole } from "@blastapi/db/types";
 import { TestRegions } from "@blastapi/validators";
 
 interface User {

@@ -1,6 +1,6 @@
 "use client";
 
-import { TestStatus } from "@blastapi/db";
+import { TestStatus } from "@blastapi/db/types";
 import { useCallback, useEffect, useState } from "react";
 import { fetchApi } from "@/lib/api";
 import { getSocketClient } from "@/lib/socket/client";

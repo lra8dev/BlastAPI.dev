@@ -1,4 +1,4 @@
-import { TestStatus, User } from "@blastapi/db";
+import { TestStatus, User } from "@blastapi/db/types";
 import { TestRegions } from "@blastapi/validators";
 import { ClassValue } from "clsx";
 import { LucideIcon } from "lucide-react";

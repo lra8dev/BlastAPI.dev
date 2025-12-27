@@ -1,6 +1,5 @@
 "use client";
 
-import { HttpMethod } from "@blastapi/db";
 import { NewTestConfig, newTestSchema, TestRegions } from "@blastapi/validators";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useMemo } from "react";
@@ -15,7 +14,7 @@ export const useNewTestForm = () => {
     (): NewTestConfig => ({
       name: formatDateTime(Date.now()),
       url: "",
-      method: HttpMethod.GET,
+      method: "GET",
       region: TestRegions.SaEast1,
       duration: 60,
       vusers: 100,

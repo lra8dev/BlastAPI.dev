@@ -1,6 +1,6 @@
 "use client";
 
-import { User } from "@blastapi/db";
+import { User } from "@blastapi/db/types";
 import { SignUp } from "@blastapi/validators";
 import { useMutation } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";

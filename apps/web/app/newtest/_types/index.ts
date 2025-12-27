@@ -1,4 +1,4 @@
-import { TestStatus } from "@blastapi/db";
+import { TestStatus } from "@blastapi/db/types";
 import {
   Control,
   FieldValues,

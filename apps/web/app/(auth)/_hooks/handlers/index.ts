@@ -1,6 +1,5 @@
 "use client";
 
-import { UserRole } from "@blastapi/db";
 import { SignIn, signInSchema, SignUp, signUpSchema } from "@blastapi/validators";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useMemo, useState } from "react";
@@ -10,7 +9,7 @@ import { useSignUp } from "../controllers";
 
 export const useSignUpForm = () => {
   const defaultValues = useMemo(
-    (): SignUp => ({ email: "", password: "", role: UserRole.user, name: null, image: null }),
+    (): SignUp => ({ email: "", password: "", role: "user", name: null, image: null }),
     [],
   );
 

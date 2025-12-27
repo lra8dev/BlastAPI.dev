@@ -1,4 +1,4 @@
-import { HttpMethod } from "@blastapi/db";
+import { HttpMethod } from "@blastapi/db/types";
 import { JsonEditor } from "@/components/json-editor";
 import { JSONTable } from "@/components/json-table";
 import { CustSelectOption, FieldConfig } from "@/types";
