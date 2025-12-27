@@ -1,8 +1,18 @@
 {
   "name": "@blastapi/db",
   "version": "1.0.0",
-  "main": "dist/index.js",
-  "types": "dist/index.d.ts",
+  "main": "dist/src/client.js",
+  "type": "module",
+  "exports": {
+    ".": {
+      "types": "./dist/src/client.d.ts",
+      "default": "./dist/src/client.js"
+    },
+    "./types": {
+      "types": "./dist/src/types.d.ts",
+      "default": "./dist/src/types.js"
+    }
+  },
   "scripts": {
     "build": "tsc",
     "db:generate": "prisma generate",
@@ -13,10 +23,13 @@
   },
   "devDependencies": {
     "@types/node": "^24.0.15",
+    "@types/pg": "^8.16.0",
     "prisma": "catalog:prisma",
     "typescript": "^5.8.3"
   },
   "dependencies": {
-    "@prisma/client": "7.2.0"
+    "@prisma/adapter-pg": "^7.2.0",
+    "@prisma/client": "7.2.0",
+    "pg": "^8.16.3"
   }
 }
