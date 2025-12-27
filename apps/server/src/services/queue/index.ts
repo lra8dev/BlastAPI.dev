@@ -1,4 +1,4 @@
-import { prisma, TestStatus } from "@blastapi/db";
+import { prisma } from "@blastapi/db";
 import Queue from "bull";
 import Redis from "ioredis";
 import { logger } from "@/lib/logger";
@@ -53,7 +53,7 @@ export class QueueService {
         await prisma.testRun.update({
           where: { id: testRunId },
           data: {
-            status: TestStatus.Running,
+            status: "Running",
             startedAt: new Date(),
           },
           select: { id: true },
@@ -64,7 +64,7 @@ export class QueueService {
           const socketService = getSocketService();
           socketService.emitTestStatusUpdate({
             testRunId,
-            status: TestStatus.Running,
+            status: "Running",
             startedAt: new Date().toLocaleString(),
           });
         } catch {
@@ -77,7 +77,7 @@ export class QueueService {
         await prisma.testRun.update({
           where: { id: testRunId },
           data: {
-            status: TestStatus.Succeeded,
+            status: "Succeeded",
             endedAt,
           },
           select: { id: true },
@@ -88,7 +88,7 @@ export class QueueService {
           const socketService = getSocketService();
           socketService.emitTestStatusUpdate({
             testRunId,
-            status: TestStatus.Succeeded,
+            status: "Succeeded",
             endedAt: endedAt.toLocaleString(),
           });
         } catch {
@@ -110,7 +110,7 @@ export class QueueService {
         await prisma.testRun.update({
           where: { id: testRunId },
           data: {
-            status: TestStatus.Failed,
+            status: "Failed",
             endedAt: new Date(),
           },
           select: { id: true },
@@ -121,7 +121,7 @@ export class QueueService {
           const socketService = getSocketService();
           socketService.emitTestStatusUpdate({
             testRunId,
-            status: TestStatus.Failed,
+            status: "Failed",
             endedAt: new Date().toLocaleString(),
             error: error instanceof Error ? error.message : "Unknown error",
           });

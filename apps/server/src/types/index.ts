@@ -1,4 +1,8 @@
-import { HealthCheckResult as HealthCRType, HealthCheckStatus, HttpMethod } from "@blastapi/db";
+import {
+  HealthCheckResult as HealthCRType,
+  HealthCheckStatus,
+  HttpMethod,
+} from "@blastapi/db/types";
 import type { Socket } from "socket.io";
 
 export interface TestJobData {

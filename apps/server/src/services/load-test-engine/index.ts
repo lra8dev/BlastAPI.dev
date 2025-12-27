@@ -1,4 +1,4 @@
-import { HealthCheckStatus } from "@blastapi/db";
+import { HealthCheckStatus } from "@blastapi/db/types";
 import axios, { AxiosError, AxiosRequestConfig, AxiosResponse } from "axios";
 import { performance } from "perf_hooks";
 import { logger } from "@/lib/logger";

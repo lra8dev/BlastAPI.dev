@@ -1,4 +1,5 @@
-import { prisma, TestStatus } from "@blastapi/db";
+import { prisma } from "@blastapi/db";
+import { TestStatus } from "@blastapi/db/types";
 import { Server as SocketServer, Socket } from "socket.io";
 import { logger } from "@/lib/logger";
 

@@ -1,4 +1,5 @@
-import { prisma, UserRole } from "@blastapi/db";
+import { prisma } from "@blastapi/db";
+import { UserRole } from "@blastapi/db/types";
 import { hashPassword, validatePassword } from "@blastapi/utils";
 import {
   changePasswordSchema,

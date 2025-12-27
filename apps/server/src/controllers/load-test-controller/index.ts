@@ -1,4 +1,5 @@
-import { prisma, TestStatus } from "@blastapi/db";
+import { prisma } from "@blastapi/db";
+import { TestStatus } from "@blastapi/db/types";
 import { newTestSchema, paginationSchema } from "@blastapi/validators";
 import { Response } from "express";
 import { StatusCodes } from "http-status-codes";

@@ -1,4 +1,5 @@
-import { Prisma, prisma, UserRole } from "@blastapi/db";
+import { Prisma, prisma } from "@blastapi/db";
+import { UserRole } from "@blastapi/db/types";
 import { NextFunction, Request, Response } from "express";
 import { StatusCodes } from "http-status-codes";
 import { logger } from "@/lib/logger";
