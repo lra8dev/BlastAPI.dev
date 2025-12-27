@@ -2,9 +2,8 @@
   "name": "blastapi",
   "version": "1.0.0",
   "private": true,
-  "type": "module",
   "packageManager": "pnpm@10.15.0",
-  "description": "A monorepo for BlastAPI, containing client and server applications.",
+  "description": "A monorepo for BlastAPI, containing all applications and packages.",
   "scripts": {
     "dev": "pnpm --filter @blastapi/db db:generate && pnpm -r dev",
     "build": "pnpm run build:clean && pnpm --filter @blastapi/db db:generate && pnpm --filter @blastapi/db db:deploy && pnpm -r build",
