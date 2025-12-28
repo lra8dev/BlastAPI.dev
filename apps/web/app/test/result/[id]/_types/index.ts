@@ -5,7 +5,7 @@ import {
   TestResult as TestResultType,
   TestStatus,
   UserRole,
-} from "@blastapi/db";
+} from "@blastapi/db/types";
 import { TestRegions } from "@blastapi/validators";
 import { LucideIcon } from "lucide-react";
 
