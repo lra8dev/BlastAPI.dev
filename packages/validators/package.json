@@ -9,5 +9,8 @@
   "dependencies": {
     "@blastapi/db": "workspace:*",
     "zod": "catalog:zod"
+  },
+  "devDependencies": {
+    "@types/node": "^22.0.0"
   }
 }
