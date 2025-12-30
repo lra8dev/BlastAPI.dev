@@ -49,10 +49,7 @@ services:
       - key: REDIS_PASSWORD
         value: ""
       - key: CLIENT_URL
-        fromService:
-          name: blastapi-web
-          type: web
-          property: host
+        sync: false # Set manually - e.g. https://blastapi-web.onrender.com
     autoDeploy: true
 
   # ===================
