@@ -45,10 +45,7 @@ services:
           type: redis
           property: port
       - key: REDIS_PASSWORD
-        fromService:
-          name: blastapi-redis
-          type: redis
-          property: password
+        value: ""
       - key: CORS_ORIGIN
         fromService:
           name: blastapi-web
