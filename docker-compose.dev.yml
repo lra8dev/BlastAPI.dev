@@ -1,0 +1,59 @@
+# Development override - use with: docker compose -f docker-compose.yml -f docker-compose.dev.yml up
+services:
+  # ================================
+  # Redis (Dev)
+  # ================================
+  redis:
+    ports:
+      - "6379:6379"
+
+  # ================================
+  # Express Backend Server (Dev with Hot Reload)
+  # ================================
+  server:
+    build:
+      context: .
+      dockerfile: apps/server/Dockerfile.dev
+    container_name: blastapi-server-dev
+    environment:
+      NODE_ENV: development
+      PORT: 4000
+      DATABASE_URL: ${DATABASE_URL}
+      REDIS_URL: redis://redis:6379
+      REDIS_HOST: redis
+      REDIS_PORT: "6379"
+      REDIS_PASSWORD: ""
+    volumes:
+      # Mount only server source for hot reload (tsx watch handles TypeScript)
+      - ./apps/server/src:/app/apps/server/src:ro
+      # Note: packages are NOT mounted - container uses pre-built dist/ from Docker build
+      # This ensures @blastapi/db, @blastapi/utils, @blastapi/validators are available
+    command: pnpm --filter @blastapi/server dev
+
+  # ================================
+  # Next.js Frontend (Dev with Hot Reload)
+  # ================================
+  web:
+    build:
+      context: .
+      dockerfile: apps/web/Dockerfile.dev
+    container_name: blastapi-web-dev
+    environment:
+      NODE_ENV: development
+      NEXT_PUBLIC_SERVER_URL: http://server:4000
+      DATABASE_URL: ${DATABASE_URL}
+      AUTH_SECRET: ${AUTH_SECRET:-dev-secret-change-in-production}
+      AUTH_GITHUB_ID: ${AUTH_GITHUB_ID}
+      AUTH_GITHUB_SECRET: ${AUTH_GITHUB_SECRET}
+      AUTH_GOOGLE_ID: ${AUTH_GOOGLE_ID}
+      AUTH_GOOGLE_SECRET: ${AUTH_GOOGLE_SECRET}
+    volumes:
+      # Mount only web app source for hot reload (Next.js handles TypeScript)
+      - ./apps/web/app:/app/apps/web/app:ro
+      - ./apps/web/components:/app/apps/web/components:ro
+      - ./apps/web/lib:/app/apps/web/lib:ro
+      - ./apps/web/styles:/app/apps/web/styles:ro
+      # Exclude .next build cache to avoid conflicts
+      - /app/apps/web/.next
+      # Note: packages are NOT mounted - container uses pre-built dist/ from Docker build
+    command: pnpm --filter @blastapi/web dev
