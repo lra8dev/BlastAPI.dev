@@ -7,7 +7,7 @@
   "description": "Backend server for BlastAPI",
   "scripts": {
     "dev": "tsx watch --require dotenv/config src/index.ts",
-    "build": "tsc",
+    "build": "tsc && tsc-alias",
     "start": "node --require dotenv/config dist/index.js",
     "check-types": "tsc --noEmit",
     "lint": "eslint src/**/*.ts",
@@ -45,6 +45,7 @@
     "@types/morgan": "^1.9.10",
     "@types/node": "^22.17.1",
     "@types/uuid": "^10.0.0",
+    "tsc-alias": "^1.8.16",
     "tsx": "^4.20.3",
     "typescript": "^5.8.3"
   }
