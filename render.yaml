@@ -27,6 +27,8 @@ services:
         value: 4000
       - key: DATABASE_URL
         sync: false # Set manually in Render dashboard
+      - key: DIRECT_URL
+        sync: false # Set manually - NeonDB direct connection
       - key: AUTH_SECRET
         sync: false
       - key: REDIS_URL
@@ -46,7 +48,7 @@ services:
           property: port
       - key: REDIS_PASSWORD
         value: ""
-      - key: CORS_ORIGIN
+      - key: CLIENT_URL
         fromService:
           name: blastapi-web
           type: web
@@ -77,6 +79,8 @@ services:
         value: 3000
       - key: DATABASE_URL
         sync: false # Set manually in Render dashboard
+      - key: DIRECT_URL
+        sync: false # Set manually - NeonDB direct connection
       - key: AUTH_SECRET
         sync: false
       - key: AUTH_GOOGLE_ID
