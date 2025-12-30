@@ -6,7 +6,7 @@ export const metadata: Metadata = {
     template: "%s | BlastAPI",
   },
   description:
-    "BlastAPI is a developer-first API testing platform offering high-performance load tests, insightful metrics, and a beautiful UI — completely free to use. Whether you're testing a REST API or preparing for scale, BlastAPI lets you push your backend to the edge.",
+    "BlastAPI is a developer-first API testing platform offering high-performance load tests, insightful metrics, and a beautiful UI — completely free to use.",
   keywords: [
     "API testing",
     "load testing",
@@ -41,14 +41,14 @@ export const metadata: Metadata = {
   openGraph: {
     type: "website",
     locale: "en_US",
-    url: "https://blastapi.dev", // TODO: Update with actual URL
+    url: "https://github.com/lra8dev/BlastAPI.dev",
     siteName: "BlastAPI",
     title: "BlastAPI — Free Load & Performance Testing for Modern APIs",
     description:
       "BlastAPI is a developer-first API testing platform offering high-performance load tests, insightful metrics, and a beautiful UI — completely free to use.",
     images: [
       {
-        url: "/assets/android-chrome-192x192.png", // TODO: update with actual URL
+        url: "/assets/android-chrome-192x192.png",
         width: 1200,
         height: 630,
         alt: "BlastAPI - API Load Testing Platform",
@@ -60,7 +60,7 @@ export const metadata: Metadata = {
     title: "BlastAPI — Free Load & Performance Testing for Modern APIs",
     description:
       "BlastAPI is a developer-first API testing platform offering high-performance load tests, insightful metrics, and a beautiful UI — completely free to use.",
-    images: ["/assets/android-chrome-192x192.png"], // TODO: update with actual URL
-    creator: "@luckyrathod__",
+    images: ["/assets/android-chrome-192x192.png"],
+    creator: "@luckyra8od",
   },
 };
