@@ -1,0 +1,110 @@
+# Render Blueprint - BlastAPI
+# https://render.com/docs/blueprint-spec
+
+services:
+  # ===================
+  # Express.js Backend
+  # ===================
+  - type: web
+    name: blastapi-server
+    runtime: node
+    region: oregon
+    plan: free
+    buildCommand: |
+      corepack enable &&
+      pnpm install --frozen-lockfile &&
+      pnpm --filter @blastapi/db db:generate &&
+      pnpm --filter @blastapi/db build &&
+      pnpm --filter @blastapi/validators build &&
+      pnpm --filter @blastapi/utils build &&
+      pnpm --filter @blastapi/server build
+    startCommand: pnpm --filter @blastapi/server start
+    healthCheckPath: /health
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: PORT
+        value: 4000
+      - key: DATABASE_URL
+        sync: false # Set manually in Render dashboard
+      - key: AUTH_SECRET
+        sync: false
+      - key: REDIS_URL
+        fromService:
+          name: blastapi-redis
+          type: redis
+          property: connectionString
+      - key: REDIS_HOST
+        fromService:
+          name: blastapi-redis
+          type: redis
+          property: host
+      - key: REDIS_PORT
+        fromService:
+          name: blastapi-redis
+          type: redis
+          property: port
+      - key: REDIS_PASSWORD
+        fromService:
+          name: blastapi-redis
+          type: redis
+          property: password
+      - key: CORS_ORIGIN
+        fromService:
+          name: blastapi-web
+          type: web
+          property: host
+    autoDeploy: true
+
+  # ===================
+  # Next.js Frontend
+  # ===================
+  - type: web
+    name: blastapi-web
+    runtime: node
+    region: oregon
+    plan: free
+    buildCommand: |
+      corepack enable &&
+      pnpm install --frozen-lockfile &&
+      pnpm --filter @blastapi/db db:generate &&
+      pnpm --filter @blastapi/db build &&
+      pnpm --filter @blastapi/validators build &&
+      pnpm --filter @blastapi/utils build &&
+      pnpm --filter @blastapi/web build
+    startCommand: pnpm --filter @blastapi/web start
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: PORT
+        value: 3000
+      - key: DATABASE_URL
+        sync: false # Set manually in Render dashboard
+      - key: AUTH_SECRET
+        sync: false
+      - key: AUTH_GOOGLE_ID
+        sync: false
+      - key: AUTH_GOOGLE_SECRET
+        sync: false
+      - key: AUTH_GITHUB_ID
+        sync: false
+      - key: AUTH_GITHUB_SECRET
+        sync: false
+      - key: NEXT_PUBLIC_SERVER_URL
+        fromService:
+          name: blastapi-server
+          type: web
+          envVarKey: RENDER_EXTERNAL_URL
+      - key: AUTH_TRUST_HOST
+        value: "true"
+    autoDeploy: true
+
+  # ===================
+  # Redis (for Bull Queue)
+  # ===================
+  - type: redis
+    name: blastapi-redis
+    region: oregon
+    plan: free # 25MB, no persistence
+    maxmemoryPolicy: noeviction
+    ipAllowList: [] # Allow only internal connections
